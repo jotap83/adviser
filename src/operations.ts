@@ -80,6 +80,23 @@ export function collectAlerts(state: AppState, now = new Date()): AlertItem[] {
           path: path(),
         });
     }
+    const lastMessage = d.conversation?.at(-1);
+    if (
+      lastMessage?.direction === "out" &&
+      d.clientResponseDue &&
+      !d.briefingValid &&
+      daysUntil(d.clientResponseDue, now) <= 0
+    ) {
+      add({
+        id: `client-due-${d.id}-${lastMessage.id}-${d.clientResponseDue}`,
+        title: "Acompanhar resposta do cliente",
+        detail: `Entendimento enviado; acompanhamento previsto para ${shortDate(d.clientResponseDue)}.`,
+        kind: "deadline",
+        severity: daysUntil(d.clientResponseDue, now) < 0 ? "high" : "medium",
+        action: "Ver conversa",
+        path: path("briefing"),
+      });
+    }
     const idle = ageDays(d.updatedAt, now);
     if (idle >= rules.idleDays && d.decision !== "accepted")
       add({

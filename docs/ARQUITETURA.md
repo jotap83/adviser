@@ -2,9 +2,9 @@
 
 ## O que já é executável no protótipo
 
-React + TypeScript + Vite, com fonte DM Sans local, ícones Lucide, layout responsivo e persistência local. O domínio numérico não depende da interface. `BriefingAI` define o contrato de interpretação do briefing; `DemoBriefingAI` é a implementação simulada. A biblioteca de Excel é importada sob demanda. Nenhuma chave ou credencial é necessária ou incluída.
+React + TypeScript + Vite, com fonte DM Sans local, ícones Lucide, layout responsivo e persistência local. O domínio numérico não depende da interface. `BriefingAI` define o contrato de interpretação do briefing; `DemoBriefingAI` é a implementação simulada. As bibliotecas ExcelJS, JSZip e PDF.js são importadas sob demanda. Textos dos anexos do briefing ficam no estado local; arquivos de apresentações usam IndexedDB. Nenhuma chave ou credencial é necessária ou incluída.
 
-`src/types.ts` registra as entidades. `src/domain.mjs` concentra cálculos e extração demonstrativa. `src/store.tsx` gerencia o estado local. Páginas separam os fluxos de atendimento, cadastros e próximos módulos. `public/fluxo.svg` é o diagrama sequencial.
+`src/types.ts` registra as entidades. `src/domain.mjs` concentra cálculos e extração demonstrativa. `src/store.tsx` gerencia o estado local. `src/briefing-analysis.ts` reúne sugestões e fontes; `src/attachments.ts` e `src/read-pdf.ts` fazem a leitura local. Páginas separam os fluxos de atendimento, cadastros e próximos módulos. `public/fluxo.svg` é o diagrama sequencial.
 
 ## MVP de produção previsto
 
@@ -35,3 +35,7 @@ Opcional: Gmail completo; portal do cliente conforme interesse e compliance; IA 
 ## Entrega e propriedade
 
 Fonte e documentação do software próprio são parte da entrega sob medida. Prever migração para contas de infraestrutura da Adviser, inventário de serviços/dependências, instruções de deploy, configuração sem segredos versionados, backup/restauração e capacitação. Condições da cessão e de suporte dependem do contrato; bibliotecas e serviços externos não passam a ser propriedade da Adviser.
+
+## Dossiê colaborativo do briefing
+
+A demonstração mantém histórico manual com o cliente e versões de apresentações com feedback. O contrato de IA aceita fontes nomeadas e devolve sugestões por campo, com trecho de origem. A aplicação depende de confirmação humana e evita aplicar resultado desatualizado. Esse dossiê leve não implementa tarefas, produção, autenticação ou aprovação pelo cliente em portal. Consulte [briefing e criação](BRIEFING-E-CRIACAO.md).

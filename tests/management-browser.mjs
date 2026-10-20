@@ -136,6 +136,7 @@ await page
   .locator(".scope-main")
   .screenshot({ path: ".impeccable/review/briefing-unmapped-block.png" });
 await page.getByRole("button", { name: /^Alimentação e bebidas/ }).click();
+await page.getByLabel("Bebidas, consumo e taxas", { exact: true }).fill("");
 await page
   .getByRole("button", { name: "Adicionar perguntas ao rascunho" })
   .click();

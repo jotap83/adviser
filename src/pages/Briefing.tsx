@@ -1,39 +1,68 @@
 import { useState } from "react";
-import {
-  Sparkles,
-  Check,
-  Copy,
-  Mail,
-  ArrowRight,
-  Paperclip,
-  AlertCircle,
-} from "lucide-react";
-import type { Demand, AIResult } from "../types";
-import { useStore, go, copy } from "../store";
+import { Sparkles, Check, ArrowRight, AlertCircle } from "lucide-react";
+import type { Demand, AIResult, ClientMessage } from "../types";
+import { useStore, go } from "../store";
 import { DemoBriefingAI } from "../ai";
-import { Button, Label, Note, Badge, SaveMark } from "../components/UI";
+import { Button, Label, Badge, SaveMark } from "../components/UI";
 import { BriefingScope } from "../components/BriefingScope";
+import { BriefingAttachments } from "../components/BriefingAttachments";
+import { ClientConversation } from "../components/ClientConversation";
+import { CreativePresentations } from "../components/CreativePresentations";
+import { completeBriefingExample } from "../briefing-example";
+import {
+  briefingSources,
+  applySuggestions,
+  currentSuggestionValue,
+  questionsAfterReview,
+} from "../briefing-analysis";
 export function Briefing({ d }: { d: Demand }) {
   const { state, updateDemand, notify } = useStore();
   const [result, setResult] = useState<AIResult | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
-  const [reply, setReply] = useState("");
+  const [selected, setSelected] = useState<string[]>([]);
+  const [snapshot, setSnapshot] = useState("");
+  const sources = briefingSources(d);
+  const signature = JSON.stringify({
+    sources,
+    title: d.title,
+    date: d.date,
+    guests: d.guests,
+    budget: d.budget,
+    location: d.location,
+    objective: d.objective,
+    details: d.briefingDetails,
+    scope: d.scope,
+  });
   const [aligned, setAligned] = useState(d.briefingValid);
   const patch = (p: Partial<Demand>) => {
     setAligned(false);
     updateDemand(d.id, { ...p, briefingValid: false });
   };
-  async function organize() {
+  async function organize(message?: ClientMessage) {
     setBusy(true);
     setError("");
     setResult(null);
+    setSnapshot(signature);
+    const input = message
+      ? [
+          { name: `Retorno de ${message.contact}`, text: message.text },
+          ...(d.attachments || [])
+            .filter(
+              (a) => a.messageId === message.id && a.included && a.text.trim(),
+            )
+            .map((a) => ({ name: a.name, text: a.text })),
+        ]
+      : sources;
+    document
+      .getElementById("briefing-entrada")
+      ?.scrollIntoView({ block: "start", behavior: "instant" });
     try {
-      setResult(
-        await new DemoBriefingAI(state.aiMode === "offline").organize(
-          d.message,
-        ),
-      );
+      const next = await new DemoBriefingAI(
+        state.aiMode === "offline",
+      ).organize(input.map((s) => s.text).join("\n"), input);
+      setResult(next);
+      setSelected((next.suggestions || []).map((s) => s.path));
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -41,23 +70,33 @@ export function Briefing({ d }: { d: Demand }) {
     }
   }
   function apply() {
-    if (!result) return;
+    if (!result || signature !== snapshot) return;
+    const suggestions = (result.suggestions || []).filter((s) =>
+      selected.includes(s.path),
+    );
     patch({
-      title: result.title || d.title,
-      date: result.date || d.date,
-      guests: result.guests || d.guests,
-      budget: result.budget || d.budget,
-      location: result.location || d.location,
-      objective: result.objective || d.objective,
-      questions: result.questions.join("\n"),
+      ...applySuggestions(d, suggestions),
+      questions: [
+        ...new Set([
+          ...d.questions.split("\n").filter(Boolean),
+          ...questionsAfterReview(d, result, selected),
+        ]),
+      ].join("\n"),
     });
     setResult(null);
     notify(
-      "Sugestões aplicadas. Confira os campos antes de validar o briefing.",
+      `${suggestions.length} sugestões aplicadas. Confira os campos antes de validar o briefing.`,
     );
   }
-  const client = state.clients.find((c) => c.id === d.clientId);
-  const email = `Olá, ${client?.contact.split(" ")[0] || "tudo bem"}!\n\nPelo que entendemos, vamos organizar ${d.title}, para ${d.guests || "[público a confirmar]"} pessoas${d.date ? ` em ${d.date.split("-").reverse().join("/")}` : ""}${d.location ? `, em ${d.location}` : ""}.\n\nObjetivo: ${d.objective || "[objetivo a confirmar]"}\n\nPrecisamos confirmar:\n${d.questions || "• Data e horários\n• Escopo dos serviços\n• Restrições e condições de contratação"}\n\nPode nos confirmar esses pontos?\n\nObrigada,\n${d.owner} · Adviser`;
+  const displayValue = (path: string, value: string | number) =>
+    path === "budget" && typeof value === "number"
+      ? value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })
+      : path === "date" && value
+        ? String(value).split("-").reverse().join("/")
+        : String(value);
+  const reviewQuestions = result
+    ? questionsAfterReview(d, result, selected)
+    : [];
   const valid = Boolean(
     d.title.trim() &&
     d.date &&
@@ -67,7 +106,26 @@ export function Briefing({ d }: { d: Demand }) {
   );
   return (
     <>
-      <div className="section-heading">
+      <nav className="briefing-jumps" aria-label="Seções do briefing">
+        {[
+          ["entrada", "Mensagem e anexos"],
+          ["escopo", "Escopo do evento"],
+          ["conversa", "Conversa com o cliente"],
+          ["criacao", "Apresentação criativa"],
+        ].map(([id, label]) => (
+          <button
+            key={id}
+            onClick={() =>
+              document
+                .getElementById(`briefing-${id}`)
+                ?.scrollIntoView({ block: "start", behavior: "instant" })
+            }
+          >
+            {label}
+          </button>
+        ))}
+      </nav>
+      <div className="section-heading briefing-section" id="briefing-entrada">
         <div>
           <h2>Primeiro, entender o evento.</h2>
           <p>Traga a conversa para cá. Revise o entendimento antes de cotar.</p>
@@ -105,12 +163,39 @@ export function Briefing({ d }: { d: Demand }) {
               placeholder="Cole o e-mail ou descreva o que o cliente pediu..."
             />
           </Label>
+          <details className="example-picker">
+            <summary>Experimentar um briefing completo</summary>
+            <p>
+              Exemplo fictício com programação, montagem, alimentação,
+              audiovisual, criação, equipe e logística. Substitui apenas o texto
+              da entrada; os campos preenchidos só mudam após a revisão da
+              análise.
+            </p>
+            <Button
+              onClick={() => {
+                patch({ message: completeBriefingExample });
+                setResult(null);
+                notify(
+                  "Exemplo fictício carregado. Clique em Organizar com IA para revisar as sugestões.",
+                );
+              }}
+            >
+              Carregar exemplo completo
+            </Button>
+          </details>
+          <BriefingAttachments
+            d={d}
+            invalidate={() => {
+              setAligned(false);
+              setResult(null);
+            }}
+          />
           <div className="split-actions">
             <Button
               variant="primary"
               icon={Sparkles}
               busy={busy}
-              onClick={organize}
+              onClick={() => organize()}
             >
               {busy ? "Organizando..." : "Organizar com IA"}
             </Button>
@@ -123,41 +208,84 @@ export function Briefing({ d }: { d: Demand }) {
             </div>
           )}
           {result && (
-            <div className="ai-review">
+            <div className="ai-review" aria-live="polite">
               <div className="section-heading">
                 <h3>Entendimento sugerido</h3>
                 <Badge tone="blue">Revisão humana</Badge>
               </div>
-              <dl className="detail-list">
-                <dt>Evento</dt>
-                <dd>{result.title || "Não identificado"}</dd>
-                <dt>Público</dt>
-                <dd>
-                  {result.guests
-                    ? `${result.guests} pessoas`
-                    : "Não identificado"}
-                </dd>
-                <dt>Data</dt>
-                <dd>
-                  {result.date
-                    ? result.date.split("-").reverse().join("/")
-                    : "Não identificada"}
-                </dd>
-                <dt>Local</dt>
-                <dd>{result.location || "Não identificado"}</dd>
-              </dl>
-              <h4>Pontos para confirmar</h4>
-              <ul className="plain-list">
-                {result.questions.map((q) => (
-                  <li key={q}>{q}</li>
-                ))}
-              </ul>
               <p className="muted">
-                A demonstração identifica padrões simples do texto. Não
-                substitui uma análise por IA real.
+                {result.suggestions?.length || 0} campos identificados em{" "}
+                {result.evidence.length} fonte(s). Selecione o que aplicar. Os
+                retornos mais recentes têm prioridade quando mencionam o mesmo
+                campo.
+              </p>
+              {signature !== snapshot && (
+                <div className="note error" role="alert">
+                  As informações mudaram depois da análise. Organize novamente
+                  antes de aplicar.
+                </div>
+              )}
+              <div className="ai-suggestions">
+                {(result.suggestions || []).map((s) => {
+                  const previous = currentSuggestionValue(d, s.path);
+                  const changed =
+                    Boolean(previous) && String(previous) !== String(s.value);
+                  return (
+                    <div className="ai-suggestion" key={s.path}>
+                      <label className="check-label">
+                        <input
+                          type="checkbox"
+                          checked={selected.includes(s.path)}
+                          onChange={(e) =>
+                            setSelected(
+                              e.target.checked
+                                ? [...selected, s.path]
+                                : selected.filter((p) => p !== s.path),
+                            )
+                          }
+                        />
+                        <strong>{s.label}</strong>
+                        {changed && <Badge tone="amber">Alteração</Badge>}
+                      </label>
+                      {changed && (
+                        <p className="previous-value">
+                          Atual: {displayValue(s.path, previous)}
+                        </p>
+                      )}
+                      <p>{displayValue(s.path, s.value)}</p>
+                      <details>
+                        <summary>Fonte: {s.source}</summary>
+                        <blockquote>{s.excerpt}</blockquote>
+                      </details>
+                    </div>
+                  );
+                })}
+              </div>
+              {reviewQuestions.length > 0 && (
+                <details>
+                  <summary>Pontos para revisar com o cliente</summary>
+                  <ul>
+                    {reviewQuestions.map((q, i) => (
+                      <li key={i}>{q}</li>
+                    ))}
+                  </ul>
+                  <p className="field-hint">
+                    Serão acrescentados às perguntas existentes.
+                  </p>
+                </details>
+              )}
+              <p className="field-hint">
+                Simulação por padrões e campos nomeados, sem API externa. A
+                leitura dos arquivos é real; a interpretação não substitui uma
+                IA de produção.
               </p>
               <div className="actions">
-                <Button variant="primary" icon={Check} onClick={apply}>
+                <Button
+                  variant="primary"
+                  icon={Check}
+                  disabled={!selected.length || snapshot !== signature}
+                  onClick={apply}
+                >
                   Aplicar e revisar nos campos
                 </Button>
                 <Button variant="ghost" onClick={() => setResult(null)}>
@@ -246,109 +374,18 @@ export function Briefing({ d }: { d: Demand }) {
           </p>
         </section>
       </div>
-      <BriefingScope d={d} patch={patch} />
-      <div className="briefing-grid secondary-grid">
-        <section className="panel">
-          <div className="section-heading">
-            <h3>Devolver o entendimento ao cliente</h3>
-            <Mail size={18} />
-          </div>
-          <p className="muted">Revise o texto, copie e envie pelo Gmail.</p>
-          <textarea
-            aria-label="Texto sugerido de formalização"
-            className="email-draft"
-            value={reply || email}
-            onChange={(e) => setReply(e.target.value)}
-          />
-          <Button
-            icon={Copy}
-            onClick={async () =>
-              notify(
-                (await copy(reply || email))
-                  ? "Texto copiado. Revise e envie pelo Gmail."
-                  : "A cópia automática não ficou disponível. Selecione o texto e copie manualmente.",
-              )
-            }
-          >
-            Copiar texto
-          </Button>
-          <div className="divider" />
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              const f = new FormData(e.currentTarget);
-              const text = String(f.get("reply")).trim();
-              if (!text) return;
-              updateDemand(
-                d.id,
-                { briefingLog: [...d.briefingLog, text], briefingValid: false },
-                "Resposta do cliente registrada manualmente.",
-              );
-              e.currentTarget.reset();
-              setAligned(false);
-              notify(
-                "Resposta registrada. Atualize os campos do briefing com os pontos confirmados.",
-              );
-            }}
-          >
-            <Label label="Registrar retorno do cliente">
-              <textarea
-                name="reply"
-                required
-                rows={3}
-                placeholder="Cole aqui a resposta recebida ou anote o retorno da ligação."
-              />
-            </Label>
-            <Button type="submit">Salvar retorno</Button>
-          </form>
-          {d.briefingLog.map((r, i) => (
-            <div className="reply-log" key={i}>
-              <strong>Retorno {i + 1}</strong>
-              <p>{r}</p>
-            </div>
-          ))}
-        </section>
-        <section className="panel creative-block">
-          <div className="section-heading">
-            <h3>Referências de criação</h3>
-            <Badge tone="amber">Apoio ao briefing</Badge>
-          </div>
-          <p className="muted">
-            O conceito criativo pode ser elaborado antes da proposta. No MVP,
-            registramos apenas a referência.
-          </p>
-          <Label label="Conceito, observações ou link da apresentação">
-            <textarea
-              rows={5}
-              value={d.creative}
-              onChange={(e) => updateDemand(d.id, { creative: e.target.value })}
-              placeholder="Ex.: direção criativa a desenvolver e referência da apresentação no Google Slides."
-            />
-          </Label>
-          <label className="upload-control">
-            <Paperclip size={16} /> Anexar referência fictícia
-            <input
-              type="file"
-              accept=".pdf,.png,.jpg,.jpeg,.pptx"
-              onChange={(e) => {
-                const f = e.target.files?.[0];
-                if (f) {
-                  updateDemand(d.id, {
-                    creative: `${d.creative}\nAnexo demonstrativo: ${f.name}`,
-                  });
-                  notify(
-                    "Nome do arquivo registrado. O protótipo não armazena o conteúdo do anexo.",
-                  );
-                }
-              }}
-            />
-          </label>
-          <Note>
-            Gestão de tarefas, peças e aprovações da criação fica para a etapa
-            2.
-          </Note>
-        </section>
+      <div id="briefing-escopo" className="briefing-section">
+        <BriefingScope d={d} patch={patch} />
       </div>
+      <ClientConversation
+        d={d}
+        invalidate={() => {
+          setAligned(false);
+          setResult(null);
+        }}
+        analyzeReply={organize}
+      />
+      <CreativePresentations d={d} />
       <section className="panel alignment-confirmation">
         <h3>Concluir o alinhamento com o cliente</h3>
         <p className="muted">

@@ -160,7 +160,7 @@ components:
     textColor: "{colors.nav-text}"
     typography: "{typography.navigation}"
     rounded: "{rounded.control}"
-    padding: "12px 13px"
+    padding: "10px 12px"
   navigation-selected:
     backgroundColor: "{colors.nav-selected}"
     textColor: "{colors.blue}"
@@ -264,15 +264,17 @@ No breakpoint móvel, o título de página passa a 26px, o título do evento a 2
 
 ## Layout
 
-O desktop usa navegação fixa à esquerda (230px), topbar (67px) e conteúdo central de até 1550px com padding de 35px 34px 20px. A fila é o conteúdo principal; a atividade secundária ocupa uma coluna de 235px. O resumo de fases tem seis colunas. Briefing e comparação usam duas colunas, enquanto a proposta pode reservar 275px ao resumo financeiro.
+O desktop usa navegação fixa à esquerda (230px), topbar aderente ao topo durante a rolagem (67px) e conteúdo central de até 1550px com padding de 35px 34px 20px. A partir de 761px, o controle do cabeçalho alterna a navegação expandida e um trilho de ícones (76px); a área de trabalho acompanha essa largura. A preferência é local ao navegador. A fila é o conteúdo principal; a atividade secundária ocupa uma coluna de 235px. O resumo de fases tem seis colunas. Briefing e comparação usam duas colunas, enquanto a proposta pode reservar 275px ao resumo financeiro.
+
+O menu lateral usa espaçamento compacto sem reduzir seus alvos de interação. A lista tem rolagem vertical própria quando a altura disponível não comporta todas as opções; marca e identificação da pessoa permanecem fora dessa rolagem. O cabeçalho preserva o contexto e o controle do menu durante a leitura de páginas longas.
 
 Painéis usam o espaçamento amplo da escala; formulários agrupam campos com gap horizontal de 18px. Há ritmos intermediários observados no CSS: controles com padding assimétrico, linhas de demanda com 22px e telas com margens próprias. Não há uma grade estrita de múltiplos de oito.
 
 | Consulta de mídia | Comportamento implementado |
 | --- | --- |
-| Até 1200px | Trilho de 210px, padding lateral de 25px; resumo financeiro passa abaixo da edição. |
+| Até 1200px | Navegação expandida de 210px; no desktop, o trilho recolhido continua com 76px. Padding lateral de 25px; resumo financeiro passa abaixo da edição. |
 | Até 1000px | Fila, briefing e navegação de templates se reorganizam; formulários de três colunas passam a duas. |
-| Até 760px | Menu lateral recolhido de 235px com backdrop; topbar de 58px; conteúdo com 20px laterais; resumo de fases em três colunas; formulários e comparativos em uma coluna. |
+| Até 760px | Navegação em gaveta de 235px com backdrop; topbar aderente ao topo de 58px; conteúdo com 20px laterais; resumo de fases em três colunas; formulários e comparativos em uma coluna. |
 | A partir de 1500px | Mais espaço ao status da demanda; a próxima ação já permanece visível em todas as larguras pelas regras finais da folha. |
 
 No celular, a próxima ação ocupa a linha inferior da demanda; abas de etapas rolam horizontalmente. O editor de itens troca a tabela por blocos de duas colunas com descrição em largura total e rótulos de quantidade, unitário e total. Tabelas de consulta continuam com rolagem dentro do próprio contêiner, sem alargar a página.
@@ -283,7 +285,7 @@ O portal do fornecedor tem cabeçalho próprio, contexto do evento e conteúdo d
 
 **The Plano por padrão Rule.** Painéis e tabelas se separam por cor de fundo e contorno; a sombra existente pertence ao aviso flutuante.
 
-O aviso flutuante usa a sombra 0 10px 30px -8px #15274426, registrada no sidecar. A navegação fica no nível 40, seu backdrop no 35 e o aviso no 100. Não há blur, gradiente ou elevação persistente nos cartões.
+O aviso flutuante usa a sombra 0 10px 30px -8px #15274426, registrada no sidecar. O cabeçalho aderente fica no nível 30, a navegação no 40, seu backdrop no 35 e o aviso no 100. Não há blur, gradiente ou elevação persistente nos cartões.
 
 ## Shapes
 
@@ -303,7 +305,7 @@ Labels persistentes, dicas abaixo do controle e fundo branco. Campos têm altura
 
 ### Navigation
 
-A navegação principal combina ícone, label e estado ativo preenchido. Seus alvos têm pelo menos 44px de altura. As abas do dossiê usam numeração circular, sublinhado azul na aba consultada e check verde nas etapas concluídas pelo estado salvo.
+A navegação principal combina ícone, label e estado ativo preenchido. Seus alvos têm pelo menos 44px de altura e usam o padding compacto do frontmatter. Recolhida no desktop, mantém os ícones, a seleção e os nomes acessíveis; o controle de recolher/expandir tem 44px e informa seu estado. No celular, a gaveta aberta contém o foco e bloqueia a interação com a área de trabalho; pode ser fechada pelo botão, backdrop ou Escape, com retorno do foco ao controle de origem. As abas do dossiê usam numeração circular, sublinhado azul na aba consultada e check verde nas etapas concluídas pelo estado salvo.
 
 **The Estado verdadeiro Rule.** A etapa consultada pode mudar sem concluir o fluxo. A conclusão visual deriva do estado salvo e a validação do briefing exige confirmação humana do alinhamento.
 

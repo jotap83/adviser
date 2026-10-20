@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-20T01:05:43.870824+00:00",
+  "generatedAt": "2026-10-20T02:58:18.067150+00:00",
   "title": "Design System: Adviser",
   "extensions": {
     "colorMeta": {
@@ -673,9 +673,9 @@
       "name": "Navegação principal",
       "kind": "nav",
       "refersTo": "navigation",
-      "description": "Trilho azul Adviser com seleção branca e contexto de atendimento.",
+      "description": "Navegação compacta com rolagem própria, seleção branca e alvos de 44px; o shell oferece trilho recolhido de 76px, cabeçalho aderente e gaveta móvel.",
       "html": "<nav class=\"ds-nav\" aria-label=\"Navegação principal\"><span class=\"ds-nav-label\">ATENDIMENTO</span><a href=\"#/\" class=\"ds-nav-link\">Visão geral</a><a href=\"#/demandas\" class=\"ds-nav-link ds-nav-active\" aria-current=\"page\">Demandas</a><a href=\"#/fornecedores\" class=\"ds-nav-link\">Fornecedores</a></nav>",
-      "css": ".ds-nav{font-family:\"DM Sans\",sans-serif;display:flex;flex-direction:column;padding:18px;background:var(--brand-blue,#293e91);color:#fff;width:194px;}.ds-nav-label{font-size:9px;letter-spacing:.12em;color:#d0d8f2;margin:20px 14px 9px;font-weight:600;}.ds-nav-link{display:flex;align-items:center;gap:11px;padding:12px 13px;margin:2px 0;border-radius:7px;color:#e1e6f6;text-decoration:none;font-size:12px;line-height:1.5;font-weight:500;min-height:44px;}.ds-nav-link:hover{background:#223479;color:#fff;}.ds-nav-link.ds-nav-active{background:#fff;color:#293e91;}.ds-nav-link:focus-visible{outline:3px solid #fff;outline-offset:3px;}"
+      "css": ".ds-nav{font-family:\"DM Sans\",sans-serif;display:flex;flex-direction:column;padding:16px 12px 0;background:var(--brand-blue,#293e91);color:#fff;width:206px;min-height:0;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#d0d8f2 #293e91;}.ds-nav-label{font-size:9px;letter-spacing:.12em;color:#d0d8f2;margin:13px 12px 5px;flex-shrink:0;font-weight:600;}.ds-nav-link{display:flex;align-items:center;gap:11px;padding:10px 12px;margin:0;flex-shrink:0;border-radius:7px;color:#e1e6f6;text-decoration:none;font-size:12px;line-height:1.5;font-weight:500;min-height:44px;}.ds-nav-link:hover{background:#223479;color:#fff;}.ds-nav-link.ds-nav-active{background:#fff;color:#293e91;}.ds-nav-link:focus-visible{outline:3px solid #fff;outline-offset:3px;}"
     },
     {
       "name": "Badges de estado",

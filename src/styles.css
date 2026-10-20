@@ -412,7 +412,7 @@ svg {
   color: #fff;
   display: flex;
   flex-direction: column;
-  padding: 30px 18px 0;
+  padding: 16px 12px 0;
 }
 .brand {
   display: flex;
@@ -430,7 +430,12 @@ svg {
 .sidebar > .brand {
   background: #fff;
   border-radius: 8px;
-  padding: 12px;
+  padding: 8px;
+  align-self: center;
+  width: 100%;
+}
+.sidebar .brand-logo {
+  width: 100px;
 }
 .sidebar a:focus-visible {
   outline-color: #fff;
@@ -469,22 +474,27 @@ svg {
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding-top: 2px;
+  padding-top: 4px;
+  min-height: 0;
   overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #d0d8f2 #293e91;
 }
 .nav-label {
   font-size: 9px;
   letter-spacing: 0.12em;
   color: #d0d8f2;
-  margin: 20px 14px 9px;
+  margin: 13px 12px 5px;
+  flex-shrink: 0;
   font-weight: 600;
 }
 .sidebar nav a {
   display: flex;
   align-items: center;
   gap: 11px;
-  padding: 12px 13px;
-  margin: 2px 0;
+  padding: 10px 12px;
+  margin: 0;
+  flex-shrink: 0;
   border-radius: 7px;
   color: #e1e6f6;
   text-decoration: none;
@@ -513,14 +523,15 @@ svg {
 }
 .nav-bottom {
   margin-top: auto;
-  padding: 30px 0 20px;
+  padding: 8px 0;
 }
 .sidebar-person {
   border-top: 1px solid #ffffff1c;
   display: flex;
   gap: 10px;
   align-items: center;
-  padding: 19px 8px;
+  padding: 12px 8px;
+  flex-shrink: 0;
   font-size: 12px;
 }
 .sidebar-person small {
@@ -557,6 +568,11 @@ svg {
   flex-direction: column;
 }
 .topbar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  flex-shrink: 0;
+  min-height: 67px;
   height: 67px;
   display: flex;
   justify-content: space-between;
@@ -1532,7 +1548,7 @@ td select {
   margin-top: 5px;
 }
 .document-intro {
-  padding: 30px 0 20px;
+  padding: 8px 0;
 }
 .document-intro h2 {
   font-size: 28px;
@@ -2171,7 +2187,7 @@ td select {
     transform: translateX(-100%);
     width: 235px;
     transition: transform 0.2s ease-out;
-    padding-top: 25px;
+    padding-top: 16px;
   }
   .sidebar.open {
     transform: translateX(0);
@@ -3162,7 +3178,7 @@ td select {
 }
 .scope-checklist {
   position: sticky;
-  top: 20px;
+  top: 86px;
 }
 .scope-checklist h3 {
   margin-bottom: 18px;

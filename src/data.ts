@@ -1,3 +1,4 @@
+import { completeBriefingExample } from "./briefing-example";
 import type { AppState, Demand, Quote, Template, Line } from "./types";
 export const uid = () => crypto.randomUUID();
 export const timestamp = () => new Date().toLocaleString("pt-BR");
@@ -284,8 +285,7 @@ export function seed(): AppState {
     ...createDemand(),
     id: "d1",
     title: "Encontro Horizonte",
-    message:
-      "Olá, Marina!\n\nEvento: Encontro Horizonte\nQueremos reunir 200 colaboradores em 04/12/2026, das 18h às 23h.\nCidade: Rio de Janeiro\nOrçamento: R$ 65.000\nObjetivo: celebrar as conquistas do ano e aproximar as equipes.\n\nPrecisamos de espaço, alimentação, som e uma atração musical. Ainda estamos definindo o tema. Pode nos ajudar com uma proposta?\n\nObrigada,\nAna — Horizonte (empresa fictícia)",
+    message: completeBriefingExample,
     quotes: structuredClone(quotes),
     history: [
       {

@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { useStore, download } from "../store";
 import { uid } from "../data";
+import { clearPresentationFiles } from "../attachments";
 import { Title, Button, Label, Badge, Note } from "../components/UI";
 export function Settings() {
   const { state, setState, notify, reset } = useStore();
@@ -225,6 +226,11 @@ export function Settings() {
           </div>
           <ShieldCheck size={21} />
         </div>
+        <p className="field-hint">
+          A exportação inclui os registros e os textos dos briefings. Os
+          arquivos originais das apresentações devem ser baixados separadamente
+          na área de criação.
+        </p>
         <div className="actions">
           <Button
             icon={Download}
@@ -249,9 +255,14 @@ export function Settings() {
             </p>
             <Button
               variant="danger"
-              onClick={() => {
-                reset();
-                setConfirm(false);
+              onClick={async () => {
+                try {
+                  await clearPresentationFiles();
+                  reset();
+                  setConfirm(false);
+                } catch (error) {
+                  notify((error as Error).message);
+                }
               }}
             >
               Sim, reiniciar os exemplos

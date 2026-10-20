@@ -31,3 +31,20 @@ Validação funcional em `tests/management-browser.mjs`: filtros por núcleo/res
 O fluxo original em `tests/browser.mjs` também passou novamente, incluindo versões preservadas, Excel, aceite vinculado à versão, pagamento direto e exportação de repasse. O teste valida o protótipo local, não autenticação, integração Gmail, serviços de e-mail, alertas multiusuário ou entrega real de produção.
 
 A revisão final também confirmou: apagar o prazo gera alerta de entrega sem prazo; blocos sem modelo vinculado explicam seu limite; botão de atraso do fornecedor corresponde ao destino. Pacote independente aberto por `file://`, com zero requisições externas e zero erros de página.
+
+
+## Evolução de briefing e criação — 20/10/2026
+
+- Menu expandido e recolhido; preferência após recarga; topo no y=0 durante rolagem; menu sem rolagem em 1366×768.
+- Gaveta móvel, Escape, foco e conteúdo sem transbordamento horizontal em 390×844.
+- Exemplo sintético com 32 sugestões de campos, cinco campos de planejamento e sete blocos detalhados.
+- PDF, DOCX e XLSX sintéticos lidos de fato no navegador; PDF ilegível tratado com entrada manual.
+- Reanálise de retorno parcial preserva contexto e perguntas humanas. Lacunas consideram apenas alterações selecionadas. Rascunho de formalização verificado após a revisão.
+- Registro manual de envio/retorno com contato diferente; nenhuma mensagem real enviada.
+- Duas versões criativas, feedback preservado na anterior e aprovação criativa separada da proposta.
+- Arquivo PDF de apresentação persiste após recarga. Reinício limpa seus arquivos locais.
+- Resultado de análise bloqueado se o conteúdo foi alterado depois de sua geração.
+- HTML independente testado offline: leitores embutidos, arquivo de apresentação persistente e zero requisições HTTP ou erros de página.
+- Build TypeScript/Vite e quatro testes de domínio aprovados. Os percursos anteriores de gestão, cotação, comparativo, proposta, aceite, Excel e repasse passaram na regressão.
+
+Testes novos: `tests/briefing-browser.mjs` e `tests/standalone-briefing.mjs`. Não houve teste em aparelhos físicos, Safari ou Firefox; a verificação visual e funcional usou Chromium em larguras desktop e celular. PDFs digitalizados exigem transcrição; não há OCR.

@@ -1,12 +1,12 @@
-import { extractBriefing } from "./domain.mjs";
+import { analyzeSources, type BriefingSource } from "./briefing-analysis";
 import type { AIResult } from "./types";
 // Contract kept independent from UI. Production implementations run server-side.
 export interface BriefingAI {
-  organize(text: string): Promise<AIResult>;
+  organize(text: string, sources?: BriefingSource[]): Promise<AIResult>;
 }
 export class DemoBriefingAI implements BriefingAI {
   constructor(private offline = false) {}
-  async organize(text: string): Promise<AIResult> {
+  async organize(text: string, sources?: BriefingSource[]): Promise<AIResult> {
     await new Promise((r) => setTimeout(r, 850));
     if (this.offline)
       throw new Error(
@@ -16,6 +16,6 @@ export class DemoBriefingAI implements BriefingAI {
       throw new Error(
         "Inclua mais detalhes na mensagem antes de organizar o briefing.",
       );
-    return extractBriefing(text);
+    return analyzeSources(sources || [{ name: "Mensagem do cliente", text }]);
   }
 }

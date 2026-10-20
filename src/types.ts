@@ -89,6 +89,11 @@ export type Demand = {
   briefingValid: boolean;
   briefingLog: string[];
   creative: string;
+  attachments?: BriefingAttachment[];
+  conversation?: ClientMessage[];
+  clientDraft?: string;
+  clientResponseDue?: string;
+  presentations?: Presentation[];
   quotes: Quote[];
   lines: Line[];
   fee: number;
@@ -133,4 +138,50 @@ export type AIResult = {
   objective: string;
   questions: string[];
   evidence: string[];
+  suggestions?: BriefingSuggestion[];
+};
+export type BriefingAttachment = {
+  id: string;
+  name: string;
+  size: number;
+  kind: "pdf" | "docx" | "xlsx";
+  text: string;
+  included: boolean;
+  at: string;
+  messageId?: string;
+  status: "ready" | "manual";
+  detail: string;
+};
+export type ClientMessage = {
+  id: string;
+  direction: "in" | "out";
+  text: string;
+  at: string;
+  contact: string;
+  channel: string;
+  reviewedAt?: string;
+};
+export type BriefingSuggestion = {
+  path: string;
+  label: string;
+  value: string | number;
+  source: string;
+  excerpt: string;
+};
+export type Presentation = {
+  id: string;
+  number: number;
+  title: string;
+  concept: string;
+  changes: string;
+  source: "demo" | "link" | "file";
+  url?: string;
+  fileName?: string;
+  fileType?: string;
+  at: string;
+  status: "draft" | "sent" | "changes" | "approved";
+  sentAt?: string;
+  feedback?: string;
+  feedbackBy?: string;
+  feedbackAt?: string;
 };

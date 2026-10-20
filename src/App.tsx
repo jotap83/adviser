@@ -16,6 +16,8 @@ import {
   Clock3,
   Bell,
   ChartNoAxesCombined,
+  PanelLeftClose,
+  PanelLeftOpen,
 } from "lucide-react";
 import { useStore, go } from "./store";
 import { stages } from "./data";
@@ -42,6 +44,55 @@ export default function App() {
   const { state, toast, clearToast } = useStore();
   const [path, setPath] = useState(location.hash.slice(1) || "/");
   const [mobile, setMobile] = useState(false);
+  const [collapsed, setCollapsed] = useState(() => {
+    try {
+      return localStorage.getItem("adviser-sidebar") === "collapsed";
+    } catch {
+      return false;
+    }
+  });
+  const toggleSidebar = () => {
+    setCollapsed(!collapsed);
+    try {
+      localStorage.setItem(
+        "adviser-sidebar",
+        collapsed ? "expanded" : "collapsed",
+      );
+    } catch {
+      /* Layout still works without storage. */
+    }
+  };
+  useEffect(() => {
+    if (!mobile) return;
+    const previous = document.body.style.overflow;
+    const previousFocus = document.activeElement as HTMLElement | null;
+    document.body.style.overflow = "hidden";
+    const sidebar = document.getElementById("sidebar");
+    sidebar?.querySelector<HTMLElement>("a,button")?.focus();
+    const close = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMobile(false);
+      if (e.key === "Tab") {
+        const targets = [
+          ...(sidebar?.querySelectorAll<HTMLElement>("a,button") || []),
+        ].filter((el) => el.getBoundingClientRect().width > 0);
+        const first = targets[0],
+          last = targets.at(-1);
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last?.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first?.focus();
+        }
+      }
+    };
+    window.addEventListener("keydown", close);
+    return () => {
+      document.body.style.overflow = previous;
+      window.removeEventListener("keydown", close);
+      previousFocus?.focus();
+    };
+  }, [mobile]);
   useEffect(() => {
     const change = () => {
       setPath(location.hash.slice(1) || "/");
@@ -117,6 +168,8 @@ export default function App() {
         href={`#${item.path}`}
         key={item.path}
         aria-current={active ? "page" : undefined}
+        aria-label={item.label}
+        title={collapsed ? item.label : undefined}
         className={active ? "active" : ""}
       >
         <Icon size={19} />
@@ -126,7 +179,7 @@ export default function App() {
     );
   };
   return (
-    <div className="app-shell">
+    <div className={`app-shell ${collapsed ? "nav-collapsed" : ""}`}>
       {mobile && (
         <button
           className="nav-backdrop"
@@ -134,16 +187,17 @@ export default function App() {
           onClick={() => setMobile(false)}
         />
       )}
-      <aside className={`sidebar ${mobile ? "open" : ""}`}>
+      <aside id="sidebar" className={`sidebar ${mobile ? "open" : ""}`}>
+        <button
+          className="icon-btn sidebar-close"
+          aria-label="Fechar navegação"
+          onClick={() => setMobile(false)}
+        >
+          <X size={20} />
+        </button>
         <a className="brand" href="#/" aria-label="Adviser, visão geral">
           <BrandLogo />
         </a>
-        <div className="workspace-name">
-          <span className="workspace-avatar">A</span>
-          <div>
-            Agência Adviser<small>Atendimento e eventos</small>
-          </div>
-        </div>
         <nav aria-label="Navegação principal">
           <span className="nav-label">GESTÃO</span>
           {navButton({
@@ -178,15 +232,32 @@ export default function App() {
           </div>
         </div>
       </aside>
-      <div className="app-body">
+      <div className="app-body" inert={mobile}>
         <header className="topbar">
           <div className="breadcrumbs">
             <button
               className="icon-btn mobile-menu"
               aria-label={mobile ? "Fechar menu" : "Abrir menu"}
+              aria-expanded={mobile}
+              aria-controls="sidebar"
               onClick={() => setMobile(!mobile)}
             >
               {mobile ? <X size={21} /> : <Menu size={21} />}
+            </button>
+            <button
+              className="icon-btn desktop-menu"
+              aria-label={
+                collapsed ? "Expandir barra lateral" : "Recolher barra lateral"
+              }
+              aria-expanded={!collapsed}
+              aria-controls="sidebar"
+              onClick={toggleSidebar}
+            >
+              {collapsed ? (
+                <PanelLeftOpen size={20} />
+              ) : (
+                <PanelLeftClose size={20} />
+              )}
             </button>
             <span className="workspace-label">Workspace</span>
             <a

@@ -43,12 +43,12 @@ Também é possível criar clientes, fornecedores e demandas; editar modelos de 
 
 ## Limites explícitos
 
-- Estado em `localStorage`, com versão de esquema e opção de reiniciar. Atualização entre abas do mesmo site/navegador; sem banco de dados ou sincronização entre dispositivos/usuários.
+- Registros em `localStorage` e arquivos de apresentações em IndexedDB, com versão de esquema e opção de reiniciar. Atualização entre abas do mesmo site/navegador; sem banco de dados ou sincronização entre dispositivos/usuários.
 - Portal do fornecedor demonstrativo: não oferece autenticação, isolamento ou segurança de acesso real. Não use com informações reais. O frontend contém todos os exemplos.
-- Anexos registram apenas o nome; conteúdo não é armazenado nem enviado.
+- Briefing: leitura local de texto de PDF, DOCX e XLSX; sem OCR ou interpretação real por IA. Apresentações: arquivos persistidos em IndexedDB neste navegador, com prévia de PDF/imagens; PPTX pode ser baixado. Anexos de cotações continuam registrando apenas o nome.
 - Não há chamadas de IA, Gmail, e-mail transacional ou Conta Azul.
 - Não há autenticação, convites ou controle de permissões reais. Os cadastros de usuários demonstram a interface.
-- O exportador Excel é carregado apenas quando solicitado; seu chunk é maior que o limite de aviso padrão do Vite.
+- O exportador Excel é carregado apenas quando solicitado; ExcelJS e o leitor PDF.js usam chunks maiores que o aviso padrão do Vite e são carregados sob demanda.
 - Impressão em PDF utiliza o diálogo do navegador.
 - Nenhum arquivo privado usado como referência foi incluído neste repositório.
 
@@ -76,3 +76,9 @@ Logo oficial e cores azul/laranja da Adviser incorporadas ao protótipo, inclusi
 Acesse **Visão dos sócios** e **Central de alertas** no menu. Simule um retorno e veja as pendências mudarem. No briefing, selecione os blocos do evento, analise as sugestões de escopo e leve os pontos ainda abertos ao rascunho de esclarecimento. Consulte [escopo e roteiro gerencial](docs/GESTAO-E-BRIEFING.md).
 
 Teste adicional: `node tests/management-browser.mjs` com o app na porta 4173.
+
+## Briefing e colaboração
+
+Menu lateral recolhível e cabeçalho fixo durante a rolagem. No briefing, experimente o exemplo completo, os anexos PDF/DOCX/XLSX, a linha do tempo com o cliente e a revisão de apresentações por versão. Veja [funcionamento e limites](docs/BRIEFING-E-CRIACAO.md).
+
+Testes: `node tests/briefing-browser.mjs` com app na porta 4173 e `node tests/standalone-briefing.mjs` após `npm run build:standalone`.

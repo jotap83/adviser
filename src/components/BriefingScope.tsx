@@ -1,3 +1,4 @@
+import { briefingSources } from "../briefing-analysis";
 import { useState } from "react";
 import { Sparkles, ArrowRight, Check, ListChecks, Mail } from "lucide-react";
 import type { Demand } from "../types";
@@ -55,7 +56,9 @@ export function BriefingScope({
       );
     else {
       const results = scopeSuggestions(
-        [d.message, ...d.briefingLog].join("\n"),
+        briefingSources(d)
+          .map((s) => s.text)
+          .join("\n"),
       );
       setReview(results);
       setPicked(results.map((r) => r.block.id));

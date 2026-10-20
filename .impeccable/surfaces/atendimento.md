@@ -17,3 +17,5 @@ THESIS: A clear next action for every event demand.
 OWN-WORLD: The event production call board, translated into quiet daylight software and precise monetary tables.
 STORY: Find a demand, understand its briefing, request comparable quotes, preserve a proposal, record an approval and package the handoff.
 FORM: A stable navigation rail, work queue, numbered dossier and strictly vertical flow diagram; no pictorial assets or physical-material imitation.
+
+Briefing extension (2026-10-20): the user-approved shell keeps compact navigation with independent overflow, a sticky header, a 76px collapsed desktop rail and a mobile drawer. The dossier now groups source intake and attachment review, scope, client correspondence and versioned creative presentations. Keep explicit human review, fictional examples, manual Gmail handling and local persistence visible. The final verdict resolved the contextual reanalysis correction only; evidence and limits are recorded in docs/REVISAO-VISUAL-BRIEFING.md.

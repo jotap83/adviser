@@ -54,10 +54,14 @@ export function extractBriefing(text) {
   const br = text.match(/\b(\d{2})\/(\d{2})\/(20\d{2})\b/);
   const date = iso?.[1] || (br ? `${br[3]}-${br[2]}-${br[1]}` : "");
   const location =
-    text.match(/(?:cidade|local)\s*:\s*([^\n.;]+)/i)?.[1]?.trim() || "";
+    text
+      .match(/(?:^|[\n.;])\s*(?:cidade|local)\s*:\s*([^\n.;]+)/i)?.[1]
+      ?.trim() || "";
   const title =
-    text.match(/(?:evento|assunto)\s*:\s*([^\n.]+)/i)?.[1]?.trim() || "";
-  const objective = text.match(/objetivo\s*:\s*([^\n.]+)/i)?.[1]?.trim() || "";
+    text.match(/(?:^|\n)\s*(?:evento|assunto)\s*:\s*([^\n.]+)/i)?.[1]?.trim() ||
+    "";
+  const objective =
+    text.match(/(?:^|\n)\s*objetivo\s*:\s*([^\n.]+)/i)?.[1]?.trim() || "";
   const questions = [];
   if (!date)
     questions.push(
