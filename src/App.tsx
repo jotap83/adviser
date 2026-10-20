@@ -1,0 +1,321 @@
+import { useEffect, useState } from "react";
+import {
+  LayoutDashboard,
+  Layers,
+  Building2,
+  UsersRound,
+  SlidersHorizontal,
+  GitBranch,
+  Settings2,
+  ArrowUpRight,
+  ChevronRight,
+  Menu,
+  X,
+  Check,
+  ArrowLeft,
+  Clock3,
+} from "lucide-react";
+import { useStore, go } from "./store";
+import { stages } from "./data";
+import type { Stage, Demand } from "./types";
+import { Badge, Button, Empty } from "./components/UI";
+import { Home } from "./pages/Home";
+import { Briefing } from "./pages/Briefing";
+import { Quotes, Compare, SupplierPortal } from "./pages/Quotes";
+import { Proposal, Approval, Handoff } from "./pages/Proposal";
+import { Directory, Templates } from "./pages/Directory";
+import { Settings } from "./pages/Settings";
+import { Flow, Roadmap } from "./pages/Flow";
+const nav = [
+  { path: "/", label: "Visão geral", icon: LayoutDashboard },
+  { path: "/demandas", label: "Demandas", icon: Layers },
+  { path: "/fornecedores", label: "Fornecedores", icon: Building2 },
+  { path: "/clientes", label: "Clientes", icon: UsersRound },
+  { path: "/modelos", label: "Modelos de cotação", icon: SlidersHorizontal },
+];
+export default function App() {
+  const { state, toast, clearToast } = useStore();
+  const [path, setPath] = useState(location.hash.slice(1) || "/");
+  const [mobile, setMobile] = useState(false);
+  useEffect(() => {
+    const change = () => {
+      setPath(location.hash.slice(1) || "/");
+      setMobile(false);
+      window.scrollTo({ top: 0 });
+    };
+    window.addEventListener("hashchange", change);
+    return () => window.removeEventListener("hashchange", change);
+  }, []);
+  useEffect(() => {
+    if (toast) {
+      const t = setTimeout(clearToast, 7000);
+      return () => clearTimeout(t);
+    }
+  }, [toast]);
+  const parts = path.split("/").filter(Boolean);
+  const d = state.demands.find((x) => x.id === parts[1]);
+  const q = d?.quotes.find((x) => x.id === parts[2]);
+  let page: React.ReactNode;
+  if (parts[0] === "fornecedor" && d && q)
+    return (
+      <>
+        <SupplierPortal key={q.id} d={d} q={q} />
+        <Toast toast={toast} close={clearToast} />
+      </>
+    );
+  if (parts[0] === "demandas" && parts[1])
+    page = d ? (
+      <Workspace
+        d={d}
+        tab={
+          (stages.some((s) => s.id === parts[2])
+            ? parts[2]
+            : "briefing") as Stage
+        }
+      />
+    ) : (
+      <Empty
+        title="Demanda não encontrada"
+        text="O endereço pode pertencer a outro navegador. Volte à lista de demandas."
+        action={<Button onClick={() => go("/demandas")}>Ver demandas</Button>}
+      />
+    );
+  else if (parts[0] === "demandas") page = <Home all />;
+  else if (parts[0] === "fornecedores")
+    page = <Directory key="suppliers" kind="suppliers" />;
+  else if (parts[0] === "clientes")
+    page = <Directory key="clients" kind="clients" />;
+  else if (parts[0] === "modelos") page = <Templates />;
+  else if (parts[0] === "configuracoes") page = <Settings />;
+  else if (parts[0] === "fluxo") page = <Flow />;
+  else if (parts[0] === "roadmap") page = <Roadmap />;
+  else if (parts.length)
+    page = (
+      <Empty
+        title="Página não encontrada"
+        text="Escolha uma opção no menu para continuar."
+        action={<Button onClick={() => go("/")}>Visão geral</Button>}
+      />
+    );
+  else page = <Home />;
+  const navButton = (item: (typeof nav)[number]) => {
+    const Icon = item.icon;
+    const active =
+      item.path === "/" ? path === "/" : path.startsWith(item.path);
+    return (
+      <a
+        href={`#${item.path}`}
+        key={item.path}
+        aria-current={active ? "page" : undefined}
+        className={active ? "active" : ""}
+      >
+        <Icon size={19} />
+        <span>{item.label}</span>
+        {item.path === "/demandas" && <small>{state.demands.length}</small>}
+      </a>
+    );
+  };
+  return (
+    <div className="app-shell">
+      {mobile && (
+        <button
+          className="nav-backdrop"
+          aria-label="Fechar menu"
+          onClick={() => setMobile(false)}
+        />
+      )}
+      <aside className={`sidebar ${mobile ? "open" : ""}`}>
+        <a className="brand" href="#/" aria-label="Adviser, visão geral">
+          adviser
+          <span className="brand-dot" />
+        </a>
+        <div className="workspace-name">
+          <span className="workspace-avatar">A</span>
+          <div>
+            Agência Adviser<small>Atendimento e eventos</small>
+          </div>
+        </div>
+        <nav aria-label="Navegação principal">
+          <span className="nav-label">ATENDIMENTO</span>
+          {nav.map(navButton)}
+          <span className="nav-label">PLANEJAMENTO</span>
+          {[
+            { path: "/fluxo", label: "Fluxo do sistema", icon: GitBranch },
+            { path: "/roadmap", label: "Próximas etapas", icon: ArrowUpRight },
+          ].map(navButton)}
+          <div className="nav-bottom">
+            {navButton({
+              path: "/configuracoes",
+              label: "Equipe e IA",
+              icon: Settings2,
+            })}
+          </div>
+        </nav>
+        <div className="sidebar-person">
+          <span className="avatar">MC</span>
+          <div>
+            Marina Costa<small>Atendimento · demonstração</small>
+          </div>
+        </div>
+      </aside>
+      <div className="app-body">
+        <header className="topbar">
+          <div className="breadcrumbs">
+            <button
+              className="icon-btn mobile-menu"
+              aria-label={mobile ? "Fechar menu" : "Abrir menu"}
+              onClick={() => setMobile(!mobile)}
+            >
+              {mobile ? <X size={21} /> : <Menu size={21} />}
+            </button>
+            <span>Workspace</span>
+            <ChevronRight size={14} />
+            <strong>
+              {parts[0] === "demandas" && parts[1]
+                ? "Demanda"
+                : parts[0] === "configuracoes"
+                  ? "Configurações"
+                  : parts[0] === "roadmap"
+                    ? "Evolução"
+                    : parts[0] === "fluxo"
+                      ? "Processo"
+                      : "Atendimento"}
+            </strong>
+          </div>
+          <div className="topbar-right">
+            <span className="demo-label">
+              <span /> Protótipo navegável
+            </span>
+            <span className="avatar small">MC</span>
+          </div>
+        </header>
+        <div className="demo-ribbon">
+          <span>Ambiente de demonstração</span>
+          <span>
+            Dados fictícios · IA e envios simulados · alterações locais neste
+            navegador
+          </span>
+        </div>
+        <main
+          className="main-content"
+          id="main-content"
+          key={d?.id || parts[0] || "home"}
+        >
+          {page}
+        </main>
+        <footer className="app-footer">
+          Adviser · Atendimento <span>Protótipo para validação do fluxo</span>
+        </footer>
+      </div>
+      <Toast toast={toast} close={clearToast} />
+    </div>
+  );
+}
+function Toast({ toast, close }: { toast: string; close: () => void }) {
+  return toast ? (
+    <div className="toast" role="status">
+      <Check size={19} />
+      <span>{toast}</span>
+      <button className="icon-btn" aria-label="Fechar aviso" onClick={close}>
+        <X size={17} />
+      </button>
+    </div>
+  ) : null;
+}
+function Workspace({ d, tab }: { d: Demand; tab: Stage }) {
+  const { state } = useStore();
+  const [history, setHistory] = useState(false);
+  const client = state.clients.find((c) => c.id === d.clientId);
+  const index = stages.findIndex((s) => s.id === d.stage);
+  return (
+    <>
+      <div className="demand-breadcrumb">
+        <button onClick={() => go("/demandas")}>
+          <ArrowLeft size={15} /> Demandas
+        </button>
+        <ChevronRight size={13} />
+        <span>{client?.name}</span>
+      </div>
+      <div className="event-heading">
+        <div>
+          <h1>{d.title}</h1>
+          <div className="event-meta">
+            <span>{client?.name}</span>
+            <span>
+              {d.date
+                ? d.date.split("-").reverse().join("/")
+                : "Data a definir"}
+            </span>
+            <span>
+              {d.guests ? `${d.guests} pessoas` : "Público a definir"}
+            </span>
+            <span>{client?.nucleus}</span>
+          </div>
+        </div>
+        <div className="event-owner">
+          <span className="avatar">
+            {d.owner
+              .split(" ")
+              .map((s) => s[0])
+              .join("")}
+          </span>
+          <div>
+            <small>Responsável</small>
+            <strong>{d.owner}</strong>
+          </div>
+          <Button
+            icon={Clock3}
+            variant="ghost"
+            onClick={() => setHistory(!history)}
+          >
+            Histórico
+          </Button>
+        </div>
+      </div>
+      {history && (
+        <section className="panel history-panel">
+          <div className="section-heading">
+            <h2>Histórico desta demanda</h2>
+            <Button onClick={() => setHistory(false)}>Fechar</Button>
+          </div>
+          {d.history.map((h, i) => (
+            <div className="history-row" key={i}>
+              <time>{h.at}</time>
+              <span>{h.text}</span>
+            </div>
+          ))}
+        </section>
+      )}
+      <nav className="workflow-tabs" aria-label="Etapas da demanda">
+        {stages.map((s, i) => (
+          <button
+            key={s.id}
+            className={`${tab === s.id ? "active" : ""} ${i < index ? "complete" : ""}`}
+            aria-current={tab === s.id ? "step" : undefined}
+            onClick={() => go(`/demandas/${d.id}/${s.id}`)}
+          >
+            <span className="step-number">
+              {i < index ? <Check size={14} /> : i + 1}
+            </span>
+            {s.label}
+          </button>
+        ))}
+      </nav>
+      <div className="workspace-content">
+        {tab === "briefing" ? (
+          <Briefing key={d.id} d={d} />
+        ) : tab === "quotes" ? (
+          <Quotes d={d} />
+        ) : tab === "compare" ? (
+          <Compare d={d} />
+        ) : tab === "proposal" ? (
+          <Proposal d={d} />
+        ) : tab === "approval" ? (
+          <Approval d={d} />
+        ) : (
+          <Handoff d={d} />
+        )}
+      </div>
+    </>
+  );
+}

@@ -1,0 +1,37 @@
+# Arquitetura e evolução
+
+## O que já é executável no protótipo
+
+React + TypeScript + Vite, com fonte DM Sans local, ícones Lucide, layout responsivo e persistência local. O domínio numérico não depende da interface. `BriefingAI` define o contrato de interpretação do briefing; `DemoBriefingAI` é a implementação simulada. A biblioteca de Excel é importada sob demanda. Nenhuma chave ou credencial é necessária ou incluída.
+
+`src/types.ts` registra as entidades. `src/domain.mjs` concentra cálculos e extração demonstrativa. `src/store.tsx` gerencia o estado local. Páginas separam os fluxos de atendimento, cadastros e próximos módulos. `public/fluxo.svg` é o diagrama sequencial.
+
+## MVP de produção previsto
+
+Substituir o armazenamento local por API, banco, armazenamento de arquivos e autenticação. Implementar autorização no servidor para todos os recursos, trilha de auditoria, controle de concorrência, backups e restauração. O cadastro visual de perfis não substitui esses controles.
+
+O portal de fornecedor precisa de tokens de acesso limitados por solicitação, expiração, revogação, autorização de cada operação no servidor, validação de campos e arquivos e proteção contra abuso. Não pode expor o estado completo da agência como faz esta demonstração.
+
+E-mails de fornecedores: composição, revisão humana, envio transacional, fila/reenvio e registro do estado real. No início, mensagens do cliente continuam com entrada manual. O Gmail completo é um pacote separado, sujeito à situação de cada conta, consentimento e escopos necessários.
+
+Propostas: regras comerciais confirmadas, testes monetários, versões imutáveis em banco, geração consistente de PDF/Excel e aprovação vinculada à versão. Aceite não gera contratação automaticamente.
+
+## Provedor de IA substituível
+
+O frontend envia o texto ao backend da Adviser, que chama um adaptador. Adaptadores de API externa e de modelo próprio devem devolver o mesmo esquema validado. Prompts, contexto recuperado e regras ficam no domínio da aplicação. Chaves ficam apenas no servidor. Persistir a origem e permitir revisão humana antes de aplicar dados.
+
+A interface já usa um contrato independente do fornecedor, porém **não há integração externa ou modelo próprio implementado**. Trocar o provedor de produção exigirá implementar e avaliar o adaptador, testar a qualidade em português e operar a infraestrutura. Não é apenas trocar uma URL.
+
+Falhas de IA preservam o texto e permitem preenchimento manual. Preferir retries limitados e diagnóstico de falha. Um modo futuro exclusivamente local não deve usar um provedor externo silenciosamente. Treinar um modelo com todo o histórico não é pré-requisito: começar com instruções, esquema e exemplos autorizados; avaliar necessidade de busca de conhecimento ou ajuste posterior.
+
+## Evolução
+
+Etapa 2: projeto/evento a partir de versão aceita, tarefas, responsabilidades, criação e suas aprovações, produção, fornecedores contratados e encerramento operacional. A criação pode começar antes do aceite; o projeto formal pode nascer depois.
+
+Etapa 3: financeiro por evento, previstos/realizados, recebimentos, pagamentos, conciliação e Conta Azul. Pagamentos acontecem ao longo do projeto; o fechamento vem após a execução. A integração deve ser dimensionada após confirmar o plano e os recursos disponíveis na conta da Adviser.
+
+Opcional: Gmail completo; portal do cliente conforme interesse e compliance; IA em infraestrutura própria. Não incluir inscrição/site do evento no MVP.
+
+## Entrega e propriedade
+
+Fonte e documentação do software próprio são parte da entrega sob medida. Prever migração para contas de infraestrutura da Adviser, inventário de serviços/dependências, instruções de deploy, configuração sem segredos versionados, backup/restauração e capacitação. Condições da cessão e de suporte dependem do contrato; bibliotecas e serviços externos não passam a ser propriedade da Adviser.

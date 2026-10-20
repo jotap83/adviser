@@ -31,7 +31,7 @@ node tests/browser.mjs
 ## Roteiro de demonstração
 
 1. Abra **Explorar demonstração** na visão geral.
-2. Clique em **Organizar com IA**, aplique as sugestões, revise e valide o briefing.
+2. Clique em **Organizar com IA**, aplique as sugestões, revise, confirme o alinhamento com o cliente e valide o briefing.
 3. Em **Cotações**, abra o link de **Mesa & Afeto**. Preencha o exemplo e envie a cotação simulada.
 4. No **Comparativo**, selecione fornecedores por categoria e leve os itens para a proposta.
 5. Ajuste itens, fee e pagamentos diretos. Salve uma versão e exporte Excel ou imprima em PDF.
@@ -63,3 +63,7 @@ Essas fórmulas são **demonstrativas** e exigem validação comercial/financeir
 O software solicitado será entregue sob medida à Adviser, com fonte, documentação e instruções de implantação. A cessão e as condições de entrega deverão constar na contratação. Dependências de terceiros mantêm suas respectivas licenças. Este repositório não concede uma licença pública de reutilização do código próprio.
 
 Veja [arquitetura e evolução](docs/ARQUITETURA.md) e [critérios de validação](docs/VALIDACAO.md).
+
+## Cópia independente para demonstração
+
+`npm run build:standalone` gera `standalone/adviser-prototipo.html`, com a aplicação, fontes, diagrama e exportador Excel embutidos. Abra esse arquivo em um navegador moderno. Ele não depende de hospedagem nem de instalação. O arquivo gerado não é versionado; o script e o lockfile permitem reproduzi-lo.
