@@ -42,6 +42,12 @@ import { ScopeBanner } from "./components/ScopeBanner";
 import { Management, Alerts } from "./pages/Management";
 import { collectAlerts } from "./operations";
 import { Inbox } from "./pages/Inbox";
+import {
+  accountOwner,
+  demoPerson,
+  nucleusLabel,
+  UNASSIGNED,
+} from "./organization";
 const nav = [
   { path: "/", label: "Visão geral", icon: LayoutDashboard },
   { path: "/demandas", label: "Demandas", icon: Layers },
@@ -51,6 +57,13 @@ const nav = [
 ];
 export default function App() {
   const { state, toast, clearToast } = useStore();
+  const currentPerson = demoPerson(state);
+  const initials =
+    currentPerson?.name
+      .split(" ")
+      .map((n) => n[0])
+      .slice(0, 2)
+      .join("") || "—";
   const [path, setPath] = useState(location.hash.slice(1) || "/");
   const [mobile, setMobile] = useState(false);
   const [collapsed, setCollapsed] = useState(() => {
@@ -158,9 +171,17 @@ export default function App() {
   else if (parts[0] === "fornecedores")
     page = <Directory key="suppliers" kind="suppliers" />;
   else if (parts[0] === "clientes")
-    page = <Directory key="clients" kind="clients" />;
+    page = (
+      <Directory
+        key={path}
+        kind="clients"
+        clientId={parts[1] === "carteira" ? undefined : parts[1]}
+        initialNucleus={parts[1] === "carteira" ? parts[2] || "all" : "all"}
+      />
+    );
   else if (parts[0] === "modelos") page = <Templates />;
-  else if (parts[0] === "configuracoes") page = <Settings />;
+  else if (parts[0] === "configuracoes")
+    page = <Settings key={parts[1]} initialTab={parts[1]} />;
   else if (parts[0] === "fluxo") page = <Flow />;
   else if (parts[0] === "roadmap" || parts[0] === "escopo")
     page = <ScopeOverview />;
@@ -259,9 +280,10 @@ export default function App() {
           </div>
         </nav>
         <div className="sidebar-person">
-          <span className="avatar">MC</span>
+          <span className="avatar">{initials}</span>
           <div>
-            Marina Costa<small>Atendimento · demonstração</small>
+            {currentPerson?.name || "Equipe Adviser"}
+            <small>Atendimento · demonstração</small>
           </div>
         </div>
       </aside>
@@ -316,7 +338,9 @@ export default function App() {
                           ? "Central de atendimento"
                           : parts[0] === "fluxo"
                             ? "Processo"
-                            : "Atendimento"}
+                            : parts[0] === "clientes"
+                              ? "Clientes"
+                              : "Atendimento"}
             </strong>
           </div>
           <div className="topbar-right">
@@ -331,7 +355,9 @@ export default function App() {
             <span className="demo-label">
               <span /> Protótipo navegável
             </span>
-            <span className="avatar small">MC</span>
+            <span className="avatar small" title={currentPerson?.name}>
+              {initials}
+            </span>
           </div>
         </header>
         <div className="demo-ribbon">
@@ -370,7 +396,7 @@ function Toast({ toast, close }: { toast: string; close: () => void }) {
   ) : null;
 }
 function Workspace({ d, tab }: { d: Demand; tab: Stage }) {
-  const { state, notify } = useStore();
+  const { state, notify, updateDemand } = useStore();
   const [history, setHistory] = useState(false);
   const client = state.clients.find((c) => c.id === d.clientId);
   const index = stages.findIndex((s) => s.id === d.stage);
@@ -410,19 +436,44 @@ function Workspace({ d, tab }: { d: Demand; tab: Stage }) {
             <span>
               {d.guests ? `${d.guests} pessoas` : "Público a definir"}
             </span>
-            <span>{client?.nucleus}</span>
+            <span>{nucleusLabel(state, client)}</span>
           </div>
         </div>
         <div className="event-owner">
-          <span className="avatar">
-            {d.owner
-              .split(" ")
-              .map((s) => s[0])
-              .join("")}
-          </span>
           <div>
-            <small>Responsável</small>
-            <strong>{d.owner}</strong>
+            <label className="event-owner-label" htmlFor="demand-owner">
+              Responsável pela demanda
+            </label>
+            <select
+              id="demand-owner"
+              value={d.owner}
+              onChange={(e) =>
+                updateDemand(
+                  d.id,
+                  { owner: e.target.value },
+                  `Responsável pela demanda: ${e.target.value || UNASSIGNED}.`,
+                )
+              }
+            >
+              <option value="">A distribuir</option>
+              {[
+                ...new Set([
+                  d.owner,
+                  ...state.users.filter((u) => u.active).map((u) => u.name),
+                ]),
+              ]
+                .filter(Boolean)
+                .map((name) => (
+                  <option key={name}>{name}</option>
+                ))}
+            </select>
+            <button
+              className="portfolio-link"
+              onClick={() => go(`/clientes/${d.clientId}`)}
+            >
+              Conta: {accountOwner(state, client)?.name || UNASSIGNED} · editar
+              carteira
+            </button>
           </div>
           <Button
             icon={Clock3}

@@ -18,6 +18,13 @@ export type Person = {
   email: string;
   role: string;
   active: boolean;
+  primaryNucleusId?: string;
+  nucleusIds?: string[];
+};
+export type Nucleus = {
+  id: string;
+  name: string;
+  coordinatorId?: string;
 };
 export type Client = {
   id: string;
@@ -25,6 +32,8 @@ export type Client = {
   contact: string;
   email: string;
   nucleus: string;
+  nucleusId?: string;
+  accountOwnerId?: string;
   phone?: string;
 };
 export type Supplier = {
@@ -166,6 +175,9 @@ export type AppState = {
   suppliers: Supplier[];
   templates: Template[];
   users: Person[];
+  nuclei?: Nucleus[];
+  organizationDemo?: boolean;
+  demoUserId?: string;
   aiMode: "available" | "offline";
   provider: string;
   readAlerts?: string[];

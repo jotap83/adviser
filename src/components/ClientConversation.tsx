@@ -38,7 +38,7 @@ export function ClientConversation({
     .filter((f) => d.briefingDetails?.[f.id])
     .map((f) => `${f.label}: ${d.briefingDetails![f.id]}`)
     .join("\n");
-  const generated = `Olá, ${client?.contact.split(" ")[0] || "tudo bem"}!\n\nConsolidamos nosso entendimento para ${d.title}:\n${d.date ? `Data: ${d.date.split("-").reverse().join("/")}\n` : ""}Público: ${d.guests || "a confirmar"} pessoas\nLocal: ${d.location || "a confirmar"}\nObjetivo: ${d.objective || "a confirmar"}\n${d.budget ? `Investimento de referência: ${d.budget.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}\n` : ""}\n${plan ? `${plan}\n\n` : ""}${scopeSummary(d) ? `Escopo para cotação\n${scopeSummary(d)}\n\n` : ""}Pontos que precisamos confirmar:\n${d.questions || "Confirma o entendimento e as premissas acima? Há algum ajuste?"}\n\nCom sua confirmação, seguimos para as cotações.\n\n${d.owner} · Adviser`;
+  const generated = `Olá, ${client?.contact.split(" ")[0] || "tudo bem"}!\n\nConsolidamos nosso entendimento para ${d.title}:\n${d.date ? `Data: ${d.date.split("-").reverse().join("/")}\n` : ""}Público: ${d.guests || "a confirmar"} pessoas\nLocal: ${d.location || "a confirmar"}\nObjetivo: ${d.objective || "a confirmar"}\n${d.budget ? `Investimento de referência: ${d.budget.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}\n` : ""}\n${plan ? `${plan}\n\n` : ""}${scopeSummary(d) ? `Escopo para cotação\n${scopeSummary(d)}\n\n` : ""}Pontos que precisamos confirmar:\n${d.questions || "Confirma o entendimento e as premissas acima? Há algum ajuste?"}\n\nCom sua confirmação, seguimos para as cotações.\n\n${d.owner ? `${d.owner} · Adviser` : "Equipe Adviser"}`;
   const draft = d.clientDraft ?? referenceText(generated, d);
   const legacy = d.briefingLog.filter(
     (t) => !messages.some((m) => m.direction === "in" && m.text === t),
@@ -271,7 +271,7 @@ export function ClientConversation({
                   contact: contact.trim(),
                   channel,
                   delivery: "manual",
-                  author: d.owner,
+                  author: d.owner || "Equipe Adviser",
                   at: new Date().toISOString(),
                 };
                 invalidate();

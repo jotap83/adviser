@@ -14,7 +14,7 @@ const deliveries = [
     rows: [
       [
         "Cadastros e equipe",
-        "Clientes, fornecedores, categorias, modelos de cotação, usuários e perfis básicos.",
+        "Clientes, fornecedores, categorias, modelos de cotação, usuários, perfis básicos e núcleos com coordenação, integrantes e carteira de clientes.",
       ],
       [
         "Briefing e comunicação",
@@ -38,7 +38,7 @@ const deliveries = [
       ],
       [
         "Gestão e alertas",
-        "Painel Gerencial, responsáveis, prazos, demandas paradas, novas mensagens, retornos dos fornecedores e associações pendentes de confirmação.",
+        "Painel Gerencial por núcleo, responsável pela conta e pela demanda, filtros de carteira, distribuição pendente, prazos, novas mensagens e retornos dos fornecedores.",
       ],
       [
         "Apoio criativo",

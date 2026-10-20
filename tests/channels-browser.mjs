@@ -31,6 +31,7 @@ const go = async (path) => {
 };
 const button = (name) => page.getByRole("button", { name, exact: true });
 async function capture(name) {
+  if (process.env.CAPTURE === "0") return;
   const close = button("Fechar aviso");
   if (await close.count()) await close.click();
   await page.evaluate(async () => {

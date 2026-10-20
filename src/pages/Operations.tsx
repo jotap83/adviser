@@ -203,7 +203,7 @@ export function Operations({ projectId }: { projectId?: string }) {
                 <div>
                   <strong>{d.title}</strong>
                   <small>
-                    {d.reference} · {d.owner}
+                    {d.reference} · {d.owner || "A distribuir"}
                   </small>
                 </div>
                 <Button onClick={() => receive(d.id)}>

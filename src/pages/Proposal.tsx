@@ -497,7 +497,7 @@ export function Approval({ d }: { d: Demand }) {
   const sent = d.versions.find((v) => v.id === d.sentVersion);
   const accepted = d.versions.find((v) => v.id === d.acceptedVersion);
   const version = d.versions.find((v) => v.id === chosen);
-  const text = `Olá, ${client?.contact.split(" ")[0] || ""}!\n\nSegue a proposta v${version?.number || ""} para ${version?.title || d.title}, no investimento de ${money(version?.total || 0)}.\n\nFicamos à disposição para revisar os detalhes. Pedimos que a aprovação mencione a versão da proposta.\n\nObrigada,\n${d.owner} · Adviser`;
+  const text = `Olá, ${client?.contact.split(" ")[0] || ""}!\n\nSegue a proposta v${version?.number || ""} para ${version?.title || d.title}, no investimento de ${money(version?.total || 0)}.\n\nFicamos à disposição para revisar os detalhes. Pedimos que a aprovação mencione a versão da proposta.\n\nObrigada,\n${d.owner ? `${d.owner} · Adviser` : "Equipe Adviser"}`;
   function decide(decision: Demand["decision"]) {
     updateDemand(
       d.id,

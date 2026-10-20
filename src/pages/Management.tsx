@@ -1,3 +1,4 @@
+import { demandNucleusId, nucleusLabel, UNASSIGNED } from "../organization";
 import { useState } from "react";
 import {
   ArrowRight,
@@ -34,8 +35,7 @@ export function Management() {
   const [stage, setStage] = useState("all");
   const rows = state.demands.filter(
     (d) =>
-      (nucleus === "all" ||
-        state.clients.find((c) => c.id === d.clientId)?.nucleus === nucleus) &&
+      (nucleus === "all" || demandNucleusId(state, d) === nucleus) &&
       (owner === "all" || d.owner === owner),
   );
   const active = rows.filter(activeDemand);
@@ -59,7 +59,12 @@ export function Management() {
     ...s,
     count: active.filter((d) => d.stage === s.id).length,
   }));
-  const nuclei = [...new Set(state.clients.map((c) => c.nucleus))];
+  const nuclei = [
+    ...(state.nuclei || []),
+    ...(state.clients.some((c) => !c.nucleusId)
+      ? [{ id: "", name: UNASSIGNED, coordinatorId: "" }]
+      : []),
+  ];
   const list = active.filter((d) => stage === "all" || d.stage === stage);
   return (
     <>
@@ -88,7 +93,9 @@ export function Management() {
           >
             <option value="all">Todos os núcleos</option>
             {nuclei.map((n) => (
-              <option key={n}>{n}</option>
+              <option key={n.id} value={n.id}>
+                {n.name}
+              </option>
             ))}
           </select>
         </Label>
@@ -100,7 +107,9 @@ export function Management() {
           >
             <option value="all">Toda a equipe</option>
             {[...new Set(state.demands.map((d) => d.owner))].map((n) => (
-              <option key={n}>{n}</option>
+              <option key={n} value={n}>
+                {n || UNASSIGNED}
+              </option>
             ))}
           </select>
         </Label>
@@ -164,7 +173,7 @@ export function Management() {
                       </Badge>
                       <h3>{a.title}</h3>
                       <p>
-                        {d.title} · {d.owner}
+                        {d.title} · {d.owner || UNASSIGNED}
                       </p>
                       <small>{a.detail}</small>
                       {risks.filter((x) => x.demandId === a.demandId).length >
@@ -253,25 +262,48 @@ export function Management() {
         <div className="section-heading">
           <div>
             <h2>Distribuição por núcleo</h2>
-            <p>Volume de trabalho e pendências, sem ranking de pessoas.</p>
+            <p>
+              Carteira e integrantes de cada núcleo; demandas conforme os
+              filtros acima.
+            </p>
           </div>
+          <Button onClick={() => go("/configuracoes/nucleos")}>
+            Gerenciar núcleos
+          </Button>
         </div>
         <div className="nucleus-grid">
           {nuclei
-            .filter((n) => nucleus === "all" || n === nucleus)
+            .filter((n) => nucleus === "all" || n.id === nucleus)
             .map((n) => {
               const ds = active.filter(
-                (d) =>
-                  state.clients.find((c) => c.id === d.clientId)?.nucleus === n,
+                (d) => demandNucleusId(state, d) === n.id,
               );
               const ids = new Set(ds.map((d) => d.id));
               return (
                 <button
-                  key={n}
-                  onClick={() => setNucleus(nucleus === n ? "all" : n)}
-                  aria-pressed={nucleus === n}
+                  key={n.id}
+                  onClick={() => setNucleus(nucleus === n.id ? "all" : n.id)}
+                  aria-pressed={nucleus === n.id}
                 >
-                  <strong>{n}</strong>
+                  <strong>{n.name}</strong>
+                  <small>
+                    Coordenação:{" "}
+                    {state.users.find((u) => u.id === n.coordinatorId)?.name ||
+                      "A definir"}
+                  </small>
+                  <small>
+                    {
+                      state.clients.filter((c) => (c.nucleusId || "") === n.id)
+                        .length
+                    }{" "}
+                    clientes ·{" "}
+                    {
+                      state.users.filter(
+                        (u) => u.active && u.nucleusIds?.includes(n.id),
+                      ).length
+                    }{" "}
+                    integrantes ativos
+                  </small>
                   <span>
                     <b>{ds.length}</b> em andamento
                   </span>
@@ -346,13 +378,16 @@ export function Management() {
                     >
                       {[
                         ...new Set([
+                          "",
                           d.owner,
                           ...state.users
                             .filter((u) => u.active)
                             .map((u) => u.name),
                         ]),
                       ].map((n) => (
-                        <option key={n}>{n}</option>
+                        <option key={n} value={n}>
+                          {n || UNASSIGNED}
+                        </option>
                       ))}
                     </select>
                   </td>
@@ -505,8 +540,11 @@ export function Alerts() {
               {a.read ? "Lido" : severity[a.severity]}
             </Badge>
             <span>
-              {state.clients.find((c) => c.id === demand.clientId)?.nucleus} ·{" "}
-              {demand.owner}
+              {nucleusLabel(
+                state,
+                state.clients.find((c) => c.id === demand.clientId),
+              )}{" "}
+              · {demand.owner || UNASSIGNED}
             </span>
           </div>
           <h3>{a.title}</h3>

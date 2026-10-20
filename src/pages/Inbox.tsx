@@ -1,3 +1,4 @@
+import { nucleusLabel, suggestedOwner, UNASSIGNED } from "../organization";
 import { useRef, useState } from "react";
 import {
   ArrowLeft,
@@ -326,6 +327,7 @@ function MailReview({
   const [search, setSearch] = useState("");
   const [creating, setCreating] = useState(false);
   const [clientId, setClientId] = useState("");
+  const [newOwner, setNewOwner] = useState("");
   const choices = state.demands.filter((d) =>
     `${d.reference} ${d.title} ${state.clients.find((c) => c.id === d.clientId)?.name}`
       .toLocaleLowerCase("pt-BR")
@@ -566,7 +568,7 @@ function MailReview({
                                   </span>
                                   <strong>{d.title}</strong>
                                   <small>
-                                    {client?.name} · {d.owner}
+                                    {client?.name} · {d.owner || UNASSIGNED}
                                   </small>
                                   <small>
                                     {d.date
@@ -699,6 +701,7 @@ function MailReview({
                     const newClientId = clientId === "new" ? uid() : clientId;
                     const d = createDemand(newClientId, title);
                     d.source = channelName(email);
+                    d.owner = newOwner;
                     setState((s) => {
                       const current = s.inbox?.find((m) => m.id === email.id);
                       if (current?.status !== "pending") return s;
@@ -720,7 +723,9 @@ function MailReview({
                                     messageChannel(email) === "whatsapp"
                                       ? email.from
                                       : "",
-                                  nucleus: "Núcleo 1",
+                                  nucleus: "",
+                                  nucleusId: "",
+                                  accountOwnerId: "",
                                 },
                               ]
                             : s.clients,
@@ -746,7 +751,10 @@ function MailReview({
                     <select
                       required
                       value={clientId}
-                      onChange={(e) => setClientId(e.target.value)}
+                      onChange={(e) => {
+                        setClientId(e.target.value);
+                        setNewOwner(suggestedOwner(state, e.target.value));
+                      }}
                     >
                       <option value="">Selecione o cliente</option>
                       {state.clients.map((c) => (
@@ -770,6 +778,29 @@ function MailReview({
                       </p>
                     </>
                   )}
+                  <Label
+                    label="Responsável pela nova demanda"
+                    hint={
+                      clientId === "new"
+                        ? "O novo cliente ficará A distribuir na carteira."
+                        : `Carteira: ${nucleusLabel(
+                            state,
+                            state.clients.find((c) => c.id === clientId),
+                          )}. Sugestão do responsável pela conta; revise antes de criar.`
+                    }
+                  >
+                    <select
+                      value={newOwner}
+                      onChange={(e) => setNewOwner(e.target.value)}
+                    >
+                      <option value="">A distribuir</option>
+                      {state.users
+                        .filter((u) => u.active)
+                        .map((u) => (
+                          <option key={u.id}>{u.name}</option>
+                        ))}
+                    </select>
+                  </Label>
                   <div className="actions">
                     <Button type="submit" variant="primary">
                       Criar e associar
@@ -810,13 +841,13 @@ function MailReview({
         >
           <div className="conversation-owner">
             <span>
-              <strong>Responsável:</strong> {linkedDemand.owner}
+              <strong>Responsável:</strong> {linkedDemand.owner || UNASSIGNED}
             </span>
             <span>
-              {
-                state.clients.find((c) => c.id === linkedDemand.clientId)
-                  ?.nucleus
-              }
+              {nucleusLabel(
+                state,
+                state.clients.find((c) => c.id === linkedDemand.clientId),
+              )}
             </span>
           </div>
           <ReplyComposer

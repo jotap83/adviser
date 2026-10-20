@@ -1,20 +1,11 @@
 import { useState } from "react";
-import {
-  Plus,
-  Download,
-  RotateCcw,
-  PlugZap,
-  ShieldCheck,
-  Server,
-  ArrowRight,
-} from "lucide-react";
+import { Download, RotateCcw, PlugZap, ShieldCheck } from "lucide-react";
 import { useStore, download } from "../store";
-import { uid } from "../data";
 import { clearPresentationFiles } from "../attachments";
 import { Title, Button, Label, Badge, Note } from "../components/UI";
-export function Settings() {
+import { TeamManagement } from "../components/TeamManagement";
+export function Settings({ initialTab }: { initialTab?: string }) {
   const { state, setState, notify, reset } = useStore();
-  const [adding, setAdding] = useState(false);
   const [confirm, setConfirm] = useState(false);
   return (
     <>
@@ -22,120 +13,7 @@ export function Settings() {
         title="Equipe e IA"
         sub="Configuração da demonstração e decisões para a aplicação de produção."
       />
-      <section className="panel">
-        <div className="section-heading">
-          <div>
-            <h2>Equipe de atendimento</h2>
-            <p>
-              Todos os núcleos compartilham a visão dos clientes e das
-              propostas.
-            </p>
-          </div>
-          <Button icon={Plus} onClick={() => setAdding(!adding)}>
-            Adicionar pessoa
-          </Button>
-        </div>
-        {adding && (
-          <form
-            className="inline-form"
-            onSubmit={(e) => {
-              e.preventDefault();
-              const f = new FormData(e.currentTarget);
-              setState((s) => ({
-                ...s,
-                users: [
-                  ...s.users,
-                  {
-                    id: uid(),
-                    name: String(f.get("name")),
-                    email: String(f.get("email")),
-                    role: "Atendimento",
-                    active: true,
-                  },
-                ],
-              }));
-              setAdding(false);
-              notify(
-                "Pessoa adicionada à demonstração. Nenhum convite foi enviado.",
-              );
-            }}
-          >
-            <Label label="Nome">
-              <input name="name" required />
-            </Label>
-            <Label label="E-mail fictício">
-              <input name="email" type="email" required />
-            </Label>
-            <Button type="submit" variant="primary">
-              Salvar pessoa
-            </Button>
-          </form>
-        )}
-        <div className="table-scroll">
-          <table>
-            <thead>
-              <tr>
-                <th>Pessoa</th>
-                <th>Perfil</th>
-                <th>Acesso demonstrativo</th>
-              </tr>
-            </thead>
-            <tbody>
-              {state.users.map((u) => (
-                <tr key={u.id}>
-                  <td>
-                    <strong>{u.name}</strong>
-                    <small className="cell-sub">{u.email}</small>
-                  </td>
-                  <td>
-                    <select
-                      aria-label={`Perfil de ${u.name}`}
-                      value={u.role}
-                      onChange={(e) =>
-                        setState((s) => ({
-                          ...s,
-                          users: s.users.map((x) =>
-                            x.id === u.id ? { ...x, role: e.target.value } : x,
-                          ),
-                        }))
-                      }
-                    >
-                      <option>Atendimento</option>
-                      <option>Administrador</option>
-                      <option>Operações (etapa 2)</option>
-                      <option>Financeiro (futuro)</option>
-                      <option>Criação (futuro)</option>
-                    </select>
-                  </td>
-                  <td>
-                    <label className="check-label">
-                      <input
-                        type="checkbox"
-                        checked={u.active}
-                        onChange={(e) =>
-                          setState((s) => ({
-                            ...s,
-                            users: s.users.map((x) =>
-                              x.id === u.id
-                                ? { ...x, active: e.target.checked }
-                                : x,
-                            ),
-                          }))
-                        }
-                      />
-                      {u.active ? "Ativo" : "Inativo"}
-                    </label>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <p className="field-hint">
-          Cadastros demonstrativos. Autenticação, permissões e convites reais
-          serão implementados na versão de produção.
-        </p>
-      </section>
+      <TeamManagement initialTab={initialTab} />
       <div className="briefing-grid">
         <section className="panel">
           <div className="section-heading">

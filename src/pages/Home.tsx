@@ -12,6 +12,14 @@ import { useStore, go } from "../store";
 import { stages, createDemand, uid } from "../data";
 import { Title, Button, Badge, Label, Empty } from "../components/UI";
 import { InboxSummary } from "../components/InboxSummary";
+import {
+  demoPerson,
+  demandNucleusId,
+  inScope,
+  nucleusLabel,
+  suggestedOwner,
+  UNASSIGNED,
+} from "../organization";
 const stageNames = Object.fromEntries(stages.map((s) => [s.id, s.label]));
 const nextAction: Record<string, string> = {
   briefing: "Revisar o briefing",
@@ -32,8 +40,25 @@ export function Home({
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
   const [adding, setAdding] = useState(newDemand);
-  const [newClient, setNewClient] = useState(state.clients.length === 0);
-  const rows = state.demands.filter(
+  const [selectedClient, setSelectedClient] = useState(
+    state.clients[0]?.id || "new",
+  );
+  const newClient = selectedClient === "new";
+  const [newOwner, setNewOwner] = useState(
+    suggestedOwner(state, selectedClient),
+  );
+  const [scope, setScope] = useState("all");
+  const [nucleusFilter, setNucleusFilter] = useState("all");
+  const [ownerFilter, setOwnerFilter] = useState("all");
+  const currentPerson = demoPerson(state);
+  const scoped = state.demands.filter(
+    (d) =>
+      inScope(state, d, scope) &&
+      (nucleusFilter === "all" ||
+        demandNucleusId(state, d) === nucleusFilter) &&
+      (ownerFilter === "all" || d.owner === ownerFilter),
+  );
+  const rows = scoped.filter(
     (d) =>
       (filter === "all" || d.stage === filter) &&
       `${d.reference} ${d.title} ${state.clients.find((c) => c.id === d.clientId)?.name}`
@@ -42,7 +67,7 @@ export function Home({
   );
   const counts = stages.map((s) => ({
     ...s,
-    n: state.demands.filter((d) => d.stage === s.id).length,
+    n: scoped.filter((d) => d.stage === s.id).length,
   }));
   function add(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -59,7 +84,7 @@ export function Home({
     const d = createDemand(clientId, title);
     d.source = String(f.get("source"));
     d.message = String(f.get("message") || "").trim();
-    d.owner = String(f.get("owner") || "Marina Costa");
+    d.owner = newOwner;
     setState((s) => ({
       ...s,
       demands: [d, ...s.demands],
@@ -72,7 +97,9 @@ export function Home({
               contact: String(f.get("person")).trim(),
               email: String(f.get("email") || "").trim(),
               phone: String(f.get("phone") || "").trim(),
-              nucleus: "Núcleo 1",
+              nucleus: "",
+              nucleusId: "",
+              accountOwnerId: "",
             },
           ]
         : s.clients,
@@ -130,8 +157,11 @@ export function Home({
             <Label label="Cliente">
               <select
                 name="client"
-                defaultValue={newClient ? "new" : state.clients[0]?.id}
-                onChange={(e) => setNewClient(e.target.value === "new")}
+                value={selectedClient}
+                onChange={(e) => {
+                  setSelectedClient(e.target.value);
+                  setNewOwner(suggestedOwner(state, e.target.value));
+                }}
               >
                 {state.clients.map((c) => (
                   <option key={c.id} value={c.id}>
@@ -168,8 +198,23 @@ export function Home({
               </Label>
             </div>
           )}
-          <Label label="Responsável pelo atendimento">
-            <select name="owner">
+          <Label
+            label="Responsável pelo atendimento"
+            hint={
+              newClient
+                ? "O novo cliente ficará com a carteira A distribuir. Você já pode definir quem cuida desta demanda."
+                : `Carteira: ${nucleusLabel(
+                    state,
+                    state.clients.find((c) => c.id === selectedClient),
+                  )}. O responsável pela conta é sugerido e pode ser trocado para esta demanda.`
+            }
+          >
+            <select
+              name="owner"
+              value={newOwner}
+              onChange={(e) => setNewOwner(e.target.value)}
+            >
+              <option value="">A distribuir</option>
               {state.users
                 .filter((u) => u.active)
                 .map((u) => (
@@ -193,6 +238,113 @@ export function Home({
           </Button>
         </form>
       )}
+      <section
+        className="work-filters panel"
+        aria-label="Filtros da carteira de atendimento"
+      >
+        <div className="work-filter-heading">
+          <div>
+            <h2>Carteira de atendimento</h2>
+            <p>
+              Escolha a visão de trabalho. Todos os clientes continuam
+              acessíveis.
+            </p>
+          </div>
+          <Label label="Visualizar como · demonstração">
+            <select
+              value={currentPerson?.id || ""}
+              onChange={(e) =>
+                setState((s) => ({ ...s, demoUserId: e.target.value }))
+              }
+            >
+              {!currentPerson && <option value="">Sem pessoa ativa</option>}
+              {state.users
+                .filter((u) => u.active)
+                .map((u) => (
+                  <option key={u.id} value={u.id}>
+                    {u.name}
+                  </option>
+                ))}
+            </select>
+          </Label>
+        </div>
+        <div
+          className="work-scope"
+          role="group"
+          aria-label="Visão do atendimento"
+        >
+          {[
+            { id: "all", label: "Todos" },
+            { id: "mine", label: "Meus atendimentos" },
+            { id: "nucleus", label: "Meu núcleo" },
+            { id: "unassigned", label: "A distribuir" },
+          ].map((item) => (
+            <button
+              key={item.id}
+              aria-pressed={scope === item.id}
+              onClick={() => {
+                setScope(item.id);
+                setNucleusFilter("all");
+                setOwnerFilter("all");
+              }}
+            >
+              {item.label}
+              <span className="count">
+                {state.demands.filter((d) => inScope(state, d, item.id)).length}
+              </span>
+            </button>
+          ))}
+        </div>
+        <div className="portfolio-filters">
+          <Label label="Núcleo da carteira">
+            <select
+              value={nucleusFilter}
+              onChange={(e) => setNucleusFilter(e.target.value)}
+            >
+              <option value="all">Todos os núcleos</option>
+              <option value="">Sem núcleo</option>
+              {(state.nuclei || []).map((n) => (
+                <option key={n.id} value={n.id}>
+                  {n.name}
+                </option>
+              ))}
+            </select>
+          </Label>
+          <Label label="Responsável pela demanda">
+            <select
+              value={ownerFilter}
+              onChange={(e) => setOwnerFilter(e.target.value)}
+            >
+              <option value="all">Toda a equipe</option>
+              <option value="">A distribuir</option>
+              {[
+                ...new Set([
+                  ...state.users.map((u) => u.name),
+                  ...state.demands.map((d) => d.owner),
+                ]),
+              ]
+                .filter(Boolean)
+                .map((name) => (
+                  <option key={name}>{name}</option>
+                ))}
+            </select>
+          </Label>
+        </div>
+        {scope === "nucleus" && (
+          <p className="field-hint">
+            {state.nuclei?.find((n) => n.id === currentPerson?.primaryNucleusId)
+              ?.name ||
+              "Esta pessoa ainda não tem núcleo principal. Defina em Equipe e IA → Pessoas."}
+          </p>
+        )}
+        {scope === "unassigned" && (
+          <p className="field-hint">
+            Demandas sem núcleo, sem responsável ativo pela conta ou sem
+            responsável ativo pelo atendimento. Abra uma demanda para
+            distribuir.
+          </p>
+        )}
+      </section>
       <div className="stage-summary" aria-label="Funil de atendimento">
         {counts.map((s, i) => (
           <button
@@ -263,7 +415,9 @@ export function Home({
                       <strong>{d.title}</strong>
                       <span>
                         {d.reference} <span className="dot-sep">·</span>{" "}
-                        {c?.name} <span className="dot-sep">·</span> {d.source}{" "}
+                        {c?.name} <span className="dot-sep">·</span>{" "}
+                        {nucleusLabel(state, c)}{" "}
+                        <span className="dot-sep">·</span> {d.source}{" "}
                         <span className="dot-sep">·</span>{" "}
                         {d.guests ? `${d.guests} pessoas` : "Público a definir"}
                       </span>
@@ -282,7 +436,7 @@ export function Home({
                           ? "Aprovada"
                           : stageNames[d.stage]}
                       </Badge>
-                      <small>{d.owner.split(" ")[0]}</small>
+                      <small>{d.owner || UNASSIGNED}</small>
                     </span>
                     <span className="row-next">
                       <span>{nextAction[d.stage]}</span>
@@ -299,8 +453,8 @@ export function Home({
             )}
           </div>
           <div className="panel-foot">
-            {state.demands.length} demandas na demonstração{" "}
-            <span>Todos os núcleos</span>
+            {rows.length} de {state.demands.length} demandas na demonstração{" "}
+            <span>Carteira conforme filtros acima</span>
           </div>
         </section>
         {!all && (

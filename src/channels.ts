@@ -87,7 +87,7 @@ export function whatsappWindowOpen(
 }
 
 export function acknowledgement(d: Demand, contact: string) {
-  return `Olá${contact && !contact.includes("@") && !/\d/.test(contact) ? `, ${contact}` : ""}!\n\nRecebemos suas informações sobre ${d.title}. Nossa equipe está revisando os detalhes.\n\n${d.questions ? `Para avançar, precisamos confirmar:\n${d.questions}\n\n` : "Você pode confirmar a data prevista e os pontos ainda pendentes do briefing?\n\n"}${d.owner} · Adviser\nReferência: ${d.reference}`;
+  return `Olá${contact && !contact.includes("@") && !/\d/.test(contact) ? `, ${contact}` : ""}!\n\nRecebemos suas informações sobre ${d.title}. Nossa equipe está revisando os detalhes.\n\n${d.questions ? `Para avançar, precisamos confirmar:\n${d.questions}\n\n` : "Você pode confirmar a data prevista e os pontos ainda pendentes do briefing?\n\n"}${d.owner ? `${d.owner} · Adviser` : "Equipe Adviser"}\nReferência: ${d.reference}`;
 }
 
 export function contactIsValid(channel: ReplyChannel, contact: string) {

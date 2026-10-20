@@ -13,10 +13,13 @@ import { withReferences } from "./mail-reference";
 import { withInboxDemo } from "./inbox-model";
 import { withProductionDemo } from "./production-model";
 import { withChannelsDemo } from "./channels";
+import { withOrganization } from "./organization";
 const KEY = "adviser-demo-v1";
 const prepare = (s: AppState) =>
-  withChannelsDemo(
-    withProductionDemo(withInboxDemo(withReferences(withManagementDemo(s)))),
+  withOrganization(
+    withChannelsDemo(
+      withProductionDemo(withInboxDemo(withReferences(withManagementDemo(s)))),
+    ),
   );
 type Context = {
   state: AppState;

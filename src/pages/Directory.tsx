@@ -2,17 +2,39 @@ import { useState } from "react";
 import { Plus, Search, Pencil, Save, Trash2, ArrowRight } from "lucide-react";
 import { useStore } from "../store";
 import { uid } from "../data";
+import { accountOwner, nucleusLabel, UNASSIGNED } from "../organization";
 import type { Client, Supplier, Template } from "../types";
 import { Title, Button, Label, Badge, Empty, Note } from "../components/UI";
-export function Directory({ kind }: { kind: "clients" | "suppliers" }) {
+export function Directory({
+  kind,
+  clientId,
+  initialNucleus = "all",
+}: {
+  kind: "clients" | "suppliers";
+  clientId?: string;
+  initialNucleus?: string;
+}) {
   const { state, setState, notify } = useStore();
   const [search, setSearch] = useState("");
-  const [editing, setEditing] = useState<Client | Supplier | null>(null);
+  const [editing, setEditing] = useState<Client | Supplier | null>(
+    () => state.clients.find((c) => c.id === clientId) || null,
+  );
+  const [nucleusFilter, setNucleusFilter] = useState(initialNucleus);
+  const [ownerFilter, setOwnerFilter] = useState("all");
   const isSupplier = kind === "suppliers";
-  const rows = (isSupplier ? state.suppliers : state.clients).filter((x) =>
-    `${x.name} ${x.contact} ${x.email} ${x.phone || ""}`
-      .toLowerCase()
-      .includes(search.toLowerCase()),
+  const rows = (isSupplier ? state.suppliers : state.clients).filter(
+    (x) =>
+      (isSupplier ||
+        ((nucleusFilter === "all" ||
+          (nucleusFilter === "unassigned"
+            ? !(x as Client).nucleusId ||
+              !accountOwner(state, x as Client)?.active
+            : (x as Client).nucleusId === nucleusFilter)) &&
+          (ownerFilter === "all" ||
+            (x as Client).accountOwnerId === ownerFilter))) &&
+      `${x.name} ${x.contact} ${x.email} ${x.phone || ""}`
+        .toLowerCase()
+        .includes(search.toLowerCase()),
   );
   function save(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -37,7 +59,14 @@ export function Directory({ kind }: { kind: "clients" | "suppliers" }) {
           : [...s.suppliers, item],
       }));
     } else {
-      const item = { ...base, nucleus: String(f.get("nucleus")) };
+      const nucleusId = String(f.get("nucleus") || "");
+      const item: Client = {
+        ...(editing as Client),
+        ...base,
+        nucleusId,
+        nucleus: state.nuclei?.find((n) => n.id === nucleusId)?.name || "",
+        accountOwnerId: String(f.get("accountOwner") || ""),
+      };
       setState((s) => ({
         ...s,
         clients: s.clients.some((x) => x.id === item.id)
@@ -59,7 +88,15 @@ export function Directory({ kind }: { kind: "clients" | "suppliers" }) {
             category: state.templates[0]?.id || "",
             city: "",
           }
-        : { id: uid(), name: "", contact: "", email: "", nucleus: "Núcleo 1" },
+        : {
+            id: uid(),
+            name: "",
+            contact: "",
+            email: "",
+            nucleus: "",
+            nucleusId: "",
+            accountOwnerId: "",
+          },
     );
   }
   return (
@@ -135,25 +172,61 @@ export function Directory({ kind }: { kind: "clients" | "suppliers" }) {
                 </Label>
               </>
             ) : (
-              <Label label="Núcleo responsável">
-                <select
-                  name="nucleus"
-                  defaultValue={(editing as Client).nucleus}
+              <>
+                <Label label="Núcleo responsável">
+                  <select
+                    name="nucleus"
+                    defaultValue={(editing as Client).nucleusId || ""}
+                  >
+                    <option value="">A distribuir</option>
+                    {(state.nuclei || []).map((n) => (
+                      <option key={n.id} value={n.id}>
+                        {n.name}
+                      </option>
+                    ))}
+                  </select>
+                </Label>
+                <Label
+                  label="Responsável pela conta"
+                  hint="Sugestão inicial para novas demandas. Cada evento pode ter outro responsável."
                 >
-                  {[1, 2, 3, 4].map((i) => (
-                    <option key={i}>Núcleo {i}</option>
-                  ))}
-                </select>
-              </Label>
+                  <select
+                    name="accountOwner"
+                    defaultValue={(editing as Client).accountOwnerId || ""}
+                  >
+                    <option value="">A distribuir</option>
+                    {state.users
+                      .filter(
+                        (u) =>
+                          u.active ||
+                          u.id === (editing as Client).accountOwnerId,
+                      )
+                      .map((u) => (
+                        <option key={u.id} value={u.id}>
+                          {u.name}
+                          {!u.active ? " · inativo" : ""}
+                        </option>
+                      ))}
+                  </select>
+                </Label>
+              </>
             )}
           </div>
+          {!isSupplier && (
+            <p className="field-hint">
+              Alterar a carteira não troca os responsáveis das demandas já
+              abertas. A colaboração entre núcleos continua disponível.
+            </p>
+          )}
           <Button type="submit" variant="primary" icon={Save}>
             Salvar cadastro
           </Button>
         </form>
       )}
-      <section className="panel flush">
-        <div className="table-toolbar">
+      <section
+        className={`panel flush ${!isSupplier ? "client-directory" : ""}`}
+      >
+        <div className="table-toolbar directory-toolbar">
           <div className="search">
             <Search size={17} />
             <input
@@ -167,6 +240,36 @@ export function Directory({ kind }: { kind: "clients" | "suppliers" }) {
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
+          {!isSupplier && (
+            <div className="portfolio-filters">
+              <select
+                aria-label="Filtrar carteira por núcleo"
+                value={nucleusFilter}
+                onChange={(e) => setNucleusFilter(e.target.value)}
+              >
+                <option value="all">Todos os núcleos</option>
+                <option value="unassigned">Distribuição pendente</option>
+                {(state.nuclei || []).map((n) => (
+                  <option key={n.id} value={n.id}>
+                    {n.name}
+                  </option>
+                ))}
+              </select>
+              <select
+                aria-label="Filtrar responsável pela conta"
+                value={ownerFilter}
+                onChange={(e) => setOwnerFilter(e.target.value)}
+              >
+                <option value="all">Todos os responsáveis</option>
+                <option value="">Sem responsável</option>
+                {state.users.map((u) => (
+                  <option key={u.id} value={u.id}>
+                    {u.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
           <Badge>{rows.length} registros fictícios</Badge>
         </div>
         <div className="table-scroll">
@@ -190,11 +293,22 @@ export function Directory({ kind }: { kind: "clients" | "suppliers" }) {
                     )}
                   </td>
                   <td>
-                    {isSupplier
-                      ? state.templates.find(
-                          (t) => t.id === (x as Supplier).category,
-                        )?.name
-                      : (x as Client).nucleus}
+                    {isSupplier ? (
+                      state.templates.find(
+                        (t) => t.id === (x as Supplier).category,
+                      )?.name
+                    ) : (
+                      <>
+                        <strong>{nucleusLabel(state, x as Client)}</strong>
+                        <small className="cell-sub">
+                          Conta:{" "}
+                          {accountOwner(state, x as Client)?.name || UNASSIGNED}
+                          {accountOwner(state, x as Client)?.active === false
+                            ? " · inativo"
+                            : ""}
+                        </small>
+                      </>
+                    )}
                   </td>
                   <td>{x.contact}</td>
                   <td className="email-cell">
@@ -225,7 +339,7 @@ export function Directory({ kind }: { kind: "clients" | "suppliers" }) {
       <Note>
         {isSupplier
           ? "A categoria define o formulário de cotação. Os tipos e campos definitivos serão validados com a Adviser."
-          : "No MVP, os núcleos organizam as carteiras. Todos os usuários de atendimento podem consultar custos e editar propostas."}
+          : "No MVP, os núcleos organizam as carteiras. Toda a equipe pode consultar custos e editar propostas. Cadastre os núcleos e seus integrantes em Equipe e IA → Núcleos."}
       </Note>
     </>
   );
