@@ -5,9 +5,9 @@ export function BrandLogo() {
     <img
       className="brand-logo"
       src={logo}
-      alt="Agência Adviser — desde 1974"
+      alt="Agência Adviser"
       width={814}
-      height={681}
+      height={504}
     />
   );
 }

@@ -620,11 +620,12 @@
       }
     ],
     "brandAssets": {
-      "source": "https://www.agenciaadviser.com.br/",
+      "source": "https://static.wixstatic.com/media/3ea12a_d35365f447ba4a53b7c53b125ed6cd4d~mv2.png/v1/crop/x_0,y_0,w_1089,h_705/fill/w_65,h_42,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/LOGO%20HEADER%20MOBILE%202.png",
       "logo": "src/assets/adviser-logo.svg",
       "blue": "#293e91",
       "orange": "#e94e1d",
-      "preserveOriginalPixels": true
+      "preserveOriginalPixels": true,
+      "variant": "Cabeçalho sem a assinatura Desde 1974, conforme link fornecido pelo usuário"
     }
   },
   "components": [
