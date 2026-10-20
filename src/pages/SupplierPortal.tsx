@@ -222,7 +222,7 @@ export function SupplierPortal({ d, q }: { d: Demand; q: Quote }) {
         <a href="#/" className="brand" aria-label="Adviser, visão geral">
           <BrandLogo />
         </a>
-        <Badge>Portal do fornecedor · demonstração</Badge>
+        <Badge tone="blue">MVP · portal do fornecedor · demonstração</Badge>
         <Button
           icon={ArrowLeft}
           onClick={() => go(`/demandas/${d.id}/compare`)}

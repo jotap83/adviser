@@ -1,4 +1,4 @@
-# Adviser — protótipo de atendimento
+# Adviser — protótipo de gestão de eventos
 
 Protótipo navegável para validar o fluxo de uma aplicação sob medida para a Agência Adviser. Todos os dados são fictícios. A IA e os envios são simulados. Nenhuma credencial é necessária.
 
@@ -39,7 +39,15 @@ node tests/browser.mjs
 7. Em **Repasse**, exporte o pacote e conclua o atendimento.
 8. Em **Equipe e IA**, simule a IA indisponível e confirme que o preenchimento manual permanece disponível.
 
-Também é possível criar clientes, fornecedores e demandas; editar modelos de cotação; consultar o histórico; explorar a sequência em **Fluxo do sistema** e as simulações em **Próximas etapas**.
+Também é possível criar clientes, fornecedores e demandas; editar modelos de cotação; consultar o histórico; explorar a sequência em **Fluxo do sistema** e a separação das entregas em **Escopo e etapas**.
+
+## Operações e entregas
+
+A navegação e as páginas identificam **MVP**, **etapa 2**, **etapa 3** e **evolução opcional**. Em **Operações**, selecione um evento, crie uma tarefa, abra os detalhes, marque o checklist, registre um comentário e mova a tarefa por arraste ou pelo seletor. Tarefas bloqueadas ou com checklist pendente não podem ser concluídas. No celular, escolha a coluna pelos botões acima do quadro.
+
+Para testar a continuidade do atendimento, prepare o repasse de uma demanda aprovada. Em Operações, use **Receber do atendimento** para criar o projeto. A versão recebida fica preservada. Criar o projeto não contrata fornecedores nem gera contas automaticamente. Em **Financeiro**, simule e desfaça baixas de lançamentos fictícios. Veja [funcionamento e escopo](docs/OPERACOES-E-ESCOPO.md).
+
+Teste do fluxo: `node tests/operations-browser.mjs`, com servidor em 4173. O teste usa `CHROMIUM_PATH` quando informado.
 
 Para demonstrar a negociação, use **Exemplo com duas opções** no link do fornecedor. Consulte [cotação, alternativas e negociação](docs/COTACOES-E-NEGOCIACAO.md).
 

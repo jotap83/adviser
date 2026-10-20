@@ -17,7 +17,7 @@ Protótipo navegável autorizado. Dados inteiramente fictícios. PDF privado ape
 Web responsiva em português brasileiro, desktop como uso principal. Frontend React com TypeScript e Vite; deploy de prévia na Vercel. Estado local e adaptador de IA simulada substituível. Integrações reais, autenticação e dados compartilhados só na implementação de produção. Provedor externo inicialmente; possibilidade de um adaptador de modelo próprio futuramente.
 
 ## Confirmed non-goals
-Não impor portal ao cliente. Não criar site de evento ou inscrição no MVP. Não implementar ERP ou cálculo fiscal. Cotação não é contratação. Aprovar proposta não contrata fornecedor automaticamente.
+Não impor portal ao cliente. Não criar site de evento ou inscrição no MVP. Não implementar financeiro ou cálculo fiscal no MVP. Cotação não é contratação. Aprovar proposta não contrata fornecedor automaticamente. Financeiro próprio está previsto na etapa 3, com alcance e possível substituição do Conta Azul a validar.
 
 ## Open questions
 Regras comerciais e fiscais; categorias e templates definitivos; volume real; contas Gmail/Workspace; fórmula de margem e pagamento direto; formatos de exportação finais. Trinta propostas mensais é hipótese.
@@ -30,3 +30,9 @@ A extensão do protótipo inclui visão dos sócios, alertas acionáveis e detal
 
 ## Referência do atendimento e triagem de e-mails
 Extensão aprovada: referência permanente por demanda e fila de mensagens para identificar, com candidatos, motivos e confirmação humana explícita. O protótipo associa automaticamente apenas código único conhecido ou conversa conhecida da mesma conta, sem conflito; as demais sugestões usam regras determinísticas simuladas. Permite escolha manual, nova demanda/cliente, ignorar/restaurar e correção auditada do vínculo. Associar inclui mensagem e anexos fictícios na conversa, sem aplicar campos do briefing, valores ou aceite. Corrigir move as fontes e preserva dados já aplicados. Gmail, IA externa, envio real, sincronização multiusuário e unicidade dos códigos em produção continuam futuros. Ver docs/TRIAGEM-DE-EMAILS.md.
+
+## Entregas e Operações
+
+Escopo proposto em 20/10/2026: MVP de atendimento, cadastros, IA assistiva via API, briefing/anexos, comunicação manual com cliente, cotações e negociação com fornecedores, propostas, aceite, repasse, visão gerencial, alertas e apoio criativo por referências/apresentações/feedback. A integração de IA faz parte da implementação prevista do MVP, mas permanece simulada neste protótipo. Gmail automático, correlação de mensagens importadas, portal do cliente e IA em infraestrutura própria são evoluções opcionais fora do MVP.
+
+Etapa 2: Operações com quadro de tarefas por evento, responsáveis, prazos, bloqueios, checklist, comentários e histórico. A empresa usa Trello hoje; nenhuma conexão ou migração foi implementada. A prévia permite criar um projeto explicitamente após aceite e repasse preparado, preservando uma cópia da versão e evitando duplicidade. Etapa 3: financeiro próprio, contas a pagar/receber, caixa, previsto/realizado e fechamento. Conta Azul poderá ser integrado ou substituído conforme levantamento das funções atuais; a retirada não foi decidida. Não há transações reais. Ver docs/OPERACOES-E-ESCOPO.md.

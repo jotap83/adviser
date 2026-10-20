@@ -1,18 +1,15 @@
 import {
   ArrowDown,
-  ArrowRight,
   Phone,
   ClipboardList,
   Sparkles,
   Mail,
   FileCheck,
-  Coins,
   Palette,
   Check,
   Download,
 } from "lucide-react";
-import { Title, Button, Badge, Note } from "../components/UI";
-import { go } from "../store";
+import { Title, Button, Badge } from "../components/UI";
 const flow = [
   {
     n: 1,
@@ -130,8 +127,9 @@ export function Flow() {
                       <strong>Criação contribui aqui</strong>
                       <p>
                         Conceito e apresentação podem ser desenvolvidos durante
-                        o briefing e antes da proposta. No MVP, apenas
-                        referências e anexos.
+                        o briefing e antes da proposta. No MVP, referências,
+                        apresentações e registro de feedback. A gestão completa
+                        da criação fica na etapa 2.
                       </p>
                     </div>
                   </div>
@@ -172,7 +170,7 @@ export function Flow() {
               <p>
                 Recebimentos e pagamentos ocorrem ao longo do projeto. Depois do
                 evento: conciliação, previsto × realizado e fechamento, com
-                integração ao Conta Azul a validar.
+                financeiro próprio e eventual migração do Conta Azul a validar.
               </p>
             </div>
           </div>
@@ -185,224 +183,3 @@ export function Flow() {
     </>
   );
 }
-export function Roadmap() {
-  const [tab, setTab] = useState("project");
-  const [done, setDone] = useState<string[]>([]);
-  const [creative, setCreative] = useState(0);
-  const [paid, setPaid] = useState(false);
-  return (
-    <>
-      <Title
-        title="Depois da proposta, o projeto continua."
-        sub="Visão de evolução. As interações abaixo são exemplos de etapas futuras, fora do MVP de atendimento."
-      />
-      <div className="roadmap-tabs" role="tablist" aria-label="Etapas futuras">
-        {[
-          ["project", "Operações"],
-          ["creative", "Criação"],
-          ["finance", "Financeiro"],
-          ["integrations", "Integrações"],
-        ].map(([id, label]) => (
-          <button
-            role="tab"
-            aria-selected={tab === id}
-            key={id}
-            onClick={() => setTab(id)}
-            className={tab === id ? "active" : ""}
-          >
-            {label}
-          </button>
-        ))}
-      </div>
-      <Note tone="warning">
-        Funcionalidades futuras em simulação. Não geram contratos, tarefas
-        reais, pagamentos nem integrações.
-      </Note>
-      {tab === "project" && (
-        <section className="panel">
-          <div className="section-heading">
-            <div>
-              <h2>Encontro Horizonte · projeto ilustrativo</h2>
-              <p>
-                Operações receberá o briefing, a proposta aprovada e os
-                fornecedores. Nome da área e responsabilidades a confirmar.
-              </p>
-            </div>
-            <Badge tone="amber">Etapa 2</Badge>
-          </div>
-          <div className="future-task-list">
-            {[
-              "Confirmar contratos e disponibilidade",
-              "Organizar cronograma de montagem",
-              "Revisar plano de operação",
-              "Confirmar responsáveis por área",
-              "Executar o evento",
-              "Registrar encerramento operacional",
-            ].map((t, i) => (
-              <label key={t} className="selection-row">
-                <input
-                  type="checkbox"
-                  checked={done.includes(t)}
-                  onChange={(e) =>
-                    setDone(
-                      e.target.checked
-                        ? [...done, t]
-                        : done.filter((x) => x !== t),
-                    )
-                  }
-                />
-                <span>
-                  <strong>{t}</strong>
-                  <small>
-                    {i < 3
-                      ? "Pré-produção"
-                      : i < 5
-                        ? "Produção e execução"
-                        : "Pós-evento"}
-                  </small>
-                </span>
-              </label>
-            ))}
-          </div>
-          <p className="muted">
-            {done.length} de 6 atividades marcadas nesta simulação.
-          </p>
-        </section>
-      )}
-      {tab === "creative" && (
-        <section className="panel">
-          <div className="section-heading">
-            <h2>Conceito e materiais criativos</h2>
-            <Badge tone="amber">Etapa 2</Badge>
-          </div>
-          <p>
-            O trabalho criativo pode começar antes da proposta. No futuro, terá
-            tarefas, versões de peças e aprovações próprias.
-          </p>
-          <div className="creative-demo">
-            <Palette size={30} />
-            <div>
-              <h3>Conceito “Encontros que aproximam”</h3>
-              <p>Exemplo fictício para explorar o fluxo de criação.</p>
-              <Badge tone={creative === 2 ? "green" : "blue"}>
-                {
-                  ["Em elaboração", "Em revisão", "Aprovado na simulação"][
-                    creative
-                  ]
-                }
-              </Badge>
-            </div>
-            <Button
-              variant="primary"
-              disabled={creative === 2}
-              onClick={() => setCreative((v) => v + 1)}
-            >
-              {creative === 0
-                ? "Enviar para revisão"
-                : creative === 1
-                  ? "Simular aprovação"
-                  : "Aprovado"}
-            </Button>
-          </div>
-        </section>
-      )}
-      {tab === "finance" && (
-        <section className="panel">
-          <div className="section-heading">
-            <h2>Previsto, realizado e conciliação</h2>
-            <Badge tone="green">Etapa 3</Badge>
-          </div>
-          <p>
-            Controle financeiro do evento conectado ao Conta Azul, conforme
-            viabilidade da integração.
-          </p>
-          <div className="table-scroll">
-            <table>
-              <thead>
-                <tr>
-                  <th>Lançamento fictício</th>
-                  <th>Tipo</th>
-                  <th>Valor</th>
-                  <th>Status</th>
-                  <th>Ação</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Sinal do cliente</td>
-                  <td>Receber</td>
-                  <td>R$ 15.000,00</td>
-                  <td>
-                    <Badge tone="green">Recebido</Badge>
-                  </td>
-                  <td>Exemplo</td>
-                </tr>
-                <tr>
-                  <td>Reserva de espaço</td>
-                  <td>Pagar</td>
-                  <td>R$ 2.500,00</td>
-                  <td>
-                    <Badge tone={paid ? "green" : "amber"}>
-                      {paid ? "Conciliado (demo)" : "Previsto"}
-                    </Badge>
-                  </td>
-                  <td>
-                    <Button disabled={paid} onClick={() => setPaid(true)}>
-                      Simular conciliação
-                    </Button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <Note>
-            Pagamentos podem ocorrer antes, durante e depois do evento. O
-            fechamento consolida custos, receitas e resultado final.
-          </Note>
-        </section>
-      )}
-      {tab === "integrations" && (
-        <section className="panel">
-          <h2>Evoluir sem amarrar a operação.</h2>
-          <div className="roadmap-lines">
-            <div>
-              <h3>Gmail</h3>
-              <p>
-                Importação de mensagens e anexos, associação à demanda e fila de
-                revisão para contatos ou conversas sem vínculo.
-              </p>
-            </div>
-            <div>
-              <h3>Conta Azul</h3>
-              <p>
-                Sincronização dos dados financeiros acordados, com conferência e
-                prevenção de duplicidade.
-              </p>
-            </div>
-            <div>
-              <h3>Modelos de IA</h3>
-              <p>
-                Adaptadores para APIs externas ou infraestrutura própria. O
-                núcleo do sistema continua funcionando manualmente.
-              </p>
-            </div>
-            <div>
-              <h3>Acompanhamento do cliente</h3>
-              <p>
-                Portal opcional a validar com os donos e com o compliance de
-                cada cliente.
-              </p>
-            </div>
-          </div>
-        </section>
-      )}
-      <div className="bottom-actions">
-        <span>O MVP termina no atendimento e no pacote de repasse.</span>
-        <Button icon={ArrowRight} onClick={() => go("/fluxo")}>
-          Ver a sequência completa
-        </Button>
-      </div>
-    </>
-  );
-}
-import { useState } from "react";

@@ -102,6 +102,7 @@ export function Settings() {
                     >
                       <option>Atendimento</option>
                       <option>Administrador</option>
+                      <option>Operações (etapa 2)</option>
                       <option>Financeiro (futuro)</option>
                       <option>Criação (futuro)</option>
                     </select>
@@ -193,21 +194,21 @@ export function Settings() {
               <strong>Gmail</strong>
               <small>Copiar e colar no MVP</small>
             </span>
-            <Badge>Não conectado</Badge>
+            <Badge tone="amber">Integração fora do MVP</Badge>
           </div>
           <div className="integration-row">
             <span className="integration-name">
               <strong>Conta Azul</strong>
-              <small>Pacote de repasse no MVP</small>
+              <small>Integração ou migração para financeiro próprio a validar</small>
             </span>
-            <Badge>Etapa futura</Badge>
+            <Badge tone="amber">Etapa 3</Badge>
           </div>
           <div className="integration-row">
             <span className="integration-name">
               <strong>IA própria</strong>
               <small>Mesmo contrato de dados, outro adaptador</small>
             </span>
-            <Badge>Opcional</Badge>
+            <Badge tone="amber">Fora do MVP</Badge>
           </div>
           <p className="muted">
             Uma integração futura deve tratar autorização por conta, associação

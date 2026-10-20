@@ -19,6 +19,9 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   Copy,
+  Columns3,
+  Wallet,
+  Mail,
 } from "lucide-react";
 import { useStore, go, copy } from "./store";
 import { stages } from "./data";
@@ -31,7 +34,11 @@ import { Quotes, Compare, SupplierPortal } from "./pages/Quotes";
 import { Proposal, Approval, Handoff } from "./pages/Proposal";
 import { Directory, Templates } from "./pages/Directory";
 import { Settings } from "./pages/Settings";
-import { Flow, Roadmap } from "./pages/Flow";
+import { Flow } from "./pages/Flow";
+import { ScopeOverview } from "./pages/Scope";
+import { Operations } from "./pages/Operations";
+import { Finance } from "./pages/Finance";
+import { ScopeBanner } from "./components/ScopeBanner";
 import { Management, Alerts } from "./pages/Management";
 import { collectAlerts } from "./operations";
 import { Inbox } from "./pages/Inbox";
@@ -152,7 +159,10 @@ export default function App() {
   else if (parts[0] === "modelos") page = <Templates />;
   else if (parts[0] === "configuracoes") page = <Settings />;
   else if (parts[0] === "fluxo") page = <Flow />;
-  else if (parts[0] === "roadmap") page = <Roadmap />;
+  else if (parts[0] === "roadmap" || parts[0] === "escopo")
+    page = <ScopeOverview />;
+  else if (parts[0] === "operacoes") page = <Operations projectId={parts[1]} />;
+  else if (parts[0] === "financeiro") page = <Finance projectId={parts[1]} />;
   else if (parts.length)
     page = (
       <Empty
@@ -171,13 +181,26 @@ export default function App() {
         href={`#${item.path}`}
         key={item.path}
         aria-current={active ? "page" : undefined}
-        aria-label={item.label}
-        title={collapsed ? item.label : undefined}
+        aria-label={`${item.label}${item.path === "/operacoes" ? ", etapa 2" : item.path === "/financeiro" ? ", etapa 3" : item.path === "/emails" ? ", evolução opcional" : ""}`}
+        title={
+          collapsed
+            ? `${item.label}${item.path === "/operacoes" ? " · etapa 2" : item.path === "/financeiro" ? " · etapa 3" : ""}`
+            : undefined
+        }
         className={active ? "active" : ""}
       >
         <Icon size={19} />
         <span>{item.label}</span>
         {item.path === "/demandas" && <small>{state.demands.length}</small>}
+        {["/operacoes", "/financeiro", "/emails"].includes(item.path) && (
+          <small>
+            {item.path === "/operacoes"
+              ? "2"
+              : item.path === "/financeiro"
+                ? "3"
+                : "Futuro"}
+          </small>
+        )}
       </a>
     );
   };
@@ -202,7 +225,7 @@ export default function App() {
           <BrandLogo />
         </a>
         <nav aria-label="Navegação principal">
-          <span className="nav-label">GESTÃO</span>
+          <span className="nav-label">GESTÃO · MVP</span>
           {navButton({
             path: "/gestao",
             label: "Visão dos sócios",
@@ -213,12 +236,18 @@ export default function App() {
             label: "Central de alertas",
             icon: Bell,
           })}
-          <span className="nav-label">ATENDIMENTO</span>
+          <span className="nav-label">ATENDIMENTO · MVP</span>
           {nav.map(navButton)}
+          <span className="nav-label">EVOLUÇÃO · FORA DO MVP</span>
+          {[
+            { path: "/operacoes", label: "Operações", icon: Columns3 },
+            { path: "/financeiro", label: "Financeiro", icon: Wallet },
+            { path: "/emails", label: "Revisar e-mails", icon: Mail },
+          ].map(navButton)}
           <span className="nav-label">PLANEJAMENTO</span>
           {[
             { path: "/fluxo", label: "Fluxo do sistema", icon: GitBranch },
-            { path: "/roadmap", label: "Próximas etapas", icon: ArrowUpRight },
+            { path: "/escopo", label: "Escopo e etapas", icon: ArrowUpRight },
           ].map(navButton)}
           <div className="nav-bottom">
             {navButton({
@@ -276,11 +305,17 @@ export default function App() {
                 ? "Demanda"
                 : parts[0] === "configuracoes"
                   ? "Configurações"
-                  : parts[0] === "roadmap"
-                    ? "Evolução"
-                    : parts[0] === "fluxo"
-                      ? "Processo"
-                      : "Atendimento"}
+                  : ["roadmap", "escopo"].includes(parts[0])
+                    ? "Escopo e etapas"
+                    : parts[0] === "operacoes"
+                      ? "Operações"
+                      : parts[0] === "financeiro"
+                        ? "Financeiro"
+                        : parts[0] === "emails"
+                          ? "E-mails"
+                          : parts[0] === "fluxo"
+                            ? "Processo"
+                            : "Atendimento"}
             </strong>
           </div>
           <div className="topbar-right">
@@ -310,10 +345,12 @@ export default function App() {
           id="main-content"
           key={d?.id || parts[0] || "home"}
         >
+          <ScopeBanner path={path} />
           {page}
         </main>
         <footer className="app-footer">
-          Adviser · Atendimento <span>Protótipo para validação do fluxo</span>
+          Adviser · Gestão de eventos{" "}
+          <span>Protótipo para validação do fluxo</span>
         </footer>
       </div>
       <Toast toast={toast} close={clearToast} />

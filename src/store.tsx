@@ -11,9 +11,10 @@ import { seed, timestamp } from "./data";
 import { withManagementDemo } from "./operations";
 import { withReferences } from "./mail-reference";
 import { withInboxDemo } from "./inbox-model";
+import { withProductionDemo } from "./production-model";
 const KEY = "adviser-demo-v1";
 const prepare = (s: AppState) =>
-  withInboxDemo(withReferences(withManagementDemo(s)));
+  withProductionDemo(withInboxDemo(withReferences(withManagementDemo(s))));
 type Context = {
   state: AppState;
   setState: (f: (s: AppState) => AppState) => void;

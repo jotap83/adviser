@@ -30,7 +30,7 @@ Falhas de IA preservam o texto e permitem preenchimento manual. Preferir retries
 
 Etapa 2 — Operações (nome da área e responsabilidades a confirmar): recebe o pacote do atendimento e cria o projeto/evento a partir da versão aceita. Tarefas, responsabilidades, criação e suas aprovações, produção, fornecedores contratados, execução e encerramento operacional. A criação pode começar antes do aceite; o projeto formal pode nascer depois. O MVP termina com o aceite e a preparação desse repasse.
 
-Etapa 3: financeiro por evento, previstos/realizados, recebimentos, pagamentos, conciliação e Conta Azul. Pagamentos acontecem ao longo do projeto; o fechamento vem após a execução. A integração deve ser dimensionada após confirmar o plano e os recursos disponíveis na conta da Adviser.
+Etapa 3: financeiro próprio por evento, previstos/realizados, recebimentos, pagamentos, conciliação e fechamento. Pagamentos acontecem ao longo do projeto; o fechamento vem após a execução. Mapear o uso atual do Conta Azul para decidir integração, migração e cobertura necessária antes de uma eventual retirada. Não há compromisso de equivalência fiscal, bancária ou contábil nesta prévia.
 
 Opcional: Gmail completo; portal do cliente conforme interesse e compliance; IA em infraestrutura própria. Não incluir inscrição/site do evento no MVP.
 

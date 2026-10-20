@@ -893,8 +893,8 @@ export function Handoff({ d }: { d: Demand }) {
                 durante o projeto e faz o fechamento após o evento.
               </p>
             </div>
-            <Button icon={ArrowRight} onClick={() => go("/roadmap")}>
-              Explorar a evolução
+            <Button icon={ArrowRight} onClick={() => go("/operacoes")}>
+              Explorar Operações · etapa 2
             </Button>
           </section>
         </>

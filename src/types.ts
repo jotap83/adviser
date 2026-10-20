@@ -172,6 +172,53 @@ export type AppState = {
   referenceCounters?: Record<string, number>;
   inbox?: InboxEmail[];
   inboxDemo?: boolean;
+  productionProjects?: ProductionProject[];
+  productionDemo?: boolean;
+  financeEntries?: FinanceEntry[];
+};
+
+export type TaskStatus = "todo" | "doing" | "waiting" | "done";
+export type ProductionTask = {
+  id: string;
+  title: string;
+  description: string;
+  status: TaskStatus;
+  owner: string;
+  due: string;
+  phase: string;
+  priority: "normal" | "high";
+  supplier: string;
+  blockedReason: string;
+  checklist: { id: string; text: string; done: boolean }[];
+  comments: { id: string; text: string; author: string; at: string }[];
+  activity: { text: string; at: string }[];
+};
+export type ProductionProject = {
+  id: string;
+  title: string;
+  client: string;
+  date: string;
+  location: string;
+  owner: string;
+  tasks: ProductionTask[];
+  source?: {
+    demandId: string;
+    reference: string;
+    version: Version;
+    briefing: string;
+    evidence: string;
+    suppliers: { name: string; terms: string }[];
+    at: string;
+  };
+};
+export type FinanceEntry = {
+  id: string;
+  projectId: string;
+  description: string;
+  direction: "pay" | "receive";
+  amount: number;
+  due: string;
+  settled: boolean;
 };
 export type AIResult = {
   title: string;
