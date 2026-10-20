@@ -128,15 +128,18 @@ export function Briefing({ d }: { d: Demand }) {
       <div className="section-heading briefing-section" id="briefing-entrada">
         <div>
           <h2>Primeiro, entender o evento.</h2>
-          <p>Traga a conversa para cá. Revise o entendimento antes de cotar.</p>
+          <p>
+            Preencha diretamente ou revise as informações de Gmail e WhatsApp
+            antes de cotar.
+          </p>
         </div>
         <SaveMark />
       </div>
       <div className="briefing-grid">
         <section className="panel">
           <div className="section-heading">
-            <h3>Contato do cliente</h3>
-            <Badge tone="blue">Entrada manual</Badge>
+            <h3>Pedido e fontes do briefing</h3>
+            <Badge tone="blue">{d.source}</Badge>
           </div>
           <Label label="Origem do contato">
             <select
@@ -144,7 +147,11 @@ export function Briefing({ d }: { d: Demand }) {
               onChange={(e) => patch({ source: e.target.value })}
             >
               <option>E-mail</option>
+              <option>Gmail</option>
+              <option>WhatsApp</option>
+              <option>Cadastro direto</option>
               <option>Ligação</option>
+              <option>Reunião</option>
               <option>Outro</option>
             </select>
           </Label>
@@ -152,17 +159,34 @@ export function Briefing({ d }: { d: Demand }) {
             label={
               d.source === "Ligação"
                 ? "Anotações da ligação"
-                : "Cole a mensagem recebida"
+                : "Pedido ou anotações do cliente"
             }
-            hint="O Gmail não está conectado nesta versão."
+            hint="Preenchimento direto disponível. Mensagens associadas e anexos também entram na análise, após sua revisão."
           >
             <textarea
               className="email-text"
               value={d.message}
               onChange={(e) => patch({ message: e.target.value })}
-              placeholder="Cole o e-mail ou descreva o que o cliente pediu..."
+              placeholder="Descreva o pedido, cole uma mensagem ou preencha diretamente os campos ao lado..."
             />
           </Label>
+          <div className="actions intake-actions">
+            <Button
+              onClick={() => {
+                document
+                  .getElementById("briefing-dados")
+                  ?.scrollIntoView({ block: "start" });
+                document
+                  .querySelector<HTMLInputElement>("#briefing-dados input")
+                  ?.focus({ preventScroll: true });
+              }}
+            >
+              Preencher sem IA
+            </Button>
+            <Button variant="ghost" onClick={() => go("/mensagens")}>
+              Ver Gmail e WhatsApp
+            </Button>
+          </div>
           <details className="example-picker">
             <summary>Experimentar um briefing completo</summary>
             <p>
@@ -295,7 +319,7 @@ export function Briefing({ d }: { d: Demand }) {
             </div>
           )}
         </section>
-        <section className="panel">
+        <section className="panel" id="briefing-dados">
           <div className="section-heading">
             <h3>Briefing estruturado</h3>
             {d.briefingValid ? (
@@ -390,8 +414,8 @@ export function Briefing({ d }: { d: Demand }) {
         <h3>Concluir o alinhamento com o cliente</h3>
         <p className="muted">
           Confirme que as dúvidas necessárias para cotar foram resolvidas. O
-          alinhamento pode ter ocorrido por e-mail ou ligação, ou o briefing
-          inicial já pode estar completo.
+          alinhamento pode ter ocorrido por e-mail, WhatsApp, reunião ou
+          ligação, ou o briefing inicial já pode estar completo.
         </p>
         <label className="check-label alignment-check">
           <input

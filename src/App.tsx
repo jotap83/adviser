@@ -149,7 +149,10 @@ export default function App() {
       />
     );
   else if (parts[0] === "demandas") page = <Home all />;
-  else if (parts[0] === "emails") page = <Inbox emailId={parts[1]} />;
+  else if (parts[0] === "nova-demanda")
+    page = <Home key="new-demand" newDemand />;
+  else if (parts[0] === "emails" || parts[0] === "mensagens")
+    page = <Inbox key={parts[1] || "inbox"} emailId={parts[1]} />;
   else if (parts[0] === "gestao") page = <Management />;
   else if (parts[0] === "alertas") page = <Alerts />;
   else if (parts[0] === "fornecedores")
@@ -193,11 +196,7 @@ export default function App() {
         <span>{item.label}</span>
         {item.path === "/demandas" && <small>{state.demands.length}</small>}
         {["/operacoes", "/financeiro"].includes(item.path) && (
-          <small>
-            {item.path === "/operacoes"
-              ? "2"
-              : "3"}
-          </small>
+          <small>{item.path === "/operacoes" ? "2" : "3"}</small>
         )}
       </a>
     );
@@ -236,7 +235,11 @@ export default function App() {
           })}
           <span className="nav-label">ATENDIMENTO · MVP</span>
           {nav.map(navButton)}
-          {navButton({ path: "/emails", label: "Revisar e-mails", icon: Mail })}
+          {navButton({
+            path: "/mensagens",
+            label: "Central de atendimento",
+            icon: Mail,
+          })}
           <span className="nav-label">EVOLUÇÃO · FORA DO MVP</span>
           {[
             { path: "/operacoes", label: "Operações", icon: Columns3 },
@@ -309,8 +312,8 @@ export default function App() {
                       ? "Operações"
                       : parts[0] === "financeiro"
                         ? "Financeiro"
-                        : parts[0] === "emails"
-                          ? "E-mails"
+                        : ["emails", "mensagens"].includes(parts[0])
+                          ? "Central de atendimento"
                           : parts[0] === "fluxo"
                             ? "Processo"
                             : "Atendimento"}

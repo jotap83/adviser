@@ -28,6 +28,6 @@ O MVP inclui backend, autenticação, autorização das contas, proteção de cr
 
 ## Estado desta prévia
 
-Atualizados navegação, badges, escopo, integrações previstas, fluxo e documentos. **Revisar e-mails** fica em Atendimento/MVP. A triagem de e-mails e a IA permanecem simuladas; o WhatsApp está descrito como capacidade do MVP a implementar, sem conversa real ou conector funcional nesta prévia. Não foram solicitadas credenciais nem configuradas contas.
+**Central de atendimento** fica em Atendimento/MVP e reúne cadastro direto, simulação de recebimento por Gmail e WhatsApp, associação à demanda e resposta revisada pela equipe. O cadastro direto e o preenchimento do briefing funcionam sem IA e sem mensagens recebidas. Clientes podem ser cadastrados sem e-mail ou telefone.
 
-Os registros de revisão anteriores são históricos. A mudança atual é de escopo e comunicação, sem alteração das regras de associação ou do estado de demonstração.
+A IA e os dois canais permanecem simulados; não foram solicitadas credenciais, configuradas contas ou enviadas mensagens reais. O WhatsApp demonstra a janela de atendimento e o uso de modelo fora dela. O mesmo telefone pode tratar de vários eventos e, sozinho, não determina o vínculo. Detalhes e roteiro em [ATENDIMENTO-CENTRALIZADO.md](ATENDIMENTO-CENTRALIZADO.md). Os registros de revisão anteriores são históricos.

@@ -5,6 +5,7 @@ import {
   Check,
   ChevronRight,
   Mail,
+  MessageCircle,
   Paperclip,
   Plus,
   Search,
@@ -21,8 +22,12 @@ import {
   linkMail,
   receiveMail,
   suggestMailCandidates,
+  channelName,
+  messageChannel,
 } from "../inbox-model";
 import { Badge, Button, Empty, Label, Note, Title } from "../components/UI";
+import { ReceiveMessage } from "../components/ReceiveMessage";
+import { ReplyComposer } from "../components/ReplyComposer";
 
 const statusNames = {
   pending: "Para identificar",
@@ -49,9 +54,15 @@ export function Inbox({ emailId }: { emailId?: string }) {
     () => inbox.find((m) => m.id === emailId)?.status || "pending",
   );
   const [selectedId, setSelectedId] = useState(emailId || "");
+  const [channelFilter, setChannelFilter] = useState("all");
+  const [receiving, setReceiving] = useState<"email" | "whatsapp" | null>(null);
   const detail = useRef<HTMLDivElement>(null);
   const rows = inbox
-    .filter((m) => m.status === filter)
+    .filter(
+      (m) =>
+        m.status === filter &&
+        (channelFilter === "all" || messageChannel(m) === channelFilter),
+    )
     .sort((a, b) => b.receivedAt.localeCompare(a.receivedAt));
   const selected = rows.find((m) => m.id === selectedId) || rows[0];
   const choose = (id: string) => {
@@ -74,54 +85,124 @@ export function Inbox({ emailId }: { emailId?: string }) {
           <ArrowLeft size={15} /> Atendimento
         </button>
         <ChevronRight size={13} />
-        <span>E-mails</span>
+        <span>Central de atendimento</span>
       </div>
       <Title
-        title="E-mails do atendimento"
-        sub="Uma mensagem, o atendimento certo. Revise a sugestão e confirme o vínculo."
+        title="Central de atendimento"
+        sub="Gmail, WhatsApp e cadastro direto. Um só histórico para cada demanda."
         actions={
-          <Button
-            icon={Mail}
-            disabled={!inbox.some((m) => m.status === "linked")}
-            onClick={() => {
-              const email = demoFollowUp(state);
-              if (!email) return;
-              const nextState = receiveMail(state, [email]);
-              const received = nextState.inbox?.find((m) => m.id === email.id);
-              if (!received) return;
-              setState(() => nextState);
-              setFilter(received.status);
-              setSelectedId(email.id);
-              notify(
-                received.status === "linked"
-                  ? `Resposta fictícia recebida e associada ${received.method === "reference" ? "pelo código reconhecido" : "pela conversa conhecida"}. O briefing continua aguardando revisão do conteúdo.`
-                  : "Resposta fictícia recebida e pendente de identificação. Revise os indícios e confirme o vínculo.",
-              );
-            }}
-          >
-            Simular nova resposta
-          </Button>
+          <>
+            <Button
+              icon={Plus}
+              variant="primary"
+              onClick={() => go("/nova-demanda")}
+            >
+              Cadastrar demanda
+            </Button>
+            <Button icon={Mail} onClick={() => setReceiving("email")}>
+              Simular Gmail
+            </Button>
+            <Button
+              icon={MessageCircle}
+              onClick={() => setReceiving("whatsapp")}
+            >
+              Simular WhatsApp
+            </Button>
+          </>
         }
       />
+      {receiving && (
+        <ReceiveMessage
+          key={receiving}
+          channel={receiving}
+          onCancel={() => setReceiving(null)}
+          onReceive={(message) => {
+            const nextState = receiveMail(state, [message]);
+            const received = nextState.inbox!.find((m) => m.id === message.id)!;
+            setState(() => nextState);
+            setFilter(received.status);
+            setSelectedId(message.id);
+            setChannelFilter("all");
+            setReceiving(null);
+            notify(
+              received.status === "linked"
+                ? "Mensagem e anexos associados. Revise o conteúdo antes de atualizar o briefing."
+                : "Mensagem recebida. Confirme a qual demanda ela pertence.",
+            );
+          }}
+        />
+      )}
       <div className="inbox-mode">
         <Badge>Simulação</Badge>
-        <span>Mensagens fictícias · Gmail não conectado</span>
+        <span>
+          Gmail e WhatsApp não conectados · nenhuma mensagem real é enviada
+        </span>
         <label>
           <input
             type="checkbox"
             checked={state.aiMode === "offline"}
-            onChange={(e) => {
-              const offline = e.target.checked;
+            onChange={(e) =>
               setState((s) => ({
                 ...s,
-                aiMode: offline ? "offline" : "available",
-              }));
-            }}
-          />{" "}
+                aiMode: e.target.checked ? "offline" : "available",
+              }))
+            }
+          />
           Simular IA indisponível
         </label>
       </div>
-      <div className="inbox-filters" role="group" aria-label="Filtrar e-mails">
+      <div className="channel-toolbar">
+        <div
+          className="inbox-filters channel-filters"
+          role="group"
+          aria-label="Filtrar por canal"
+        >
+          {[
+            ["all", "Todos os canais"],
+            ["email", "Gmail"],
+            ["whatsapp", "WhatsApp"],
+          ].map(([value, label]) => (
+            <button
+              key={value}
+              aria-pressed={channelFilter === value}
+              className={channelFilter === value ? "active" : ""}
+              onClick={() => {
+                setChannelFilter(value);
+                setSelectedId("");
+              }}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+        <Button
+          icon={Mail}
+          disabled={!inbox.some((m) => m.status === "linked")}
+          onClick={() => {
+            const email = demoFollowUp(state);
+            if (!email) return;
+            const nextState = receiveMail(state, [email]);
+            const received = nextState.inbox?.find((m) => m.id === email.id);
+            if (!received) return;
+            setState(() => nextState);
+            setFilter(received.status);
+            setSelectedId(email.id);
+            setChannelFilter("all");
+            notify(
+              received.status === "linked"
+                ? `Resposta fictícia recebida e associada ${received.method === "reference" ? "pelo código reconhecido" : "pela conversa conhecida"}. O briefing continua aguardando revisão do conteúdo.`
+                : "Resposta fictícia recebida e pendente de identificação. Revise os indícios e confirme o vínculo.",
+            );
+          }}
+        >
+          Simular nova resposta
+        </Button>
+      </div>
+      <div
+        className="inbox-filters"
+        role="group"
+        aria-label="Filtrar mensagens"
+      >
         {(Object.keys(statusNames) as InboxEmail["status"][]).map((key) => (
           <button
             key={key}
@@ -134,7 +215,14 @@ export function Inbox({ emailId }: { emailId?: string }) {
           >
             {statusNames[key]}{" "}
             <span className="count">
-              {inbox.filter((m) => m.status === key).length}
+              {
+                inbox.filter(
+                  (m) =>
+                    m.status === key &&
+                    (channelFilter === "all" ||
+                      messageChannel(m) === channelFilter),
+                ).length
+              }
             </span>
           </button>
         ))}
@@ -144,8 +232,8 @@ export function Inbox({ emailId }: { emailId?: string }) {
           <Empty
             title={
               filter === "pending"
-                ? "Todas as mensagens foram identificadas"
-                : "Nenhum e-mail nesta lista"
+                ? "Nenhuma mensagem para identificar neste filtro"
+                : "Nenhuma mensagem nesta lista"
             }
             text={
               filter === "pending"
@@ -174,6 +262,13 @@ export function Inbox({ emailId }: { emailId?: string }) {
                 onClick={() => choose(m.id)}
               >
                 <span className="inbox-list-sender">{m.from}</span>
+                <span className="inbox-channel">
+                  <Badge
+                    tone={messageChannel(m) === "whatsapp" ? "green" : "blue"}
+                  >
+                    {channelName(m)}
+                  </Badge>
+                </span>
                 <strong>{m.subject}</strong>
                 <span className="inbox-list-preview">
                   {m.text.slice(0, 110)}
@@ -221,6 +316,7 @@ function MailReview({
   onNext: () => void;
 }) {
   const { state, setState, notify } = useStore();
+  const reply = useRef<HTMLElement>(null);
   const candidates = suggestMailCandidates(email, state);
   const direct = directAssociation(email, state);
   const linkedDemand = state.demands.find((d) => d.id === email.demandId);
@@ -275,8 +371,12 @@ function MailReview({
         </Badge>
       </div>
       <div className="mail-review-columns">
-        <section className="mail-original" aria-label="Conteúdo do e-mail">
+        <section className="mail-original" aria-label="Conteúdo da mensagem">
           <dl className="mail-envelope">
+            <div>
+              <dt>Canal</dt>
+              <dd>{channelName(email)} · recebimento simulado</dd>
+            </div>
             <div>
               <dt>De</dt>
               <dd>{email.from}</dd>
@@ -377,8 +477,20 @@ function MailReview({
                 >
                   Abrir briefing
                 </Button>
+                <Button
+                  icon={MessageCircle}
+                  disabled={!linkedDemand}
+                  onClick={() => {
+                    reply.current?.scrollIntoView({ block: "start" });
+                    reply.current
+                      ?.querySelector<HTMLSelectElement>("select")
+                      ?.focus({ preventScroll: true });
+                  }}
+                >
+                  Responder pela plataforma
+                </Button>
                 {pendingCount > 0 && (
-                  <Button onClick={onNext}>Próximo e-mail</Button>
+                  <Button onClick={onNext}>Próxima mensagem</Button>
                 )}
               </div>
               <Button
@@ -586,6 +698,7 @@ function MailReview({
                       return;
                     const newClientId = clientId === "new" ? uid() : clientId;
                     const d = createDemand(newClientId, title);
+                    d.source = channelName(email);
                     setState((s) => {
                       const current = s.inbox?.find((m) => m.id === email.id);
                       if (current?.status !== "pending") return s;
@@ -599,7 +712,14 @@ function MailReview({
                                   id: newClientId,
                                   name: company,
                                   contact: person,
-                                  email: email.from,
+                                  email:
+                                    messageChannel(email) === "email"
+                                      ? email.from
+                                      : "",
+                                  phone:
+                                    messageChannel(email) === "whatsapp"
+                                      ? email.from
+                                      : "",
                                   nucleus: "Núcleo 1",
                                 },
                               ]
@@ -645,7 +765,9 @@ function MailReview({
                       <Label label="Nome do contato">
                         <input required name="person" />
                       </Label>
-                      <p className="muted">E-mail do contato: {email.from}</p>
+                      <p className="muted">
+                        Contato por {channelName(email)}: {email.from}
+                      </p>
                     </>
                   )}
                   <div className="actions">
@@ -680,6 +802,48 @@ function MailReview({
           )}
         </section>
       </div>
+      {linkedDemand && email.status === "linked" && !correcting && (
+        <section
+          ref={reply}
+          className="inbox-reply"
+          aria-label="Resposta ao contato"
+        >
+          <div className="conversation-owner">
+            <span>
+              <strong>Responsável:</strong> {linkedDemand.owner}
+            </span>
+            <span>
+              {
+                state.clients.find((c) => c.id === linkedDemand.clientId)
+                  ?.nucleus
+              }
+            </span>
+          </div>
+          <ReplyComposer
+            key={`${email.id}-${linkedDemand.id}`}
+            d={linkedDemand}
+            incoming={email}
+          />
+          {(linkedDemand.conversation || [])
+            .filter(
+              (m) => m.direction === "out" && m.replyToMessageId === email.id,
+            )
+            .map((m) => (
+              <article className="reply-sent-message" key={m.id}>
+                <strong>
+                  {m.author} · {m.channel}
+                </strong>
+                <small>
+                  {dateTime(m.at)} ·{" "}
+                  {m.delivery === "manual"
+                    ? "Registro manual"
+                    : "Envio simulado"}
+                </small>
+                <p className="mail-body">{m.text}</p>
+              </article>
+            ))}
+        </section>
+      )}
     </>
   );
 }

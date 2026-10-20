@@ -23,6 +23,7 @@ const go = async (path) => {
   await page.locator("h1").waitFor();
 };
 const capture = async (name) => {
+  if (process.env.CAPTURE === "0") return;
   const close = page.getByRole("button", { name: "Fechar aviso", exact: true });
   if (await close.count()) await close.click();
   await page.evaluate(async () => {
@@ -58,10 +59,15 @@ try {
   await fs.mkdir(".impeccable/review", { recursive: true });
   await go("/");
   await page
-    .getByRole("button", { name: "Revisar e-mails", exact: true })
+    .getByRole("button", { name: "Abrir central", exact: true })
     .waitFor();
   const initial = await state();
-  assert.equal(initial.inbox.filter((m) => m.status === "pending").length, 4);
+  assert.equal(
+    initial.inbox.filter(
+      (m) => m.status === "pending" && m.channel !== "whatsapp",
+    ).length,
+    4,
+  );
   assert.equal(
     initial.inbox.find((m) => m.id === "mail-identified").method,
     "reference",
@@ -75,9 +81,10 @@ try {
   await capture("inbox-home-mobile");
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page
-    .getByRole("button", { name: "Revisar e-mails", exact: true })
+    .getByRole("button", { name: "Abrir central", exact: true })
     .click();
-  await page.getByRole("heading", { name: "E-mails do atendimento" }).waitFor();
+  await page.getByRole("heading", { name: "Central de atendimento" }).waitFor();
+  await page.getByRole("button", { name: "Gmail", exact: true }).click();
   assert.equal(
     await page
       .getByRole("button", { name: "Confirmar vínculo", exact: true })
@@ -120,11 +127,14 @@ try {
     await page.getByLabel("Assunto com referência do atendimento").inputValue(),
     new RegExp(reference),
   );
+  await page
+    .getByRole("button", { name: "Preparar resposta com IA", exact: true })
+    .click();
   assert.match(
-    await page.getByLabel("Texto sugerido de formalização").inputValue(),
+    await page.getByLabel("Mensagem da resposta").inputValue(),
     new RegExp(reference),
   );
-  await page.getByRole("button", { name: "Ver associação do e-mail" }).click();
+  await go("/mensagens/mail-horizonte");
   await page
     .getByRole("button", { name: "Corrigir vínculo", exact: true })
     .click();
@@ -151,7 +161,7 @@ try {
   );
   assert.equal(
     current.demands.find((d) => d.id === "d1").attachments.length,
-    0,
+    d1Before.attachments.length,
   );
   assert.deepEqual(
     fields(current.demands.find((d) => d.id === "d1")),
@@ -237,7 +247,7 @@ try {
     .click();
   assert.ok(
     await page
-      .getByText("O e-mail menciona mais de um código.", { exact: false })
+      .getByText("A mensagem menciona mais de um código.", { exact: false })
       .count(),
   );
   await capture("inbox-conflict-desktop");

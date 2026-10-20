@@ -19,3 +19,7 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 ## Constraints
 
 Mensagens, anexos e sugestões fictícios. Gmail não conectado, nenhuma API de IA ou envio real. Identificadores sequenciais locais com contador preservado; unicidade multiusuário é trabalho de produção. Associações automáticas apenas por código único ou conversa conhecida sem conflito. Candidatos de conteúdo dependem de confirmação. Documentar a comparação por regras como adaptador demonstrativo, sem alegar IA semântica real.
+
+## Extensão aprovada — três canais
+
+O usuário pediu refletir a integração do WhatsApp no protótipo e manter todas as entradas diretamente pela plataforma, por Gmail ou WhatsApp. Mantém-se o mundo visual existente. A página passa a Central de atendimento, com cadastro direto visível, filtros por canal, demonstração editável de recebimento e resposta após o vínculo. Estados relevantes: cadastro sem e-mail/IA, mensagem com código, mesmo telefone com evento indefinido, resposta revisada, janela de WhatsApp encerrada, autorização para modelo fictício e histórico conjunto. Sem novas cores, fontes ou identidade.

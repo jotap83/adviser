@@ -365,6 +365,136 @@
 .mail-subject + .field {
   margin-top: 12px;
 }
+.channel-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-bottom: 14px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid #e2e7ef;
+}
+.channel-toolbar .inbox-filters {
+  margin: 0;
+}
+.inbox-channel {
+  display: flex;
+}
+.receive-form {
+  margin-bottom: 24px;
+}
+.receive-form .check-label {
+  margin-bottom: 18px;
+}
+.inbox-reply {
+  border-top: 1px solid #e2e7ef;
+  padding: 24px;
+  scroll-margin-top: 85px;
+}
+.conversation-owner {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: #596d89;
+  margin-bottom: 24px;
+}
+.reply-composer {
+  min-width: 0;
+}
+.reply-composer .section-heading {
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.reply-composer .section-heading h3 {
+  margin: 0;
+}
+.reply-composer > .muted {
+  margin: 0 0 20px;
+}
+.reply-composer .field {
+  margin-bottom: 16px;
+}
+.reply-composer .check-label {
+  font-size: 13px;
+  align-items: start;
+  gap: 10px;
+  line-height: 1.5;
+  min-height: 44px;
+}
+.reply-composer .check-label input {
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+.reply-review {
+  margin: 18px 0 8px;
+}
+.reply-composer .actions {
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+.wa-window {
+  padding: 16px 0;
+  border-block: 1px solid #e2e7ef;
+  margin-bottom: 18px;
+}
+.wa-window p {
+  margin: 10px 0;
+  color: #596d89;
+  font-size: 13px;
+  max-width: 65ch;
+}
+.wa-window .check-label {
+  margin: 0;
+}
+.reply-saved {
+  display: flex;
+  gap: 8px;
+  align-items: start;
+  color: #246346;
+  font-size: 13px;
+  padding-top: 16px;
+}
+.reply-saved svg {
+  flex-shrink: 0;
+}
+.reply-sent-message {
+  border-top: 1px solid #e2e7ef;
+  margin-top: 24px;
+  padding-top: 20px;
+}
+.reply-sent-message small {
+  display: block;
+  color: #596d89;
+  margin: 6px 0 12px;
+}
+.reply-sent-message .mail-body {
+  margin: 0;
+}
+.reply-attachments {
+  margin-top: 18px;
+  font-size: 13px;
+}
+.reply-attachments summary {
+  cursor: pointer;
+  min-height: 36px;
+  color: #293e91;
+}
+.reply-attachments label {
+  overflow-wrap: anywhere;
+}
+.intake-actions {
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+#briefing-dados {
+  scroll-margin-top: 85px;
+}
+.conversation-compose > .field {
+  margin-top: 24px;
+}
 @media (max-width: 1250px) {
   .inbox-layout {
     grid-template-columns: 230px minmax(0, 1fr);
@@ -379,6 +509,15 @@
   }
 }
 @media (max-width: 760px) {
+  .inbox-reply {
+    padding: 18px;
+  }
+  .reply-composer .actions > .btn {
+    width: 100%;
+  }
+  .channel-toolbar {
+    gap: 8px;
+  }
   .inbox-summary {
     flex-wrap: wrap;
     gap: 12px;

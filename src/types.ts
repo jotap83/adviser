@@ -25,6 +25,7 @@ export type Client = {
   contact: string;
   email: string;
   nucleus: string;
+  phone?: string;
 };
 export type Supplier = {
   id: string;
@@ -33,6 +34,7 @@ export type Supplier = {
   contact: string;
   email: string;
   city: string;
+  phone?: string;
 };
 export type Line = {
   id: string;
@@ -172,6 +174,7 @@ export type AppState = {
   referenceCounters?: Record<string, number>;
   inbox?: InboxEmail[];
   inboxDemo?: boolean;
+  channelsDemo?: boolean;
   productionProjects?: ProductionProject[];
   productionDemo?: boolean;
   financeEntries?: FinanceEntry[];
@@ -253,11 +256,18 @@ export type ClientMessage = {
   reviewedAt?: string;
   subject?: string;
   inboxEmailId?: string;
+  author?: string;
+  delivery?: "simulated" | "manual";
+  replyToMessageId?: string;
+  template?: string;
+  attachedFiles?: string[];
 };
 export type InboxEmail = {
   id: string;
   account: string;
   threadId: string;
+  channel?: "email" | "whatsapp";
+  replyToMessageId?: string;
   from: string;
   to: string[];
   subject: string;

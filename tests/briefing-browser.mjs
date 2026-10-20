@@ -22,6 +22,7 @@ const go = async (path) => {
 const state = () =>
   page.evaluate(() => JSON.parse(localStorage.getItem("adviser-demo-v1")));
 const capture = async (name, target) => {
+  if (process.env.CAPTURE === "0") return;
   const close = page.getByRole("button", { name: "Fechar aviso", exact: true });
   if (await close.count()) await close.click();
   await page.evaluate(() => {
@@ -31,7 +32,10 @@ const capture = async (name, target) => {
   if (target) {
     const viewport = page.viewportSize();
     const box = await page.locator(target).boundingBox();
-    await page.setViewportSize({ width: viewport.width, height: Math.max(viewport.height, Math.ceil(box.height) + 150) });
+    await page.setViewportSize({
+      width: viewport.width,
+      height: Math.max(viewport.height, Math.ceil(box.height) + 150),
+    });
     await page.locator(target).screenshot({
       path: `.impeccable/review/${name}.png`,
       style: ".topbar { visibility: hidden; }",
@@ -47,6 +51,24 @@ const capture = async (name, target) => {
 };
 try {
   await go("/demandas/d1/briefing");
+  // This suite exercises the original briefing fixture; channel intake has its own suite.
+  await page.evaluate(() => {
+    const s = JSON.parse(localStorage.getItem("adviser-demo-v1"));
+    s.channelsDemo = true;
+    s.inbox = s.inbox.filter((m) => m.channel !== "whatsapp");
+    s.demands = s.demands.map((d) => ({
+      ...d,
+      conversation: (d.conversation || []).filter(
+        (m) => !m.inboxEmailId?.startsWith("wa-"),
+      ),
+      attachments: (d.attachments || []).filter(
+        (a) => !a.messageId?.startsWith("inbox-wa-"),
+      ),
+    }));
+    localStorage.setItem("adviser-demo-v1", JSON.stringify(s));
+  });
+  await page.reload();
+  await page.locator("h1").waitFor();
   await page.setViewportSize({ width: 1366, height: 768 });
   const nav = await page
     .locator(".sidebar nav")
@@ -92,12 +114,19 @@ try {
   assert.match(d.briefingDetails.hours, /23h/);
   assert.match(d.scope.tech.answers.equipment, /microfones/);
   await page
-    .getByRole("button", { name: "Registrar envio pelo Gmail" })
+    .getByRole("button", { name: "Preparar resposta com IA", exact: true })
     .click();
+  await page
+    .getByLabel("Revisei o destinatário e o conteúdo da resposta.")
+    .check();
+  await page.getByRole("button", { name: "Simular envio por Gmail" }).click();
   assert.equal(
     await page.getByText("Aguardando cliente", { exact: true }).count(),
     1,
   );
+  await page
+    .getByRole("button", { name: "Registrar contato", exact: true })
+    .click();
   await page.getByLabel("Quem respondeu").fill("compras@horizonte.example.com");
   await page
     .getByRole("button", { name: "Preencher retorno fictício" })
@@ -120,10 +149,10 @@ try {
       "\nConfirmar prazo de entrega do manual da marca (pergunta humana).",
   );
   await page
-    .getByRole("button", { name: "Devolver entendimento", exact: true })
+    .getByRole("button", { name: "Responder ao cliente", exact: true })
     .click();
   const formalization = await page
-    .getByLabel("Texto sugerido de formalização")
+    .getByLabel("Mensagem da resposta")
     .inputValue();
   assert.match(formalization, /Público: 220 pessoas/);
   assert.match(formalization, /pergunta humana/);

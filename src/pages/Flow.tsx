@@ -13,22 +13,22 @@ import { Title, Button, Badge } from "../components/UI";
 const flow = [
   {
     n: 1,
-    title: "Cliente entra em contato",
-    desc: "Gmail, WhatsApp ou ligação com a Adviser.",
+    title: "Pedido chega ou é cadastrado diretamente",
+    desc: "A equipe cadastra o pedido na plataforma ou recebe por Gmail e WhatsApp. Ligações e reuniões também podem ser registradas.",
     owner: "Cliente → Atendimento",
     icon: Phone,
   },
   {
     n: 2,
-    title: "Mensagens chegam e o atendimento confirma o vínculo",
-    desc: "Gmail e WhatsApp integrados recebem mensagens e anexos. A IA sugere a demanda quando o código ou a conversa não bastam; a equipe confirma os casos ambíguos. Entrada manual disponível.",
+    title: "Tudo se reúne no atendimento",
+    desc: "Cadastro direto cria a demanda. Mensagens e anexos são vinculados a uma demanda existente ou a uma nova. A equipe confirma os casos ambíguos sugeridos pela IA.",
     owner: "Atendimento",
     icon: ClipboardList,
   },
   {
     n: 3,
-    title: "IA sugere o briefing e as perguntas",
-    desc: "A equipe revisa os campos e completa manualmente o que faltar.",
+    title: "Equipe preenche o briefing, com apoio opcional da IA",
+    desc: "Todos os campos podem ser cadastrados diretamente. A IA sugere informações a partir das fontes e a equipe decide o que aplicar.",
     owner: "Atendimento + IA",
     icon: Sparkles,
   },

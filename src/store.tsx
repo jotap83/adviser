@@ -12,9 +12,12 @@ import { withManagementDemo } from "./operations";
 import { withReferences } from "./mail-reference";
 import { withInboxDemo } from "./inbox-model";
 import { withProductionDemo } from "./production-model";
+import { withChannelsDemo } from "./channels";
 const KEY = "adviser-demo-v1";
 const prepare = (s: AppState) =>
-  withProductionDemo(withInboxDemo(withReferences(withManagementDemo(s))));
+  withChannelsDemo(
+    withProductionDemo(withInboxDemo(withReferences(withManagementDemo(s)))),
+  );
 type Context = {
   state: AppState;
   setState: (f: (s: AppState) => AppState) => void;

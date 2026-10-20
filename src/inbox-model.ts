@@ -18,6 +18,11 @@ const codes = (email: InboxEmail) => [
   ),
 ];
 const actor = "Marina Costa";
+export const messageChannel = (message: InboxEmail) =>
+  message.channel || "email";
+export const channelName = (message: InboxEmail) =>
+  messageChannel(message) === "whatsapp" ? "WhatsApp" : "Gmail";
+export const phoneNumber = (value: string) => value.replace(/\D/g, "");
 
 export type MailCandidate = {
   demandId: string;
@@ -37,8 +42,14 @@ export function directAssociation(
           (m) =>
             m.id !== email.id &&
             m.status === "linked" &&
+            messageChannel(m) === messageChannel(email) &&
             m.account === email.account &&
-            m.threadId === email.threadId &&
+            (messageChannel(email) === "whatsapp"
+              ? Boolean(email.replyToMessageId) &&
+                (m.id === email.replyToMessageId ||
+                  `inbox-${m.id}` === email.replyToMessageId) &&
+                phoneNumber(m.from) === phoneNumber(email.from)
+              : Boolean(email.threadId) && m.threadId === email.threadId) &&
             state.demands.some((d) => d.id === m.demandId),
         )
         .map((m) => m.demandId!),
@@ -47,7 +58,7 @@ export function directAssociation(
   if (references.length > 1)
     return {
       warning:
-        "O e-mail menciona mais de um código. Confira qual atendimento recebe esta mensagem.",
+        "A mensagem menciona mais de um código. Confira qual atendimento recebe esta mensagem.",
     };
   if (targets.length > 1)
     return {
@@ -126,14 +137,29 @@ export function suggestMailCandidates(
       let score = 0;
       const contacts = [
         client?.email || "",
+        client?.phone || "",
         ...(d.conversation || []).map((m) => m.contact),
       ];
-      if (contacts.some((c) => emailAddress(c) === sender && sender)) {
+      if (
+        messageChannel(email) === "whatsapp" &&
+        phoneNumber(email.from).length >= 10 &&
+        contacts.some((c) => phoneNumber(c) === phoneNumber(email.from))
+      ) {
+        score += 3;
+        reasons.push("Telefone presente no cadastro ou no histórico.");
+        cautions.push(
+          "O mesmo contato pode tratar de vários eventos. Confirme o vínculo.",
+        );
+      } else if (
+        messageChannel(email) === "email" &&
+        contacts.some((c) => emailAddress(c) === sender && sender)
+      ) {
         score += 3;
         reasons.push(
           "Remetente já cadastrado no cliente ou presente no histórico.",
         );
       } else if (
+        messageChannel(email) === "email" &&
         domain(client?.email || "") &&
         !personalDomains.has(domain(client!.email)) &&
         domain(email.from) === domain(client!.email)
@@ -251,7 +277,9 @@ export function linkMail(
           subject: email.subject,
           at: email.receivedAt,
           contact: email.from,
-          channel: "E-mail · simulado",
+          channel: `${channelName(email)} · simulado`,
+          delivery: "simulated",
+          replyToMessageId: email.replyToMessageId,
         });
         attachments.push(
           ...email.attachments.map((a, i) => ({
@@ -263,7 +291,7 @@ export function linkMail(
             messageId,
             status: "ready" as const,
             detail:
-              "Texto fictício de anexo para demonstrar a triagem. Arquivo não recebido do Gmail.",
+              "Texto fictício de anexo para demonstrar o recebimento. Nenhum arquivo foi recebido de um serviço externo.",
           })),
         );
       }
@@ -278,7 +306,7 @@ export function linkMail(
             text:
               d.id === demandId
                 ? `${action} por ${by}: “${email.subject}”. Conteúdo aguardando revisão.`
-                : `Vínculo do e-mail “${email.subject}” corrigido por ${by}. Os campos preenchidos anteriormente foram preservados; confira eventuais ajustes.`,
+                : `Vínculo da mensagem “${email.subject}” corrigido por ${by}. Os campos preenchidos anteriormente foram preservados; confira eventuais ajustes.`,
           },
           ...d.history,
         ],

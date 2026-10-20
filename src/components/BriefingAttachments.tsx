@@ -31,14 +31,14 @@ export function BriefingAttachments({
   return (
     <div className="briefing-attachments">
       <div className="section-heading">
-        <h4>Anexos do e-mail</h4>
+        <h4>Anexos do atendimento</h4>
         <Badge>
           {files.length} arquivo{files.length === 1 ? "" : "s"}
         </Badge>
       </div>
       <p className="field-hint">
-        Adicione os arquivos recebidos no Gmail. O texto lido entra na análise
-        junto com a mensagem.
+        Adicione PDF, DOCX ou XLSX diretamente. Arquivos de Gmail e WhatsApp
+        ficam neste mesmo briefing, identificados pela mensagem de origem.
       </p>
       {(d.conversation || []).some((m) => m.direction === "in") && (
         <Label label="Origem dos próximos anexos">

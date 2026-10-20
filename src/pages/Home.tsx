@@ -9,7 +9,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { useStore, go } from "../store";
-import { stages, createDemand } from "../data";
+import { stages, createDemand, uid } from "../data";
 import { Title, Button, Badge, Label, Empty } from "../components/UI";
 import { InboxSummary } from "../components/InboxSummary";
 const stageNames = Object.fromEntries(stages.map((s) => [s.id, s.label]));
@@ -21,11 +21,18 @@ const nextAction: Record<string, string> = {
   approval: "Registrar retorno",
   handoff: "Preparar o repasse",
 };
-export function Home({ all = false }: { all?: boolean }) {
+export function Home({
+  all = false,
+  newDemand = false,
+}: {
+  all?: boolean;
+  newDemand?: boolean;
+}) {
   const { state, setState, notify } = useStore();
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
-  const [adding, setAdding] = useState(false);
+  const [adding, setAdding] = useState(newDemand);
+  const [newClient, setNewClient] = useState(state.clients.length === 0);
   const rows = state.demands.filter(
     (d) =>
       (filter === "all" || d.stage === filter) &&
@@ -40,13 +47,39 @@ export function Home({ all = false }: { all?: boolean }) {
   function add(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const f = new FormData(e.currentTarget);
-    const d = createDemand(
-      String(f.get("client")),
-      String(f.get("title")).trim(),
-    );
+    const title = String(f.get("title") || "").trim();
+    if (!title) return;
+    const clientId = newClient ? uid() : String(f.get("client"));
+    if (
+      newClient &&
+      (!String(f.get("company") || "").trim() ||
+        !String(f.get("person") || "").trim())
+    )
+      return;
+    const d = createDemand(clientId, title);
     d.source = String(f.get("source"));
-    setState((s) => ({ ...s, demands: [d, ...s.demands] }));
-    notify("Demanda criada. Registre o primeiro contato para começar.");
+    d.message = String(f.get("message") || "").trim();
+    d.owner = String(f.get("owner") || "Marina Costa");
+    setState((s) => ({
+      ...s,
+      demands: [d, ...s.demands],
+      clients: newClient
+        ? [
+            ...s.clients,
+            {
+              id: clientId,
+              name: String(f.get("company")).trim(),
+              contact: String(f.get("person")).trim(),
+              email: String(f.get("email") || "").trim(),
+              phone: String(f.get("phone") || "").trim(),
+              nucleus: "Núcleo 1",
+            },
+          ]
+        : s.clients,
+    }));
+    notify(
+      "Demanda cadastrada. Preencha o briefing e adicione os arquivos diretamente, com ou sem IA.",
+    );
     go(`/demandas/${d.id}/briefing`);
   }
   return (
@@ -56,7 +89,7 @@ export function Home({ all = false }: { all?: boolean }) {
         sub={
           all
             ? "Do primeiro contato ao aceite, com todo o histórico reunido."
-            : "Uma visão clara do que precisa avançar."
+            : "Cadastre diretamente ou receba por Gmail e WhatsApp. Tudo segue no mesmo atendimento."
         }
         actions={
           <>
@@ -76,11 +109,15 @@ export function Home({ all = false }: { all?: boolean }) {
       {adding && (
         <form className="panel new-form" onSubmit={add}>
           <div className="section-heading">
-            <h2>Registrar um novo contato</h2>
+            <h2>Cadastrar demanda diretamente</h2>
             <Button variant="ghost" onClick={() => setAdding(false)}>
               Cancelar
             </Button>
           </div>
+          <p className="muted">
+            Comece aqui mesmo sem mensagem recebida. O briefing, os anexos e os
+            demais cadastros podem ser preenchidos manualmente.
+          </p>
           <div className="form-grid three">
             <Label label="Nome da demanda">
               <input
@@ -91,22 +128,66 @@ export function Home({ all = false }: { all?: boolean }) {
               />
             </Label>
             <Label label="Cliente">
-              <select name="client">
+              <select
+                name="client"
+                defaultValue={newClient ? "new" : state.clients[0]?.id}
+                onChange={(e) => setNewClient(e.target.value === "new")}
+              >
                 {state.clients.map((c) => (
                   <option key={c.id} value={c.id}>
                     {c.name}
                   </option>
                 ))}
+                <option value="new">Cadastrar novo cliente</option>
               </select>
             </Label>
             <Label label="Canal de entrada">
               <select name="source">
+                <option>Cadastro direto</option>
                 <option>E-mail</option>
+                <option>WhatsApp</option>
                 <option>Ligação</option>
+                <option>Reunião</option>
                 <option>Outro</option>
               </select>
             </Label>
           </div>
+          {newClient && (
+            <div className="form-grid">
+              <Label label="Nome da empresa">
+                <input required name="company" />
+              </Label>
+              <Label label="Nome do contato">
+                <input required name="person" />
+              </Label>
+              <Label label="E-mail do contato (opcional)">
+                <input name="email" type="email" />
+              </Label>
+              <Label label="WhatsApp do contato (opcional)">
+                <input name="phone" type="tel" />
+              </Label>
+            </div>
+          )}
+          <Label label="Responsável pelo atendimento">
+            <select name="owner">
+              {state.users
+                .filter((u) => u.active)
+                .map((u) => (
+                  <option key={u.id}>{u.name}</option>
+                ))}
+            </select>
+          </Label>
+          <Label label="Pedido ou anotações iniciais">
+            <textarea
+              name="message"
+              rows={4}
+              placeholder="Descreva o que já sabe. Também pode deixar para preencher os campos do briefing na próxima tela."
+            />
+          </Label>
+          <p className="field-hint">
+            Depois de criar, adicione PDF, DOCX ou XLSX e complete os campos do
+            evento. Gmail, WhatsApp e IA são opcionais para este cadastro.
+          </p>
           <Button type="submit" variant="primary">
             Criar demanda
           </Button>
@@ -182,7 +263,8 @@ export function Home({ all = false }: { all?: boolean }) {
                       <strong>{d.title}</strong>
                       <span>
                         {d.reference} <span className="dot-sep">·</span>{" "}
-                        {c?.name} <span className="dot-sep">·</span>{" "}
+                        {c?.name} <span className="dot-sep">·</span> {d.source}{" "}
+                        <span className="dot-sep">·</span>{" "}
                         {d.guests ? `${d.guests} pessoas` : "Público a definir"}
                       </span>
                     </span>

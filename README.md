@@ -95,8 +95,14 @@ Testes: `node tests/briefing-browser.mjs` com app na porta 4173 e `node tests/st
 
 ## Triagem de e-mails
 
-Em **Atendimento > Revisar e-mails**, na visão geral ou em `#/emails`, explore a triagem incluída no MVP. O exemplo inicial tem quatro mensagens para identificar e uma associada por código. Compare os motivos das sugestões, selecione um atendimento e confirme o vínculo. Depois, abra o briefing para revisar o conteúdo. Também é possível escolher outro atendimento, criar demanda/cliente, ignorar e restaurar mensagens ou corrigir um vínculo.
+Em **Atendimento > Central de atendimento**, na visão geral ou em `#/mensagens` (ou no endereço anterior `#/emails`), explore a triagem incluída no MVP. O exemplo inicial reúne mensagens fictícias de Gmail e WhatsApp para identificação ou já associadas por código. Compare os motivos das sugestões, selecione um atendimento e confirme o vínculo. Depois, abra o briefing para revisar o conteúdo. Também é possível escolher outro atendimento, criar demanda/cliente, ignorar e restaurar mensagens ou corrigir um vínculo.
 
 Cada demanda conserva uma referência `ADV-ano-sequência`, exibida na fila e nos assuntos e textos preparados para envio. As sugestões são uma simulação por regras; Gmail não está conectado. Associar uma mensagem inclui conversa e anexos fictícios, sem alterar campos, valores ou aceite da proposta. Consulte [funcionamento e roteiro](docs/TRIAGEM-DE-EMAILS.md) e [registro da revisão](docs/REVISAO-VISUAL-TRIAGEM.md).
 
 Com o servidor de desenvolvimento na porta 4173, execute `node tests/inbox-browser.mjs`. Para o arquivo independente, execute `npm run build:standalone` e depois `node tests/standalone-inbox.mjs`; este teste abre `standalone/adviser-prototipo.html` offline, sem servidor. `CHROMIUM_PATH` é opcional nos dois testes; `DEMO_URL` altera a URL do teste com servidor.
+
+## Atendimento centralizado
+
+Entrada manual, Gmail e WhatsApp compartilham demanda, anexos e histórico. A central permite simular recebimento, confirmar vínculo e responder pelo canal escolhido. O cadastro direto permite criar cliente sem e-mail e preencher o briefing sem IA. Todos os envios e integrações continuam simulados. Consulte `docs/ATENDIMENTO-CENTRALIZADO.md`.
+
+Validação dos três canais: `CHROMIUM_PATH=/caminho/do/chromium node tests/channels-browser.mjs`. O teste inicia o servidor local automaticamente; `DEMO_URL` permite usar uma prévia já servida.

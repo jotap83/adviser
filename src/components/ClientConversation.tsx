@@ -2,15 +2,14 @@ import { useState } from "react";
 import {
   ArrowDownLeft,
   ArrowUpRight,
-  Copy,
   Mail,
   Sparkles,
   Check,
 } from "lucide-react";
 import type { Demand, ClientMessage } from "../types";
-import { useStore, copy, go } from "../store";
-import { mailSubject, referenceText } from "../mail-reference";
-import { MailSubject } from "./MailSubject";
+import { useStore, go } from "../store";
+import { referenceText } from "../mail-reference";
+import { ReplyComposer } from "./ReplyComposer";
 import { briefingFields, scopeSummary } from "../briefing-model";
 import { clientReplyExample } from "../briefing-example";
 import { Badge, Button, Label } from "./UI";
@@ -29,7 +28,7 @@ export function ClientConversation({
   const [mode, setMode] = useState<"out" | "in">("out");
   const [reply, setReply] = useState("");
   const [contact, setContact] = useState(client?.email || "");
-  const [channel, setChannel] = useState("E-mail");
+  const [channel, setChannel] = useState("Registro manual");
   const messages = d.conversation || [];
   const latest = messages.at(-1);
   const pendingReply = [...messages]
@@ -57,7 +56,8 @@ export function ClientConversation({
         <div>
           <h2>Conversa com o cliente</h2>
           <p>
-            Um histórico do entendimento enviado, dos retornos e das decisões.
+            Gmail, WhatsApp e registros diretos reunidos, com a origem de cada
+            informação.
           </p>
         </div>
         <Badge tone={pendingReply ? "amber" : "blue"}>{status}</Badge>
@@ -123,7 +123,9 @@ export function ClientConversation({
                       {m.direction === "in" ? "Cliente" : "Adviser"} ·{" "}
                       {m.direction === "in"
                         ? "retorno registrado"
-                        : "envio registrado"}
+                        : m.delivery === "simulated"
+                          ? "envio simulado"
+                          : "registro manual"}
                     </strong>
                     <time>
                       {new Date(m.at).toLocaleString("pt-BR", {
@@ -133,10 +135,25 @@ export function ClientConversation({
                     </time>
                   </div>
                   <small className="message-contact">
-                    {m.channel} · {m.direction === "in" ? "De" : "Para"}:{" "}
-                    {m.contact}
+                    {m.channel}
+                    {m.author ? ` · ${m.author}` : ""} ·{" "}
+                    {m.direction === "in" ? "De" : "Para"}: {m.contact}
                   </small>
                   {m.subject && <p className="mail-reference">{m.subject}</p>}
+                  {Boolean(m.attachedFiles?.length) && (
+                    <p className="field-hint">
+                      Anexos do envio simulado: {m.attachedFiles!.join(", ")}
+                    </p>
+                  )}
+                  {(d.attachments || []).some((a) => a.messageId === m.id) && (
+                    <p className="field-hint">
+                      Anexos recebidos:{" "}
+                      {(d.attachments || [])
+                        .filter((a) => a.messageId === m.id)
+                        .map((a) => a.name)
+                        .join(", ")}
+                    </p>
+                  )}
                   <details>
                     <summary>
                       {m.text.slice(0, 160)}
@@ -147,9 +164,9 @@ export function ClientConversation({
                   {m.inboxEmailId && (
                     <Button
                       variant="ghost"
-                      onClick={() => go(`/emails/${m.inboxEmailId}`)}
+                      onClick={() => go(`/mensagens/${m.inboxEmailId}`)}
                     >
-                      Ver associação do e-mail
+                      Ver associação da mensagem
                     </Button>
                   )}
                   {m.direction === "in" && (
@@ -219,51 +236,19 @@ export function ClientConversation({
               aria-pressed={mode === "out"}
               onClick={() => setMode("out")}
             >
-              Devolver entendimento
+              Responder ao cliente
             </button>
             <button
               className={mode === "in" ? "active" : ""}
               aria-pressed={mode === "in"}
               onClick={() => setMode("in")}
             >
-              Registrar retorno
+              Registrar contato
             </button>
           </div>
           {mode === "out" ? (
             <>
-              <h3>Formalizar o que entendemos</h3>
-              <p className="muted">
-                Revise, copie e envie pelo Gmail. Depois registre o envio para
-                acompanhar a resposta.
-              </p>
-              <Label label="Destinatário do entendimento">
-                <input
-                  value={contact}
-                  onChange={(e) => setContact(e.target.value)}
-                  placeholder="Nome ou e-mail do contato"
-                />
-              </Label>
-              <MailSubject d={d} purpose="Alinhamento do briefing" />
-              <Label label="Texto sugerido de formalização">
-                <textarea
-                  className="email-draft"
-                  value={draft}
-                  onChange={(e) =>
-                    updateDemand(d.id, { clientDraft: e.target.value })
-                  }
-                />
-              </Label>
-              <Button
-                variant="ghost"
-                onClick={() => {
-                  updateDemand(d.id, { clientDraft: undefined });
-                  notify(
-                    "Rascunho atualizado com os campos atuais do briefing.",
-                  );
-                }}
-              >
-                Atualizar rascunho com briefing atual
-              </Button>
+              <ReplyComposer d={d} initialDraft={draft} />
               <Label label="Acompanhar resposta até">
                 <input
                   type="date"
@@ -273,55 +258,6 @@ export function ClientConversation({
                   }
                 />
               </Label>
-              <div className="actions">
-                <Button
-                  icon={Copy}
-                  disabled={!draft.trim()}
-                  onClick={async () =>
-                    notify(
-                      (await copy(referenceText(draft, d)))
-                        ? "Texto copiado. Revise e envie pelo Gmail."
-                        : "Selecione o texto e copie manualmente.",
-                    )
-                  }
-                >
-                  Copiar texto
-                </Button>
-                <Button
-                  variant="primary"
-                  icon={Mail}
-                  disabled={!draft.trim() || !contact.trim()}
-                  onClick={() => {
-                    const message: ClientMessage = {
-                      id: crypto.randomUUID(),
-                      direction: "out",
-                      text: referenceText(draft, d),
-                      subject: mailSubject(d, "Alinhamento do briefing"),
-                      contact: contact.trim(),
-                      channel: "E-mail",
-                      at: new Date().toISOString(),
-                    };
-                    updateDemand(
-                      d.id,
-                      (current) => ({
-                        ...current,
-                        conversation: [
-                          ...(current.conversation || []),
-                          message,
-                        ],
-                        clientDraft: undefined,
-                      }),
-                      "Envio de entendimento registrado manualmente; aguardando cliente.",
-                    );
-                    setMode("in");
-                    notify(
-                      "Envio registrado no histórico. Nenhum e-mail foi disparado pelo protótipo.",
-                    );
-                  }}
-                >
-                  Registrar envio pelo Gmail
-                </Button>
-              </div>
             </>
           ) : (
             <form
@@ -334,6 +270,8 @@ export function ClientConversation({
                   text: reply.trim(),
                   contact: contact.trim(),
                   channel,
+                  delivery: "manual",
+                  author: d.owner,
                   at: new Date().toISOString(),
                 };
                 invalidate();
@@ -353,7 +291,7 @@ export function ClientConversation({
                 );
               }}
             >
-              <h3>O cliente respondeu</h3>
+              <h3>Registrar contato diretamente</h3>
               <p className="muted">
                 A resposta pode vir de outro contato. Registre quem respondeu e
                 mantenha tudo nesta demanda.
@@ -364,7 +302,7 @@ export function ClientConversation({
                     required
                     value={contact}
                     onChange={(e) => setContact(e.target.value)}
-                    placeholder="Nome ou e-mail"
+                    placeholder="Nome, e-mail ou telefone"
                   />
                 </Label>
                 <Label label="Canal do retorno">
@@ -372,7 +310,9 @@ export function ClientConversation({
                     value={channel}
                     onChange={(e) => setChannel(e.target.value)}
                   >
+                    <option>Registro manual</option>
                     <option>E-mail</option>
+                    <option>WhatsApp</option>
                     <option>Ligação</option>
                     <option>Reunião</option>
                   </select>
@@ -399,8 +339,8 @@ export function ClientConversation({
                 </Button>
               </div>
               <p className="field-hint">
-                Se houver novos arquivos, adicione-os em “Anexos do e-mail” e
-                selecione este retorno como origem.
+                Se houver novos arquivos, adicione-os em “Anexos do atendimento”
+                e selecione este retorno como origem.
               </p>
             </form>
           )}

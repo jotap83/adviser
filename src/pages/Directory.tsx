@@ -10,7 +10,7 @@ export function Directory({ kind }: { kind: "clients" | "suppliers" }) {
   const [editing, setEditing] = useState<Client | Supplier | null>(null);
   const isSupplier = kind === "suppliers";
   const rows = (isSupplier ? state.suppliers : state.clients).filter((x) =>
-    `${x.name} ${x.contact} ${x.email}`
+    `${x.name} ${x.contact} ${x.email} ${x.phone || ""}`
       .toLowerCase()
       .includes(search.toLowerCase()),
   );
@@ -22,6 +22,7 @@ export function Directory({ kind }: { kind: "clients" | "suppliers" }) {
       name: String(f.get("name")).trim(),
       contact: String(f.get("contact")).trim(),
       email: String(f.get("email")).trim(),
+      phone: String(f.get("phone") || "").trim(),
     };
     if (isSupplier) {
       const item = {
@@ -96,13 +97,20 @@ export function Directory({ kind }: { kind: "clients" | "suppliers" }) {
             <Label label="Pessoa de contato *">
               <input name="contact" required defaultValue={editing.contact} />
             </Label>
-            <Label label="E-mail *">
+            <Label label="E-mail (opcional)">
               <input
                 name="email"
                 type="email"
-                required
                 defaultValue={editing.email}
                 placeholder="contato@empresa.example.com"
+              />
+            </Label>
+            <Label label="WhatsApp (opcional)">
+              <input
+                name="phone"
+                type="tel"
+                defaultValue={editing.phone || ""}
+                placeholder="+55 (DDD) número"
               />
             </Label>
             {isSupplier ? (
@@ -168,7 +176,7 @@ export function Directory({ kind }: { kind: "clients" | "suppliers" }) {
                 <th>{isSupplier ? "Fornecedor" : "Cliente"}</th>
                 <th>{isSupplier ? "Categoria" : "Carteira"}</th>
                 <th>Contato</th>
-                <th>E-mail</th>
+                <th>E-mail / WhatsApp</th>
                 <th>Ação</th>
               </tr>
             </thead>
@@ -189,7 +197,10 @@ export function Directory({ kind }: { kind: "clients" | "suppliers" }) {
                       : (x as Client).nucleus}
                   </td>
                   <td>{x.contact}</td>
-                  <td className="email-cell">{x.email}</td>
+                  <td className="email-cell">
+                    {x.email || "E-mail não informado"}
+                    {x.phone && <small className="cell-sub">{x.phone}</small>}
+                  </td>
                   <td>
                     <Button
                       icon={Pencil}

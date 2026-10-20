@@ -18,7 +18,7 @@ const deliveries = [
       ],
       [
         "Briefing e comunicação",
-        "Mensagens do Gmail e WhatsApp, ligações registradas e anexos PDF, DOCX e XLSX; referência da demanda e histórico de esclarecimentos. Entrada manual sempre disponível.",
+        "Cadastro direto completo, Gmail e WhatsApp na mesma central; mensagens, ligações, reuniões e anexos PDF, DOCX e XLSX no histórico da demanda. Todos os campos podem ser preenchidos sem IA.",
       ],
       [
         "Gmail e WhatsApp integrados com IA",
@@ -108,7 +108,8 @@ export function ScopeOverview() {
         Os percentuais comerciais, a coluna “Estudo”, os campos internos da
         proposta e as regras de pagamento ainda precisam de confirmação. A IA
         real, Gmail e WhatsApp fazem parte do MVP a implementar. Hoje a IA e a
-        triagem de e-mails são simuladas; nenhuma conta está conectada.
+        comunicação por Gmail e WhatsApp são simuladas; nenhuma conta está
+        conectada.
       </Note>
       <div className="delivery-list">
         {deliveries.map((phase) => (
@@ -144,21 +145,22 @@ export function ScopeOverview() {
           <Badge tone="blue">MVP · etapa 1</Badge>
         </div>
         <p>
-          A prévia atual demonstra a triagem de e-mails. A conexão com Gmail e
-          WhatsApp, o recebimento real e os envios serão implementados com as
-          contas da Adviser. Quantidade de contas e números, áudios, grupos e
-          histórico a importar precisam ser definidos no levantamento.
+          A prévia reúne cadastro direto e simulações de recebimento e resposta
+          pelos dois canais. A conexão com Gmail e WhatsApp, o recebimento real
+          e os envios serão implementados com as contas da Adviser. Quantidade
+          de contas e números, áudios, grupos e histórico a importar precisam
+          ser definidos no levantamento.
         </p>
-        <Button onClick={() => go("/emails")} icon={ArrowRight}>
-          Explorar triagem de e-mails
+        <Button onClick={() => go("/mensagens")} icon={ArrowRight}>
+          Explorar central de atendimento
         </Button>
       </section>
       <section className="panel scope-options">
         <h2>Evoluções opcionais</h2>
         <Badge tone="gray">Fora do MVP · sem etapa fechada</Badge>
         <p>
-          Portal de acompanhamento do cliente e modelos de IA em infraestrutura própria.
-          Serão dimensionados separadamente.
+          Portal de acompanhamento do cliente e modelos de IA em infraestrutura
+          própria. Serão dimensionados separadamente.
         </p>
       </section>
     </>

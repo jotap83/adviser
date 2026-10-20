@@ -188,7 +188,17 @@ export function Settings() {
           </Note>
         </section>
         <section className="panel">
-          <h2>Integrações previstas</h2>
+          <h2>Canais do atendimento</h2>
+          <div className="integration-row">
+            <span className="integration-name">
+              <strong>Cadastro direto</strong>
+              <small>
+                Cadastros, briefing, anexos e retornos preenchidos na
+                plataforma, com ou sem IA
+              </small>
+            </span>
+            <Badge tone="green">Disponível na prévia</Badge>
+          </div>
           <div className="integration-row">
             <span className="integration-name">
               <strong>Gmail</strong>
@@ -199,14 +209,19 @@ export function Settings() {
           <div className="integration-row">
             <span className="integration-name">
               <strong>WhatsApp</strong>
-              <small>Mensagens e anexos com IA, respostas revisadas pela equipe</small>
+              <small>
+                Um número empresarial compartilhado · mensagens, anexos e
+                revisão humana
+              </small>
             </span>
             <Badge tone="blue">MVP · não conectado</Badge>
           </div>
           <div className="integration-row">
             <span className="integration-name">
               <strong>Conta Azul</strong>
-              <small>Integração ou migração para financeiro próprio a validar</small>
+              <small>
+                Integração ou migração para financeiro próprio a validar
+              </small>
             </span>
             <Badge tone="amber">Etapa 3</Badge>
           </div>
@@ -218,10 +233,16 @@ export function Settings() {
             <Badge tone="amber">Fora do MVP</Badge>
           </div>
           <p className="muted">
-            As integrações do MVP serão feitas com as contas da Adviser.
-            Incluem associação de conversas, anexos, confirmação de vínculos,
-            revisão das respostas e tratamento de falhas. Áudios, grupos e
-            histórico a importar ainda precisam de definição.
+            A central reúne os canais no mesmo atendimento. No WhatsApp, o
+            protótipo demonstra a janela de 24h e um modelo fictício para
+            retomar conversas. Quantidade de números e uso simultâneo do
+            aplicativo serão validados com a Adviser.
+          </p>
+          <p className="muted">
+            As integrações do MVP serão feitas com as contas da Adviser. Incluem
+            associação de conversas, anexos, confirmação de vínculos, revisão
+            das respostas e tratamento de falhas. Áudios, grupos e histórico a
+            importar ainda precisam de definição.
           </p>
         </section>
       </div>

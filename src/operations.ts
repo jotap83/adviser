@@ -89,7 +89,7 @@ export function collectAlerts(state: AppState, now = new Date()): AlertItem[] {
       )
         add({
           id: `inbox-reply-${message.inboxEmailId}-${d.id}`,
-          title: "E-mail associado, conteúdo a revisar",
+          title: "Mensagem associada, conteúdo a revisar",
           detail: `${message.contact} · ${message.subject || "Mensagem recebida"}`,
           kind: "response",
           severity: "info",
