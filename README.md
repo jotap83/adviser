@@ -83,7 +83,7 @@ Logo oficial e cores azul/laranja da Adviser incorporadas ao protótipo, inclusi
 
 ## Gestão e briefing detalhado
 
-Acesse **Visão dos sócios** e **Central de alertas** no menu. Simule um retorno e veja as pendências mudarem. No briefing, selecione os blocos do evento, analise as sugestões de escopo e leve os pontos ainda abertos ao rascunho de esclarecimento. Consulte [escopo e roteiro gerencial](docs/GESTAO-E-BRIEFING.md).
+Acesse **Painel Gerencial** e **Central de alertas** no menu. Simule um retorno e veja as pendências mudarem. No briefing, selecione os blocos do evento, analise as sugestões de escopo e leve os pontos ainda abertos ao rascunho de esclarecimento. Consulte [escopo e roteiro gerencial](docs/GESTAO-E-BRIEFING.md).
 
 Teste adicional: `node tests/management-browser.mjs` com o app na porta 4173.
 

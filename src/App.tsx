@@ -225,7 +225,7 @@ export default function App() {
           <span className="nav-label">GESTÃO · MVP</span>
           {navButton({
             path: "/gestao",
-            label: "Visão dos sócios",
+            label: "Painel Gerencial",
             icon: ChartNoAxesCombined,
           })}
           {navButton({

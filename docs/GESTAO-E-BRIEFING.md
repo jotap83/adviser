@@ -2,7 +2,7 @@
 
 ## Decisão de produto
 
-A visão dos sócios precisa ajudar a decidir onde intervir: demanda parada, responsável sem prazo, fornecedor atrasado, cliente aguardando ou proposta aprovada sem repasse. O ganho esperado é menos acompanhamento em planilhas e menos ida e volta por informação faltante. Ganhos em horas ou dinheiro só podem ser afirmados após medir a operação.
+O Painel Gerencial precisa ajudar a decidir onde intervir: demanda parada, responsável sem prazo, fornecedor atrasado, cliente aguardando ou proposta aprovada sem repasse. O ganho esperado é menos acompanhamento em planilhas e menos ida e volta por informação faltante. Ganhos em horas ou dinheiro só podem ser afirmados após medir a operação.
 
 O protótipo acrescenta as rotas `#/gestao` e `#/alertas`, além de ampliar o briefing. Todos os exemplos, clientes, preços e mensagens são fictícios. A proposta privada foi usada somente para entender categorias e a estrutura das informações; seu conteúdo não faz parte deste repositório.
 
@@ -55,7 +55,7 @@ Evoluções sugeridas: resumo gerencial diário, escalonamento de atrasos, class
 
 ## Como demonstrar aos sócios
 
-1. Abrir Visão dos sócios e localizar uma demanda com atraso. Filtrar um núcleo e abrir a demanda.
+1. Abrir Painel Gerencial e localizar uma demanda com atraso. Filtrar um núcleo e abrir a demanda.
 2. Na Central de alertas, simular uma cotação de fornecedor para Convenção Conexões. Ver o atraso de resposta desaparecer e a nova cotação aparecer.
 3. Marcar o retorno como lido. O prazo de entrega da demanda continua sinalizado até ser tratado.
 4. No Encontro Horizonte, organizar a mensagem, analisar o escopo com IA e revisar os blocos sugeridos.

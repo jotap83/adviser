@@ -38,7 +38,7 @@ const deliveries = [
       ],
       [
         "Gestão e alertas",
-        "Visão dos sócios, responsáveis, prazos, demandas paradas, novas mensagens, retornos dos fornecedores e associações pendentes de confirmação.",
+        "Painel Gerencial, responsáveis, prazos, demandas paradas, novas mensagens, retornos dos fornecedores e associações pendentes de confirmação.",
       ],
       [
         "Apoio criativo",

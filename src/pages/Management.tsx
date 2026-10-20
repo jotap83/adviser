@@ -64,7 +64,7 @@ export function Management() {
   return (
     <>
       <Title
-        title="Visão dos sócios"
+        title="Painel Gerencial"
         sub="Onde o atendimento avança, onde está parado e o que precisa de decisão."
         actions={
           <Button icon={Bell} onClick={() => go("/alertas")}>

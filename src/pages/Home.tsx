@@ -94,7 +94,7 @@ export function Home({
         actions={
           <>
             {!all && (
-              <Button onClick={() => go("/gestao")}>Visão dos sócios</Button>
+              <Button onClick={() => go("/gestao")}>Painel Gerencial</Button>
             )}
             <Button
               variant="primary"

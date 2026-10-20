@@ -32,7 +32,7 @@ const capture = async (p, name) => {
   });
 };
 await go("/gestao");
-await page.getByRole("heading", { name: "Visão dos sócios" }).waitFor();
+await page.getByRole("heading", { name: "Painel Gerencial" }).waitFor();
 await capture(page, "management-desktop");
 await page.getByLabel("Núcleo", { exact: true }).selectOption("Núcleo 4");
 assert.equal(await page.locator(".management-table tbody tr").count(), 2);
@@ -214,8 +214,8 @@ for (const [route, name] of [
   );
 }
 await mp.getByRole("button", { name: "Abrir menu", exact: true }).click();
-await mp.getByRole("link", { name: "Visão dos sócios", exact: true }).click();
-await mp.getByRole("heading", { name: "Visão dos sócios" }).waitFor();
+await mp.getByRole("link", { name: "Painel Gerencial", exact: true }).click();
+await mp.getByRole("heading", { name: "Painel Gerencial" }).waitFor();
 assert.deepEqual(errors, []);
 console.log(
   JSON.stringify({
