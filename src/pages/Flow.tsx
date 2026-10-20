@@ -24,7 +24,7 @@ const flow = [
   {
     n: 2,
     title: "Atendimento registra a demanda",
-    desc: "Cola o e-mail ou registra a ligação, vincula cliente e responsável.",
+    desc: "Registra e-mail, ligação e anexos PDF, DOCX ou XLSX. Vincula cliente, responsável e código da demanda.",
     owner: "Atendimento",
     icon: ClipboardList,
   },
@@ -54,7 +54,7 @@ const flow = [
   {
     n: 6,
     title: "Fornecedores preenchem suas propostas",
-    desc: "Formulário por categoria, com vários itens, preços, condições e anexo.",
+    desc: "Formulário por categoria, com opções, itens, preços, condições e anexos. O atendimento pode pedir ajustes e confirmar a composição escolhida.",
     owner: "Fornecedores → Atendimento",
     icon: ClipboardList,
   },
@@ -77,10 +77,10 @@ const flow = [
   },
   {
     n: 9,
-    title: "Atendimento prepara o repasse",
-    desc: "Reúne versão aprovada, aceite, fornecedores, condições e pagamentos diretos.",
-    owner: "Atendimento → Financeiro",
-    icon: Coins,
+    title: "Atendimento prepara o repasse para Operações",
+    desc: "Reúne briefing, versão aprovada, aceite, fornecedores selecionados, condições e pendências.",
+    owner: "Atendimento → Operações",
+    icon: FileCheck,
   },
 ];
 export function Flow() {
@@ -88,7 +88,7 @@ export function Flow() {
     <>
       <Title
         title="Do primeiro contato ao fechamento"
-        sub="Leia de cima para baixo. O caminho principal mostra a sequência; as observações explicam retornos e participação das áreas."
+        sub="Atendimento → Operações → fechamento financeiro. Leia de cima para baixo; o financeiro acompanha os pagamentos durante o projeto."
         actions={
           <Button
             icon={Download}
@@ -107,8 +107,9 @@ export function Flow() {
       />
       <div className="flow-legend">
         <Badge tone="blue">Atendimento · MVP</Badge>
-        <Badge tone="amber">Criação · apoio / etapa 2</Badge>
-        <Badge tone="green">Financeiro · etapa futura</Badge>
+        <Badge tone="amber">Criação · apoio à proposta</Badge>
+        <Badge tone="blue">Operações · etapa 2</Badge>
+        <Badge tone="green">Financeiro · etapa 3</Badge>
       </div>
       <div className="flow-diagram">
         <div className="flow-terminal start">INÍCIO</div>
@@ -149,13 +150,17 @@ export function Flow() {
           <div className="future-flow-row">
             <span className="flow-number">10</span>
             <div>
-              <Badge tone="amber">Criação e produção · etapa 2</Badge>
-              <h3>Proposta aceita vira projeto / evento</h3>
+              <Badge tone="blue">Operações · etapa 2</Badge>
+              <h3>Proposta aceita vira projeto: produzir e executar</h3>
               <p>
-                Detalhar a criação, confirmar contratações, organizar tarefas,
-                produzir e executar o evento. Histórico e orçamento acompanham o
-                projeto.
+                Receber o escopo aprovado, confirmar contratações, coordenar
+                fornecedores e cronograma, produzir e executar o evento. A
+                criação apoia os desdobramentos necessários.
               </p>
+              <div className="flow-branch">
+                Operações: nome da área e responsabilidades a confirmar com a
+                Adviser.
+              </div>
             </div>
           </div>
           <ArrowDown className="flow-arrow" size={22} />
@@ -193,7 +198,7 @@ export function Roadmap() {
       />
       <div className="roadmap-tabs" role="tablist" aria-label="Etapas futuras">
         {[
-          ["project", "Projeto e produção"],
+          ["project", "Operações"],
           ["creative", "Criação"],
           ["finance", "Financeiro"],
           ["integrations", "Integrações"],
@@ -219,8 +224,8 @@ export function Roadmap() {
             <div>
               <h2>Encontro Horizonte · projeto ilustrativo</h2>
               <p>
-                Um projeto futuro herdará o briefing, a proposta aprovada e os
-                fornecedores.
+                Operações receberá o briefing, a proposta aprovada e os
+                fornecedores. Nome da área e responsabilidades a confirmar.
               </p>
             </div>
             <Badge tone="amber">Etapa 2</Badge>

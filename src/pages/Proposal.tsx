@@ -520,7 +520,7 @@ export function Approval({ d }: { d: Demand }) {
     );
     notify(
       decision === "accepted"
-        ? "Aceite registrado. Prepare o pacote para o financeiro."
+        ? "Aceite registrado. Prepare o pacote para Operações."
         : decision === "changes"
           ? "Revisão solicitada. Edite o rascunho e salve uma nova versão."
           : "Proposta encerrada como não aprovada.",
@@ -741,7 +741,7 @@ export function Approval({ d }: { d: Demand }) {
       <div className="bottom-actions">
         <span>
           {d.decision === "accepted"
-            ? "A proposta pode seguir para o financeiro."
+            ? "A proposta pode seguir para Operações."
             : "O repasse fica disponível após o aceite."}
         </span>
         <Button
@@ -781,9 +781,11 @@ export function Handoff({ d }: { d: Demand }) {
     <>
       <div className="section-heading">
         <div>
-          <h2>Da proposta aprovada ao financeiro.</h2>
+          <h2>Da proposta aprovada para Operações.</h2>
           <p>
-            O atendimento encerra esta etapa com as informações organizadas.
+            O atendimento organiza o repasse para produção e execução. O nome
+            Operações e suas responsabilidades ainda serão confirmados com a
+            Adviser.
           </p>
         </div>
         <Badge tone={d.handoff ? "green" : "blue"}>
@@ -886,8 +888,9 @@ export function Handoff({ d }: { d: Demand }) {
               <Badge tone="amber">Próximas etapas</Badge>
               <h3>A partir daqui, nasce o projeto.</h3>
               <p>
-                Criação, produção e execução acompanham o evento. O financeiro
-                controla recebimentos, pagamentos e fechamento.
+                Operações coordena fornecedores, produção e execução, com apoio
+                da criação. O financeiro acompanha recebimentos e pagamentos
+                durante o projeto e faz o fechamento após o evento.
               </p>
             </div>
             <Button icon={ArrowRight} onClick={() => go("/roadmap")}>
