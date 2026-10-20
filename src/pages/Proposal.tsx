@@ -16,6 +16,7 @@ import type { Demand, Version } from "../types";
 import { useStore, go, download, copy } from "../store";
 import { uid, timestamp } from "../data";
 import { money, totals, lineTotal } from "../domain.mjs";
+import { staleQuoteLines, currentSelection } from "../quote-model";
 import {
   Button,
   Label,
@@ -251,7 +252,13 @@ export function Proposal({ d }: { d: Demand }) {
           number: 0,
         };
   const locked = d.decision === "accepted";
+  const stale = staleQuoteLines(d);
+  const pendingSupplier = d.quotes.some(
+    (q) =>
+      q.selected && currentSelection(q) && !currentSelection(q)?.confirmedAt,
+  );
   const saveable =
+    !stale &&
     d.briefingValid &&
     d.lines.length > 0 &&
     d.lines.every((l) => l.description.trim() && l.qty > 0 && l.unit >= 0) &&
@@ -281,6 +288,22 @@ export function Proposal({ d }: { d: Demand }) {
           {view ? "Voltar à edição" : "Prévia do cliente"}
         </Button>
       </div>
+      {stale && !locked && (
+        <Note tone="warning">
+          Uma cotação ou composição mudou após a importação. Revise as escolhas
+          e reimporte os itens antes de salvar outra versão. As versões já
+          salvas continuam preservadas.{" "}
+          <Button onClick={() => go(`/demandas/${d.id}/compare`)}>
+            Revisar composições
+          </Button>
+        </Note>
+      )}
+      {pendingSupplier && !view && (
+        <Note>
+          Há composição escolhida que ainda aguarda confirmação do fornecedor.
+          Acompanhe valores e disponibilidade na comparação.
+        </Note>
+      )}
       <div className="proposal-toolbar">
         <label className="inline-label">
           Visualizar

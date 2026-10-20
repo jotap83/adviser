@@ -33,13 +33,15 @@ node tests/browser.mjs
 1. Abra **Explorar demonstração** na visão geral.
 2. Clique em **Organizar com IA**, aplique as sugestões, revise, confirme o alinhamento com o cliente e valide o briefing.
 3. Em **Cotações**, abra o link de **Mesa & Afeto**. Preencha o exemplo e envie a cotação simulada.
-4. No **Comparativo**, selecione fornecedores por categoria e leve os itens para a proposta.
+4. No **Comparativo**, escolha a alternativa e os adicionais de cada fornecedor, confirme a composição e leve somente os itens escolhidos para a proposta. A conversa permite dúvidas, pedido de ajustes e novas versões.
 5. Ajuste itens, fee e pagamentos diretos. Salve uma versão e exporte Excel ou imprima em PDF.
 6. Em **Aprovação**, simule o registro do envio, escreva uma evidência fictícia e registre o aceite.
 7. Em **Repasse**, exporte o pacote e conclua o atendimento.
 8. Em **Equipe e IA**, simule a IA indisponível e confirme que o preenchimento manual permanece disponível.
 
 Também é possível criar clientes, fornecedores e demandas; editar modelos de cotação; consultar o histórico; explorar a sequência em **Fluxo do sistema** e as simulações em **Próximas etapas**.
+
+Para demonstrar a negociação, use **Exemplo com duas opções** no link do fornecedor. Consulte [cotação, alternativas e negociação](docs/COTACOES-E-NEGOCIACAO.md).
 
 ## Limites explícitos
 

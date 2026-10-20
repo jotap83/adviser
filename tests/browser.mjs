@@ -82,7 +82,7 @@ for (const name of ["Espaço Orla", "Mesa & Afeto", "Sinal Eventos"])
   await page
     .locator("article")
     .filter({ has: page.getByRole("heading", { name, exact: true }) })
-    .getByRole("button", { name: "Selecionar cotação" })
+    .getByRole("button", { name: "Confirmar composição escolhida" })
     .click();
 await page.getByRole("button", { name: "Levar seleção para proposta" }).click();
 await page

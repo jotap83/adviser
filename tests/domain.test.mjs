@@ -68,3 +68,44 @@ test("simulação extrai somente padrões presentes e explicita informações au
   assert.equal(b.date, "");
   assert.ok(b.questions.length > 3);
 });
+
+test("alternativas não se somam e opcionais só entram quando escolhidos", () => {
+  const quote = {
+    id: "q",
+    supplierId: "s",
+    status: "received",
+    selected: true,
+    revision: 2,
+    lines: [{ id: "base", qty: 200, unit: 125 }],
+    options: [
+      { id: "a", lines: [{ id: "base", qty: 200, unit: 125 }] },
+      {
+        id: "b",
+        lines: [
+          { id: "premium", qty: 200, unit: 155 },
+          { id: "bar", qty: 200, unit: 35, optional: true },
+        ],
+      },
+    ],
+    selection: {
+      id: "choice",
+      revision: 2,
+      optionId: "b",
+      lineIds: ["premium"],
+    },
+  };
+  const lines = selectedLines([quote]);
+  assert.equal(lines.length, 1);
+  assert.equal(lines[0].unit, 155);
+  assert.equal(lines[0].sourceRevision, 2);
+  assert.equal(lines[0].sourceSelection, "choice");
+  assert.deepEqual(selectedLines([{ ...quote, revision: 3 }]), []);
+  assert.deepEqual(selectedLines([{ ...quote, adjustmentPending: true }]), []);
+  assert.deepEqual(selectedLines([{ ...quote, selection: undefined }]), []);
+  assert.deepEqual(
+    selectedLines([
+      { ...quote, selection: { ...quote.selection, optionId: "missing" } },
+    ]),
+    [],
+  );
+});

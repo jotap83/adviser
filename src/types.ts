@@ -42,6 +42,40 @@ export type Line = {
   unit: number;
   direct: boolean;
   supplier?: string;
+  optional?: boolean;
+  sourceQuote?: string;
+  sourceRevision?: number;
+  sourceSelection?: string;
+};
+export type QuoteOption = {
+  id: string;
+  name: string;
+  detail: string;
+  lines: Line[];
+};
+export type QuoteRevision = {
+  number: number;
+  at: string;
+  options: QuoteOption[];
+  fields: Record<string, string>;
+  terms: string;
+  attachment: string;
+};
+export type QuoteSelection = {
+  id: string;
+  revision: number;
+  optionId: string;
+  lineIds: string[];
+  at: string;
+  confirmedAt?: string;
+};
+export type QuoteMessage = {
+  id: string;
+  author: "adviser" | "supplier";
+  kind: "message" | "adjustment" | "selection" | "confirmation" | "revision";
+  text: string;
+  at: string;
+  revision: number;
 };
 export type Quote = {
   id: string;
@@ -56,6 +90,12 @@ export type Quote = {
   selected: boolean;
   sentAt?: string;
   receivedAt?: string;
+  options?: QuoteOption[];
+  revision?: number;
+  revisions?: QuoteRevision[];
+  messages?: QuoteMessage[];
+  selection?: QuoteSelection;
+  adjustmentPending?: boolean;
 };
 export type Version = {
   id: string;

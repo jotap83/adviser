@@ -1,0 +1,258 @@
+.negotiation-grid {
+  display: grid;
+  gap: 24px;
+}
+.quote-choice {
+  padding: 24px;
+  min-width: 0;
+}
+.quote-choice .section-heading p {
+  margin: 5px 0 0;
+}
+.quote-option-picker {
+  border: 0;
+  padding: 0;
+  margin: 24px 0 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  min-width: 0;
+}
+.quote-option-picker legend {
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.quote-option-picker > label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  cursor: pointer;
+  min-width: 190px;
+}
+.quote-option-picker > label.active {
+  border-color: var(--blue);
+  background: #eef3fc;
+}
+.quote-option-picker input,
+.choice-lines input,
+.optional-lines input {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+.quote-option-picker small,
+.choice-lines small {
+  display: block;
+  color: var(--muted);
+  margin-top: 4px;
+}
+.option-detail {
+  max-width: 75ch;
+  white-space: pre-wrap;
+}
+.choice-lines {
+  list-style: none;
+  padding: 0;
+  margin: 18px 0 0;
+}
+.choice-lines > li {
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+}
+.choice-lines label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  min-width: 0;
+}
+.choice-lines label strong {
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+.choice-lines > li > strong {
+  white-space: nowrap;
+  font-size: 14px;
+}
+.composition-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 0 8px;
+}
+.composition-total > strong {
+  font-size: 19px;
+  color: var(--blue);
+  letter-spacing: -0.02em;
+}
+.quote-detail,
+.quote-history {
+  margin-top: 20px;
+  padding: 16px 0;
+  border-top: 1px solid var(--line);
+}
+.quote-detail summary,
+.quote-history summary {
+  cursor: pointer;
+  font-weight: 600;
+  padding: 5px 0;
+}
+.quote-history > section {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line);
+}
+.quote-history h4 {
+  color: var(--blue);
+  margin: 8px 0 16px;
+}
+.quote-history ul {
+  padding-left: 20px;
+}
+.quote-conversation {
+  border-top: 1px solid var(--line);
+  margin-top: 28px;
+  padding-top: 24px;
+}
+.panel > .quote-conversation {
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+.quote-conversation > h3 {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.quote-conversation > p {
+  max-width: 75ch;
+}
+.quote-thread {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0;
+}
+.quote-message {
+  border-bottom: 1px solid var(--line);
+  padding: 18px 0;
+}
+.quote-message-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.quote-message-meta span {
+  color: var(--muted);
+  font-size: 12px;
+}
+.quote-message.adviser .quote-message-meta strong {
+  color: var(--blue);
+}
+.quote-message p,
+.preserve-text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-width: 75ch;
+}
+.quote-reply {
+  max-width: 800px;
+}
+.option-editor {
+  border: 0;
+  border-top: 1px solid var(--line);
+  padding: 24px 0;
+  margin: 24px 0;
+  min-width: 0;
+}
+.option-editor legend {
+  font-size: 16px;
+  font-weight: 700;
+  padding-right: 16px;
+}
+.optional-lines {
+  display: grid;
+  gap: 8px;
+  margin-top: 18px;
+}
+.optional-lines label {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  min-height: 40px;
+  overflow-wrap: anywhere;
+}
+.optional-lines small {
+  color: var(--muted);
+}
+.option-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 16px;
+}
+.option-footer strong {
+  margin-left: 10px;
+}
+.sent-option {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line);
+}
+.sent-option p {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: var(--muted);
+}
+.chosen-composition .preserve-text {
+  line-height: 1.8;
+}
+@media (max-width: 760px) {
+  .quote-choice {
+    padding: 20px;
+  }
+  .quote-option-picker {
+    display: grid;
+  }
+  .quote-option-picker > label {
+    min-width: 0;
+  }
+  .choice-lines > li {
+    flex-wrap: wrap;
+  }
+  .choice-lines > li > strong {
+    margin-left: 30px;
+  }
+  .quote-message-meta,
+  .option-footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .optional-lines label {
+    flex-wrap: wrap;
+  }
+  .optional-lines small {
+    margin-left: 28px;
+    width: 100%;
+  }
+  .composition-total > strong {
+    font-size: 19px;
+  }
+  .sent-option {
+    grid-template-columns: 1fr;
+  }
+  .quote-choice > .section-heading {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

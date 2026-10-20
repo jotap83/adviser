@@ -16,6 +16,8 @@ E-mails de fornecedores: composição, revisão humana, envio transacional, fila
 
 Propostas: regras comerciais confirmadas, testes monetários, versões imutáveis em banco, geração consistente de PDF/Excel e aprovação vinculada à versão. Aceite não gera contratação automaticamente.
 
+`src/quote-model.ts` demonstra alternativas, itens opcionais, versões, conversa e confirmação da composição. A importação conserva a origem de cada item; revisões posteriores sinalizam o rascunho desatualizado. Essas invariantes precisam ser validadas novamente no servidor e persistidas transacionalmente em produção. Consulte [negociação de cotações](COTACOES-E-NEGOCIACAO.md).
+
 ## Provedor de IA substituível
 
 O frontend envia o texto ao backend da Adviser, que chama um adaptador. Adaptadores de API externa e de modelo próprio devem devolver o mesmo esquema validado. Prompts, contexto recuperado e regras ficam no domínio da aplicação. Chaves ficam apenas no servidor. Persistir a origem e permitir revisão humana antes de aplicar dados.

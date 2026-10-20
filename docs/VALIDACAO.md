@@ -48,3 +48,14 @@ A revisão final também confirmou: apagar o prazo gera alerta de entrega sem pr
 - Build TypeScript/Vite e quatro testes de domínio aprovados. Os percursos anteriores de gestão, cotação, comparativo, proposta, aceite, Excel e repasse passaram na regressão.
 
 Testes novos: `tests/briefing-browser.mjs` e `tests/standalone-briefing.mjs`. Não houve teste em aparelhos físicos, Safari ou Firefox; a verificação visual e funcional usou Chromium em larguras desktop e celular. PDFs digitalizados exigem transcrição; não há OCR.
+
+
+## Alternativas e negociação de cotações
+
+`tests/supplier-negotiation.mjs` passou em Chromium: alternativas exclusivas; adicional opcional; total e itens exatos; confirmação do fornecedor; conversa e pedido de ajuste; revisão com preço novo; cotação e proposta anteriores preservadas; bloqueio de salvar rascunho desatualizado; reimportação; persistência e larguras 1440px/390px sem alargamento horizontal. A confirmação não altera o aceite do cliente. Nenhum erro de página.
+
+`tests/browser.mjs` passou novamente no ciclo comercial completo. `npm test`: cinco testes de domínio, incluindo exclusão de opcionais não escolhidos, alternativas não somadas e rejeição de seleção de versão antiga. Build TypeScript/Vite passou.
+
+`tests/standalone-quotes.mjs` passou por `file://`, offline: duas alternativas, composição sem adicional, confirmação do fornecedor e persistência após recarregar. Zero requisições externas e zero erros de página. Não foram testados Safari/Firefox ou aparelho físico.
+
+A revisão visual usa seis capturas (opções, escolha e confirmação, cada uma em desktop/mobile). Capturas isoladas da escolha ocultam o cabeçalho somente para evitar sobreposição na evidência; o aplicativo mantém o cabeçalho fixo. O detector executou uma vez; duas sugestões tipográficas foram resolvidas com o tamanho já existente de 19px.

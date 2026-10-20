@@ -137,6 +137,22 @@ export function collectAlerts(state: AppState, now = new Date()): AlertItem[] {
           action: "Conferir cotação",
           path: path("compare"),
         });
+      const supplierReply = q.messages
+        ?.filter((m) => m.author === "supplier" && m.kind !== "revision")
+        .at(-1);
+      if (supplierReply)
+        add({
+          id: `supplier-reply-${d.id}-${q.id}-${supplierReply.id}`,
+          title:
+            supplierReply.kind === "confirmation"
+              ? "Fornecedor confirmou a composição"
+              : "Fornecedor respondeu à negociação",
+          detail: `${name} · cotação v${supplierReply.revision}. Confira a conversa e as condições.`,
+          kind: "response",
+          severity: "info",
+          action: "Ver conversa da cotação",
+          path: path("compare"),
+        });
     }
     d.briefingLog.forEach((_, i) =>
       add({

@@ -26,13 +26,36 @@ export function totals(lines, fee = 0, tax = 0) {
 export function selectedLines(quotes) {
   return quotes
     .filter((q) => q.selected && q.status === "received")
-    .flatMap((q) =>
-      q.lines.map((l) => ({
+    .flatMap((q) => {
+      if (q.adjustmentPending) return [];
+      const selection = q.selection;
+      // Legacy selections remain usable; new options require an explicit composition.
+      if (
+        q.options?.length &&
+        (!selection || selection.revision !== (q.revision || 1))
+      )
+        return [];
+      const option = q.options?.find((o) => o.id === selection?.optionId);
+      if (q.options?.length && !option) return [];
+      if (selection && selection.revision !== (q.revision || 1)) return [];
+      const lines = selection
+        ? (option?.lines || q.lines).filter((l) =>
+            selection.lineIds.includes(l.id),
+          )
+        : q.lines;
+      return lines.map((l) => ({
         ...l,
         id: `${q.id}-${l.id}`,
         supplier: q.supplierId,
-      })),
-    );
+        ...(selection
+          ? {
+              sourceQuote: q.id,
+              sourceRevision: selection.revision,
+              sourceSelection: selection.id,
+            }
+          : {}),
+      }));
+    });
 }
 export function escapeCSV(v) {
   const s = String(v ?? "");
