@@ -22,7 +22,7 @@ export function InboxSummary() {
             : "Nenhuma mensagem aguardando associação. A fila está em dia."}
         </p>
         <span className="inbox-summary-meta">
-          <Badge tone="amber">Evolução · fora do MVP</Badge> {linked}{" "}
+          <Badge tone="blue">MVP · comunicação com IA</Badge> {linked}{" "}
           {linked === 1 ? "mensagem associada" : "mensagens associadas"} · Gmail
           ainda não conectado
         </span>

@@ -64,8 +64,8 @@ node tests/standalone-inbox.mjs
 
 O último teste abre `standalone/adviser-prototipo.html` por `file://`, offline e sem servidor. Verifica associação, referência persistida após recarga, campos preservados e ausência de requisições HTTP e erros de página. Os resultados desta entrega e seu alcance estão em [revisão visual e funcional](REVISAO-VISUAL-TRIAGEM.md).
 
-## Limites e etapa futura
+## Limites do protótipo e implementação do MVP
 
 Mensagens, vínculos e contadores ficam em `localStorage`. Não há banco compartilhado, controle de concorrência ou garantia de unicidade entre usuários. O texto do anexo é fictício; nenhum arquivo foi recebido do Gmail.
 
-Na produção, ainda será necessário integrar as contas de e-mail, autenticar usuários, validar acesso no servidor, persistir identificadores únicos e auditoria, tratar recebimento repetido e concorrência, armazenar anexos reais e definir o adaptador de IA com revisão humana. Esses itens são futuros e não fazem parte da integração demonstrada aqui.
+Gmail e WhatsApp integrados com IA foram incluídos no MVP em 20/10/2026. Na produção, será necessário integrar as contas, autenticar usuários, validar acesso no servidor, persistir identificadores únicos por canal/conta e auditoria, tratar recebimento repetido e concorrência, armazenar anexos reais e implementar o adaptador de IA com revisão humana. Esses itens não estão implementados na demonstração local. Esta tela simula somente a triagem de e-mails; ver [escopo dos canais](CANAIS-NO-MVP.md).

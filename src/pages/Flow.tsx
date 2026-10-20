@@ -14,14 +14,14 @@ const flow = [
   {
     n: 1,
     title: "Cliente entra em contato",
-    desc: "E-mail ou ligação com a Adviser.",
+    desc: "Gmail, WhatsApp ou ligação com a Adviser.",
     owner: "Cliente → Atendimento",
     icon: Phone,
   },
   {
     n: 2,
-    title: "Atendimento registra a demanda",
-    desc: "Registra e-mail, ligação e anexos PDF, DOCX ou XLSX. Vincula cliente, responsável e código da demanda.",
+    title: "Mensagens chegam e o atendimento confirma o vínculo",
+    desc: "Gmail e WhatsApp integrados recebem mensagens e anexos. A IA sugere a demanda quando o código ou a conversa não bastam; a equipe confirma os casos ambíguos. Entrada manual disponível.",
     owner: "Atendimento",
     icon: ClipboardList,
   },
@@ -35,7 +35,7 @@ const flow = [
   {
     n: 4,
     title: "Cliente e atendimento alinham o entendimento",
-    desc: "A Adviser formaliza por e-mail. O cliente responde no seu canal habitual.",
+    desc: "A IA prepara a resposta e a equipe revisa antes de enviar pelo Gmail ou WhatsApp. O cliente responde no seu canal habitual.",
     owner: "Atendimento ↔ Cliente",
     icon: Mail,
     branch:

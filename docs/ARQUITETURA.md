@@ -12,7 +12,7 @@ Substituir o armazenamento local por API, banco, armazenamento de arquivos e aut
 
 O portal de fornecedor precisa de tokens de acesso limitados por solicitação, expiração, revogação, autorização de cada operação no servidor, validação de campos e arquivos e proteção contra abuso. Não pode expor o estado completo da agência como faz esta demonstração.
 
-E-mails de fornecedores: composição, revisão humana, envio transacional, fila/reenvio e registro do estado real. No início, mensagens do cliente continuam com entrada manual. O Gmail completo é um pacote separado, sujeito à situação de cada conta, consentimento e escopos necessários.
+Gmail e WhatsApp com IA estão incluídos no MVP: recebimento de mensagens e anexos; normalização por canal, conta, identificador e conversa; associação à demanda e fila de confirmação; interpretação para o briefing; composição, revisão humana e envio pelo sistema. Implementar autorização das contas, recebimento idempotente, fila/reenvio sem duplicar envios, estados de entrega e tratamento de falhas. Conteúdo externo é dado, nunca uma autorização para a IA executar ações. A entrada manual continua disponível. Escopos Google, números e modalidade WhatsApp, histórico, grupos e áudios dependem do levantamento. Ver [limites dos canais no MVP](CANAIS-NO-MVP.md).
 
 Propostas: regras comerciais confirmadas, testes monetários, versões imutáveis em banco, geração consistente de PDF/Excel e aprovação vinculada à versão. Aceite não gera contratação automaticamente.
 
@@ -32,7 +32,7 @@ Etapa 2 — Operações (nome da área e responsabilidades a confirmar): recebe 
 
 Etapa 3: financeiro próprio por evento, previstos/realizados, recebimentos, pagamentos, conciliação e fechamento. Pagamentos acontecem ao longo do projeto; o fechamento vem após a execução. Mapear o uso atual do Conta Azul para decidir integração, migração e cobertura necessária antes de uma eventual retirada. Não há compromisso de equivalência fiscal, bancária ou contábil nesta prévia.
 
-Opcional: Gmail completo; portal do cliente conforme interesse e compliance; IA em infraestrutura própria. Não incluir inscrição/site do evento no MVP.
+Opcional: portal do cliente conforme interesse e compliance; IA em infraestrutura própria. Gmail e WhatsApp com IA pertencem ao MVP. Não incluir inscrição/site do evento no MVP.
 
 ## Entrega e propriedade
 

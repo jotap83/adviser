@@ -47,7 +47,7 @@ Dados gerais: objetivo, formato/público, data, horários, local, montagem/desmo
 
 ## Alertas no MVP e evolução
 
-No MVP, um retorno do cliente entra quando a equipe registra a conversa. Uma resposta enviada pelo formulário do fornecedor poderá gerar um evento no servidor. Integração Gmail é necessária para detectar e-mails automaticamente, correlacionar remetentes/conversas e tratar mensagens sem vínculo reconhecido. Não presumir que apenas o endereço do remetente identifica um evento.
+No protótipo, retornos são registrados ou simulados. No MVP de produção, Gmail e WhatsApp integrados recebem mensagens e geram alertas, com confirmação dos vínculos ambíguos. Uma resposta enviada pelo formulário do fornecedor também poderá gerar um evento no servidor. Não presumir que apenas o endereço ou o número do remetente identifica um evento; a mesma empresa pode ter várias demandas.
 
 Em produção: eventos persistidos, idempotência, leitura por usuário, destinatários por responsabilidade, histórico de mudanças, tarefas agendadas para prazos, atualização da tela, autenticação e regras de acesso. Na indisponibilidade da IA, entrada manual permanece. Não contratar fornecedores, aprovar propostas ou enviar comunicações automaticamente a partir de uma sugestão.
 
@@ -68,4 +68,4 @@ Levantar uma linha de base antes do uso e comparar com um período de teste: tem
 
 ## Efeito no escopo comercial
 
-Painel básico, alertas por regras e roteiro de briefing são candidatos de alto valor para o MVP. BI histórico, Gmail automático, comparação semântica de versões e indicadores financeiros completos devem ser orçados separadamente. Revisar o esforço de produção após validar os novos fluxos; a demonstração local não é o custo da implementação segura e multiusuário.
+Painel básico, alertas por regras, roteiro de briefing e integrações Gmail/WhatsApp com IA fazem parte do MVP proposto. BI histórico, comparação semântica completa de versões e indicadores financeiros completos são evoluções separadas. Revisar o esforço do MVP para incluir os conectores, autorização, recebimento, envio e operação dos canais; a demonstração local não é o custo da implementação segura e multiusuário.

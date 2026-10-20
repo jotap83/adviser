@@ -5,7 +5,7 @@
 - Categorias definitivas e campos de cada modelo. Considerar cinco modelos iniciais no orçamento do MVP.
 - Regra exata de fee, margem, descontos, impostos e pagamento direto.
 - Formato final de proposta, anexo e forma de registro da aceitação.
-- Contas de e-mail utilizadas, domínio e situação Google Workspace.
+- Contas de e-mail utilizadas, domínio e situação Google Workspace; números e modalidade de WhatsApp, áudios, grupos e histórico necessários.
 - Volume real de propostas, fornecedores por demanda e tamanho dos anexos.
 - Responsabilidades de aprovação e eventual revisão futura de permissões.
 - Contas de hospedagem, banco e provedores de comunicação/IA que receberão o sistema.
@@ -14,7 +14,7 @@
 
 Registrar contato → organizar e revisar briefing → esclarecer com cliente → validar → solicitar cotações → receber respostas por modelo → comparar → montar e versionar proposta → enviar/registrar envio → registrar ajuste, recusa ou aceite → preparar repasse.
 
-As respostas de fornecedores são ligadas à solicitação, não apenas ao e-mail de origem. O atendimento deve revisar associações ambíguas em uma eventual integração futura de Gmail. O sistema deve funcionar sem a IA.
+As respostas de fornecedores são ligadas à solicitação, não apenas ao e-mail de origem. Gmail e WhatsApp com IA fazem parte do MVP: a equipe revisa associações ambíguas e respostas antes de enviar. A implementação deve tratar duplicatas, falhas de conexão e de IA, reenvio e revisão de campos sugeridos, sem confirmar preços ou aceite automaticamente. O sistema deve funcionar manualmente quando a IA ou um canal estiver indisponível.
 
 ## Verificação técnica disponível
 

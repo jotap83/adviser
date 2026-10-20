@@ -192,9 +192,16 @@ export function Settings() {
           <div className="integration-row">
             <span className="integration-name">
               <strong>Gmail</strong>
-              <small>Copiar e colar no MVP</small>
+              <small>Receber e enviar e-mails, anexos e triagem com IA</small>
             </span>
-            <Badge tone="amber">Integração fora do MVP</Badge>
+            <Badge tone="blue">MVP · não conectado</Badge>
+          </div>
+          <div className="integration-row">
+            <span className="integration-name">
+              <strong>WhatsApp</strong>
+              <small>Mensagens e anexos com IA, respostas revisadas pela equipe</small>
+            </span>
+            <Badge tone="blue">MVP · não conectado</Badge>
           </div>
           <div className="integration-row">
             <span className="integration-name">
@@ -211,8 +218,10 @@ export function Settings() {
             <Badge tone="amber">Fora do MVP</Badge>
           </div>
           <p className="muted">
-            Uma integração futura deve tratar autorização por conta, associação
-            de conversas, anexos, reenvios e respostas de outros contatos.
+            As integrações do MVP serão feitas com as contas da Adviser.
+            Incluem associação de conversas, anexos, confirmação de vínculos,
+            revisão das respostas e tratamento de falhas. Áudios, grupos e
+            histórico a importar ainda precisam de definição.
           </p>
         </section>
       </div>

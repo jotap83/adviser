@@ -181,7 +181,7 @@ export default function App() {
         href={`#${item.path}`}
         key={item.path}
         aria-current={active ? "page" : undefined}
-        aria-label={`${item.label}${item.path === "/operacoes" ? ", etapa 2" : item.path === "/financeiro" ? ", etapa 3" : item.path === "/emails" ? ", evolução opcional" : ""}`}
+        aria-label={`${item.label}${item.path === "/operacoes" ? ", etapa 2" : item.path === "/financeiro" ? ", etapa 3" : ""}`}
         title={
           collapsed
             ? `${item.label}${item.path === "/operacoes" ? " · etapa 2" : item.path === "/financeiro" ? " · etapa 3" : ""}`
@@ -192,13 +192,11 @@ export default function App() {
         <Icon size={19} />
         <span>{item.label}</span>
         {item.path === "/demandas" && <small>{state.demands.length}</small>}
-        {["/operacoes", "/financeiro", "/emails"].includes(item.path) && (
+        {["/operacoes", "/financeiro"].includes(item.path) && (
           <small>
             {item.path === "/operacoes"
               ? "2"
-              : item.path === "/financeiro"
-                ? "3"
-                : "Futuro"}
+              : "3"}
           </small>
         )}
       </a>
@@ -238,11 +236,11 @@ export default function App() {
           })}
           <span className="nav-label">ATENDIMENTO · MVP</span>
           {nav.map(navButton)}
+          {navButton({ path: "/emails", label: "Revisar e-mails", icon: Mail })}
           <span className="nav-label">EVOLUÇÃO · FORA DO MVP</span>
           {[
             { path: "/operacoes", label: "Operações", icon: Columns3 },
             { path: "/financeiro", label: "Financeiro", icon: Wallet },
-            { path: "/emails", label: "Revisar e-mails", icon: Mail },
           ].map(navButton)}
           <span className="nav-label">PLANEJAMENTO</span>
           {[

@@ -18,11 +18,15 @@ const deliveries = [
       ],
       [
         "Briefing e comunicação",
-        "Entrada manual de e-mail, ligação e anexos PDF, DOCX e XLSX; referência da demanda e histórico de esclarecimentos.",
+        "Mensagens do Gmail e WhatsApp, ligações registradas e anexos PDF, DOCX e XLSX; referência da demanda e histórico de esclarecimentos. Entrada manual sempre disponível.",
+      ],
+      [
+        "Gmail e WhatsApp integrados com IA",
+        "Recebimento de mensagens e anexos, associação por código ou conversa e sugestões de vínculo por conteúdo. Casos ambíguos ficam para confirmação da equipe; respostas são revisadas antes do envio pelo sistema.",
       ],
       [
         "IA assistiva",
-        "Extrair sugestões do briefing, apontar dúvidas e preparar textos. Revisão humana e preenchimento manual sempre disponíveis.",
+        "Interpretar mensagens e anexos, resumir a conversa, sugerir campos do briefing, apontar dúvidas e preparar respostas. Revisão humana antes de aplicar dados ou enviar mensagens.",
       ],
       [
         "Cotações e negociação",
@@ -34,7 +38,7 @@ const deliveries = [
       ],
       [
         "Gestão e alertas",
-        "Visão dos sócios, responsáveis, prazos, demandas paradas e retornos registrados no sistema.",
+        "Visão dos sócios, responsáveis, prazos, demandas paradas, novas mensagens, retornos dos fornecedores e associações pendentes de confirmação.",
       ],
       [
         "Apoio criativo",
@@ -103,7 +107,8 @@ export function ScopeOverview() {
       <Note>
         Os percentuais comerciais, a coluna “Estudo”, os campos internos da
         proposta e as regras de pagamento ainda precisam de confirmação. A IA
-        real será integrada na implementação; hoje é simulada.
+        real, Gmail e WhatsApp fazem parte do MVP a implementar. Hoje a IA e a
+        triagem de e-mails são simuladas; nenhuma conta está conectada.
       </Note>
       <div className="delivery-list">
         {deliveries.map((phase) => (
@@ -127,17 +132,34 @@ export function ScopeOverview() {
           </section>
         ))}
       </div>
+      <section className="panel">
+        <div className="section-heading">
+          <div>
+            <h2>Comunicação integrada no MVP</h2>
+            <p>
+              O cliente continua nos seus canais habituais. A equipe reúne as
+              mensagens, confirma o atendimento e revisa as sugestões da IA.
+            </p>
+          </div>
+          <Badge tone="blue">MVP · etapa 1</Badge>
+        </div>
+        <p>
+          A prévia atual demonstra a triagem de e-mails. A conexão com Gmail e
+          WhatsApp, o recebimento real e os envios serão implementados com as
+          contas da Adviser. Quantidade de contas e números, áudios, grupos e
+          histórico a importar precisam ser definidos no levantamento.
+        </p>
+        <Button onClick={() => go("/emails")} icon={ArrowRight}>
+          Explorar triagem de e-mails
+        </Button>
+      </section>
       <section className="panel scope-options">
         <h2>Evoluções opcionais</h2>
         <Badge tone="gray">Fora do MVP · sem etapa fechada</Badge>
         <p>
-          Importação automática do Gmail e triagem por IA, portal de
-          acompanhamento do cliente e modelos de IA em infraestrutura própria.
+          Portal de acompanhamento do cliente e modelos de IA em infraestrutura própria.
           Serão dimensionados separadamente.
         </p>
-        <Button onClick={() => go("/emails")} icon={ArrowRight}>
-          Ver simulação de e-mails
-        </Button>
       </section>
     </>
   );

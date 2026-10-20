@@ -18,4 +18,4 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 
 ## Limites
 
-Dados fictícios e persistência local. Nenhum acesso ao Trello, Gmail ou Conta Azul, contrato, transação ou notificação real. Gmail automático é evolução opcional, IA via API está prevista no MVP mas permanece simulada. Referências e apresentações são apoio criativo do MVP; gestão completa da criação fica na etapa 2. Regras de preços, nome da área, migração e alcance financeiro permanecem a validar.
+Dados fictícios e persistência local. Nenhum acesso ao Trello, Gmail, WhatsApp ou Conta Azul, contrato, transação ou notificação real. Por correção do usuário em 20/10/2026, Gmail e WhatsApp integrados com IA fazem parte do MVP de produção; a demonstração continua sem contas conectadas e simula a triagem de e-mails. Referências e apresentações são apoio criativo do MVP; gestão completa da criação fica na etapa 2. Regras de preços, nome da área, migração e alcance financeiro permanecem a validar.

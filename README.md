@@ -56,7 +56,7 @@ Para demonstrar a negociação, use **Exemplo com duas opções** no link do for
 - Registros em `localStorage` e arquivos de apresentações em IndexedDB, com versão de esquema e opção de reiniciar. Atualização entre abas do mesmo site/navegador; sem banco de dados ou sincronização entre dispositivos/usuários.
 - Portal do fornecedor demonstrativo: não oferece autenticação, isolamento ou segurança de acesso real. Não use com informações reais. O frontend contém todos os exemplos.
 - Briefing: leitura local de texto de PDF, DOCX e XLSX; sem OCR ou interpretação real por IA. Apresentações: arquivos persistidos em IndexedDB neste navegador, com prévia de PDF/imagens; PPTX pode ser baixado. Anexos de cotações continuam registrando apenas o nome.
-- Não há chamadas de IA, Gmail, e-mail transacional ou Conta Azul.
+- Não há chamadas de IA, Gmail, WhatsApp, e-mail transacional ou Conta Azul. Gmail e WhatsApp integrados com IA pertencem ao MVP planejado, mas nenhuma conta está conectada no protótipo.
 - Não há autenticação, convites ou controle de permissões reais. Os cadastros de usuários demonstram a interface.
 - O exportador Excel é carregado apenas quando solicitado; ExcelJS e o leitor PDF.js usam chunks maiores que o aviso padrão do Vite e são carregados sob demanda.
 - Impressão em PDF utiliza o diálogo do navegador.
@@ -95,7 +95,7 @@ Testes: `node tests/briefing-browser.mjs` com app na porta 4173 e `node tests/st
 
 ## Triagem de e-mails
 
-Na visão geral, clique em **Revisar e-mails** ou acesse `#/emails`. O exemplo inicial tem quatro mensagens para identificar e uma associada por código. Compare os motivos das sugestões, selecione um atendimento e confirme o vínculo. Depois, abra o briefing para revisar o conteúdo. Também é possível escolher outro atendimento, criar demanda/cliente, ignorar e restaurar mensagens ou corrigir um vínculo.
+Em **Atendimento > Revisar e-mails**, na visão geral ou em `#/emails`, explore a triagem incluída no MVP. O exemplo inicial tem quatro mensagens para identificar e uma associada por código. Compare os motivos das sugestões, selecione um atendimento e confirme o vínculo. Depois, abra o briefing para revisar o conteúdo. Também é possível escolher outro atendimento, criar demanda/cliente, ignorar e restaurar mensagens ou corrigir um vínculo.
 
 Cada demanda conserva uma referência `ADV-ano-sequência`, exibida na fila e nos assuntos e textos preparados para envio. As sugestões são uma simulação por regras; Gmail não está conectado. Associar uma mensagem inclui conversa e anexos fictícios, sem alterar campos, valores ou aceite da proposta. Consulte [funcionamento e roteiro](docs/TRIAGEM-DE-EMAILS.md) e [registro da revisão](docs/REVISAO-VISUAL-TRIAGEM.md).
 

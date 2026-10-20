@@ -2,7 +2,7 @@
 
 ## Escopo proposto
 
-MVP: atendimento até aceite e repasse, incluindo cadastros, IA assistiva, anexos, comunicação manual com cliente, referências por demanda, links para fornecedores, negociação, versões, propostas, gestão, alertas e apoio criativo. Alertas do MVP dependem de dados e retornos registrados na plataforma; leitura automática do Gmail é opcional futura. Proposta e estudo comercial dependem das definições de valores e visibilidade ainda em aberto.
+MVP: atendimento até aceite e repasse, incluindo cadastros, Gmail e WhatsApp integrados com IA, recebimento/envio de mensagens e anexos, confirmação de vínculos ambíguos, briefing assistido, referências por demanda, links para fornecedores, negociação, versões, propostas, gestão, alertas e apoio criativo. Revisão humana antes de aplicar dados ou enviar respostas. Alertas incluem novas mensagens dos canais conectados, retornos e associações pendentes. A entrada manual permanece. Proposta e estudo comercial dependem das definições de valores e visibilidade ainda em aberto. Esta inclusão dos canais foi solicitada pelo usuário em 20/10/2026 e substitui a marcação anterior de Gmail opcional.
 
 Etapa 2: produção e execução com quadro por evento, equipe, checklist, cronograma de tarefas, bloqueios, comentários, histórico e apoio da criação. O Trello atual é referência de uso, não uma integração implementada. Nome da área, colunas, migração e regras finais serão validados.
 
@@ -13,7 +13,7 @@ Etapa 3: financeiro próprio. Prévia de lançamentos a pagar/receber e baixa re
 - `#/escopo` mostra capacidades por entrega. `#/roadmap` preserva o acesso antigo.
 - `#/operacoes` e `#/operacoes/ID` mostram o quadro e o seletor de projetos.
 - `#/financeiro` e `#/financeiro/ID` mostram a prévia financeira do projeto.
-- `#/emails` permanece como evolução opcional. O bloco correspondente na tela inicial também é identificado.
+- `#/emails` pertence ao MVP e está em Atendimento. Demonstra a triagem de e-mails; as conexões reais do Gmail e WhatsApp ainda não existem. O bloco correspondente na tela inicial também é identificado como MVP.
 
 Estado de produção adicionado sem substituir demandas existentes. A migração de demonstração semeia projetos fictícios uma única vez. Reiniciar a demonstração também restaura os exemplos operacionais e financeiros. Todos os dados permanecem em localStorage e são incluídos na exportação da demonstração.
 
