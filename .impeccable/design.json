@@ -1,52 +1,22 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-20T00:44:12.277141Z",
+  "generatedAt": "2026-10-20T01:05:43.870824+00:00",
   "title": "Design System: Adviser",
   "extensions": {
     "colorMeta": {
-      "navy": {
-        "role": "neutral",
-        "displayName": "Marinho profundo",
-        "canonical": "#14243c",
-        "tonalRamp": [
-          "oklch(15.00% 0.05038 258.28)",
-          "oklch(26.43% 0.05038 258.28)",
-          "oklch(37.86% 0.05038 258.28)",
-          "oklch(49.29% 0.05038 258.28)",
-          "oklch(60.71% 0.05038 258.28)",
-          "oklch(72.14% 0.05038 258.28)",
-          "oklch(83.57% 0.05038 258.28)",
-          "oklch(95.00% 0.05038 258.28)"
-        ]
-      },
       "blue": {
         "role": "primary",
-        "displayName": "Azul-cobalto",
-        "canonical": "#245edb",
+        "displayName": "Azul Adviser",
+        "canonical": "#293e91",
         "tonalRamp": [
-          "oklch(15.00% 0.20092 262.76)",
-          "oklch(26.43% 0.20092 262.76)",
-          "oklch(37.86% 0.20092 262.76)",
-          "oklch(49.29% 0.20092 262.76)",
-          "oklch(60.71% 0.20092 262.76)",
-          "oklch(72.14% 0.20092 262.76)",
-          "oklch(83.57% 0.20092 262.76)",
-          "oklch(95.00% 0.20092 262.76)"
-        ]
-      },
-      "blue-hover": {
-        "role": "primary",
-        "displayName": "Azul-cobalto escuro",
-        "canonical": "#174cb9",
-        "tonalRamp": [
-          "oklch(15.00% 0.18100 262.35)",
-          "oklch(26.43% 0.18100 262.35)",
-          "oklch(37.86% 0.18100 262.35)",
-          "oklch(49.29% 0.18100 262.35)",
-          "oklch(60.71% 0.18100 262.35)",
-          "oklch(72.14% 0.18100 262.35)",
-          "oklch(83.57% 0.18100 262.35)",
-          "oklch(95.00% 0.18100 262.35)"
+          "oklch(15.00% 0.06963 268.56)",
+          "oklch(26.43% 0.12268 268.56)",
+          "oklch(37.86% 0.13925 268.56)",
+          "oklch(49.29% 0.13925 268.56)",
+          "oklch(60.71% 0.13925 268.56)",
+          "oklch(72.14% 0.12932 268.56)",
+          "oklch(83.57% 0.07626 268.56)",
+          "oklch(95.00% 0.02321 268.56)"
         ]
       },
       "canvas": {
@@ -157,16 +127,16 @@
       "focus": {
         "role": "neutral",
         "displayName": "Foco visível",
-        "canonical": "#8cb5ff",
+        "canonical": "#e94e1d",
         "tonalRamp": [
-          "oklch(15.00% 0.11561 261.77)",
-          "oklch(26.43% 0.11561 261.77)",
-          "oklch(37.86% 0.11561 261.77)",
-          "oklch(49.29% 0.11561 261.77)",
-          "oklch(60.71% 0.11561 261.77)",
-          "oklch(72.14% 0.11561 261.77)",
-          "oklch(83.57% 0.11561 261.77)",
-          "oklch(95.00% 0.11561 261.77)"
+          "oklch(15.00% 0.09974 36.49)",
+          "oklch(26.43% 0.17575 36.49)",
+          "oklch(37.86% 0.19948 36.49)",
+          "oklch(49.29% 0.19948 36.49)",
+          "oklch(60.71% 0.19948 36.49)",
+          "oklch(72.14% 0.18526 36.49)",
+          "oklch(83.57% 0.10925 36.49)",
+          "oklch(95.00% 0.03325 36.49)"
         ]
       },
       "button-text": {
@@ -262,46 +232,46 @@
       "nav-text": {
         "role": "neutral",
         "displayName": "Texto da navegação",
-        "canonical": "#becce0",
+        "canonical": "#e1e6f6",
         "tonalRamp": [
-          "oklch(15.00% 0.03189 257.24)",
-          "oklch(26.43% 0.03189 257.24)",
-          "oklch(37.86% 0.03189 257.24)",
-          "oklch(49.29% 0.03189 257.24)",
-          "oklch(60.71% 0.03189 257.24)",
-          "oklch(72.14% 0.03189 257.24)",
-          "oklch(83.57% 0.03189 257.24)",
-          "oklch(95.00% 0.03189 257.24)"
+          "oklch(15.00% 0.01117 272.05)",
+          "oklch(26.43% 0.01968 272.05)",
+          "oklch(37.86% 0.02234 272.05)",
+          "oklch(49.29% 0.02234 272.05)",
+          "oklch(60.71% 0.02234 272.05)",
+          "oklch(72.14% 0.02074 272.05)",
+          "oklch(83.57% 0.01223 272.05)",
+          "oklch(95.00% 0.00372 272.05)"
         ]
       },
       "nav-hover": {
         "role": "neutral",
         "displayName": "Navegação em hover",
-        "canonical": "#1e3452",
+        "canonical": "#223479",
         "tonalRamp": [
-          "oklch(15.00% 0.06073 256.49)",
-          "oklch(26.43% 0.06073 256.49)",
-          "oklch(37.86% 0.06073 256.49)",
-          "oklch(49.29% 0.06073 256.49)",
-          "oklch(60.71% 0.06073 256.49)",
-          "oklch(72.14% 0.06073 256.49)",
-          "oklch(83.57% 0.06073 256.49)",
-          "oklch(95.00% 0.06073 256.49)"
+          "oklch(15.00% 0.05988 268.54)",
+          "oklch(26.43% 0.10551 268.54)",
+          "oklch(37.86% 0.11976 268.54)",
+          "oklch(49.29% 0.11976 268.54)",
+          "oklch(60.71% 0.11976 268.54)",
+          "oklch(72.14% 0.11122 268.54)",
+          "oklch(83.57% 0.06559 268.54)",
+          "oklch(95.00% 0.01996 268.54)"
         ]
       },
       "nav-selected": {
         "role": "neutral",
         "displayName": "Navegação selecionada",
-        "canonical": "#2c5ab7",
+        "canonical": "#fff",
         "tonalRamp": [
-          "oklch(15.00% 0.15603 262.40)",
-          "oklch(26.43% 0.15603 262.40)",
-          "oklch(37.86% 0.15603 262.40)",
-          "oklch(49.29% 0.15603 262.40)",
-          "oklch(60.71% 0.15603 262.40)",
-          "oklch(72.14% 0.15603 262.40)",
-          "oklch(83.57% 0.15603 262.40)",
-          "oklch(95.00% 0.15603 262.40)"
+          "oklch(15.00% 0.00000 89.88)",
+          "oklch(26.43% 0.00000 89.88)",
+          "oklch(37.86% 0.00000 89.88)",
+          "oklch(49.29% 0.00000 89.88)",
+          "oklch(60.71% 0.00000 89.88)",
+          "oklch(72.14% 0.00000 89.88)",
+          "oklch(83.57% 0.00000 89.88)",
+          "oklch(95.00% 0.00000 89.88)"
         ]
       },
       "status-neutral-surface": {
@@ -352,16 +322,16 @@
       "status-blue-text": {
         "role": "semantic",
         "displayName": "Andamento · texto",
-        "canonical": "#2455b3",
+        "canonical": "#293e91",
         "tonalRamp": [
-          "oklch(15.00% 0.15896 261.75)",
-          "oklch(26.43% 0.15896 261.75)",
-          "oklch(37.86% 0.15896 261.75)",
-          "oklch(49.29% 0.15896 261.75)",
-          "oklch(60.71% 0.15896 261.75)",
-          "oklch(72.14% 0.15896 261.75)",
-          "oklch(83.57% 0.15896 261.75)",
-          "oklch(95.00% 0.15896 261.75)"
+          "oklch(15.00% 0.06963 268.56)",
+          "oklch(26.43% 0.12268 268.56)",
+          "oklch(37.86% 0.13925 268.56)",
+          "oklch(49.29% 0.13925 268.56)",
+          "oklch(60.71% 0.13925 268.56)",
+          "oklch(72.14% 0.12932 268.56)",
+          "oklch(83.57% 0.07626 268.56)",
+          "oklch(95.00% 0.02321 268.56)"
         ]
       },
       "status-green-surface": {
@@ -513,13 +483,54 @@
           "oklch(83.57% 0.14388 25.06)",
           "oklch(95.00% 0.14388 25.06)"
         ]
+      },
+      "orange": {
+        "role": "primary",
+        "displayName": "Laranja Adviser",
+        "canonical": "#e94e1d",
+        "tonalRamp": [
+          "oklch(15.00% 0.09974 36.49)",
+          "oklch(26.43% 0.17575 36.49)",
+          "oklch(37.86% 0.19948 36.49)",
+          "oklch(49.29% 0.19948 36.49)",
+          "oklch(60.71% 0.19948 36.49)",
+          "oklch(72.14% 0.18526 36.49)",
+          "oklch(83.57% 0.10925 36.49)",
+          "oklch(95.00% 0.03325 36.49)"
+        ]
+      },
+      "orange-hover": {
+        "role": "primary",
+        "displayName": "orange-hover",
+        "canonical": "#f57143",
+        "tonalRamp": [
+          "oklch(15.00% 0.08673 39.22)",
+          "oklch(26.43% 0.15283 39.22)",
+          "oklch(37.86% 0.17347 39.22)",
+          "oklch(49.29% 0.17347 39.22)",
+          "oklch(60.71% 0.17347 39.22)",
+          "oklch(72.14% 0.16109 39.22)",
+          "oklch(83.57% 0.09500 39.22)",
+          "oklch(95.00% 0.02891 39.22)"
+        ]
+      },
+      "orange-ink": {
+        "role": "primary",
+        "displayName": "orange-ink",
+        "canonical": "#1c1c1c",
+        "tonalRamp": [
+          "oklch(15.00% 0.00000 89.88)",
+          "oklch(26.43% 0.00000 89.88)",
+          "oklch(37.86% 0.00000 89.88)",
+          "oklch(49.29% 0.00000 89.88)",
+          "oklch(60.71% 0.00000 89.88)",
+          "oklch(72.14% 0.00000 89.88)",
+          "oklch(83.57% 0.00000 89.88)",
+          "oklch(95.00% 0.00000 89.88)"
+        ]
       }
     },
     "typographyMeta": {
-      "brand": {
-        "displayName": "Brand",
-        "purpose": "Wordmark tipográfico da navegação; variante própria no documento de proposta."
-      },
       "headline": {
         "displayName": "Headline",
         "purpose": "Título de página; 26px no celular. O título de evento varia de 27px para 23px."
@@ -607,7 +618,14 @@
         "name": "min-wide-queue",
         "value": "1500px"
       }
-    ]
+    ],
+    "brandAssets": {
+      "source": "https://www.agenciaadviser.com.br/",
+      "logo": "src/assets/adviser-logo.svg",
+      "blue": "#293e91",
+      "orange": "#e94e1d",
+      "preserveOriginalPixels": true
+    }
   },
   "components": [
     {
@@ -616,7 +634,7 @@
       "refersTo": "button-primary",
       "description": "Ação principal, habilitada depois da revisão e confirmação humana.",
       "html": "<button class=\"ds-btn-primary\" type=\"button\">Validar briefing</button>",
-      "css": ".ds-btn-primary{font-family:\"DM Sans\",sans-serif;display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid #d5dce7;background:#fff;color:#36445b;min-height:40px;padding:9px 14px;border-radius:7px;font-weight:600;font-size:13px;line-height:1.4;transition:background-color .15s,border-color .15s;white-space:normal;cursor:pointer;background:var(--blue,#245edb);border-color:var(--blue,#245edb);color:#fff;}.ds-btn-primary:hover:not(:disabled){background:#174cb9;border-color:#b6c5db;}.ds-btn-primary:focus-visible{outline:3px solid #8cb5ff;outline-offset:3px;}.ds-btn-primary:disabled{cursor:not-allowed;opacity:.52;}@media(prefers-reduced-motion:reduce){.ds-btn-primary{transition:none;}}"
+      "css": ".ds-btn-primary{font-family:\"DM Sans\",sans-serif;display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid #d5dce7;background:#fff;color:#36445b;min-height:40px;padding:9px 14px;border-radius:7px;font-weight:600;font-size:13px;line-height:1.4;transition:background-color .15s,border-color .15s;white-space:normal;cursor:pointer;background:var(--brand-orange,#e94e1d);border-color:var(--brand-orange,#e94e1d);color:#1c1c1c;}.ds-btn-primary:hover:not(:disabled){background:#f57143;border-color:#f57143;}.ds-btn-primary:focus-visible{outline:3px solid #e94e1d;outline-offset:3px;}.ds-btn-primary:disabled{cursor:not-allowed;opacity:.52;}@media(prefers-reduced-motion:reduce){.ds-btn-primary{transition:none;}}"
     },
     {
       "name": "Botão secondary",
@@ -624,7 +642,7 @@
       "refersTo": "button-secondary",
       "description": "Ação auxiliar com superfície branca e contorno.",
       "html": "<button class=\"ds-btn-secondary\" type=\"button\">Copiar e-mail</button>",
-      "css": ".ds-btn-secondary{font-family:\"DM Sans\",sans-serif;display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid #d5dce7;background:#fff;color:#36445b;min-height:40px;padding:9px 14px;border-radius:7px;font-weight:600;font-size:13px;line-height:1.4;transition:background-color .15s,border-color .15s;white-space:normal;cursor:pointer;}.ds-btn-secondary:hover:not(:disabled){background:#f1f5fc;border-color:#b6c5db;}.ds-btn-secondary:focus-visible{outline:3px solid #8cb5ff;outline-offset:3px;}.ds-btn-secondary:disabled{cursor:not-allowed;opacity:.52;}@media(prefers-reduced-motion:reduce){.ds-btn-secondary{transition:none;}}"
+      "css": ".ds-btn-secondary{font-family:\"DM Sans\",sans-serif;display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid #d5dce7;background:#fff;color:#36445b;min-height:40px;padding:9px 14px;border-radius:7px;font-weight:600;font-size:13px;line-height:1.4;transition:background-color .15s,border-color .15s;white-space:normal;cursor:pointer;}.ds-btn-secondary:hover:not(:disabled){background:#f1f5fc;border-color:#b6c5db;}.ds-btn-secondary:focus-visible{outline:3px solid #e94e1d;outline-offset:3px;}.ds-btn-secondary:disabled{cursor:not-allowed;opacity:.52;}@media(prefers-reduced-motion:reduce){.ds-btn-secondary{transition:none;}}"
     },
     {
       "name": "Botão ghost",
@@ -632,7 +650,7 @@
       "refersTo": "button-ghost",
       "description": "Ação discreta, usada dentro de um contexto de edição.",
       "html": "<button class=\"ds-btn-ghost\" type=\"button\">Adicionar item</button>",
-      "css": ".ds-btn-ghost{font-family:\"DM Sans\",sans-serif;display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid #d5dce7;background:#fff;color:#36445b;min-height:40px;padding:9px 14px;border-radius:7px;font-weight:600;font-size:13px;line-height:1.4;transition:background-color .15s,border-color .15s;white-space:normal;cursor:pointer;background:transparent;border-color:transparent;color:#4c607d;}.ds-btn-ghost:hover:not(:disabled){background:#edf2fa;border-color:#b6c5db;}.ds-btn-ghost:focus-visible{outline:3px solid #8cb5ff;outline-offset:3px;}.ds-btn-ghost:disabled{cursor:not-allowed;opacity:.52;}@media(prefers-reduced-motion:reduce){.ds-btn-ghost{transition:none;}}"
+      "css": ".ds-btn-ghost{font-family:\"DM Sans\",sans-serif;display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid #d5dce7;background:#fff;color:#36445b;min-height:40px;padding:9px 14px;border-radius:7px;font-weight:600;font-size:13px;line-height:1.4;transition:background-color .15s,border-color .15s;white-space:normal;cursor:pointer;background:transparent;border-color:transparent;color:#4c607d;}.ds-btn-ghost:hover:not(:disabled){background:#edf2fa;border-color:#b6c5db;}.ds-btn-ghost:focus-visible{outline:3px solid #e94e1d;outline-offset:3px;}.ds-btn-ghost:disabled{cursor:not-allowed;opacity:.52;}@media(prefers-reduced-motion:reduce){.ds-btn-ghost{transition:none;}}"
     },
     {
       "name": "Botão danger",
@@ -640,7 +658,7 @@
       "refersTo": "button-danger",
       "description": "Ação destrutiva de restauração, apresentada após confirmação no protótipo.",
       "html": "<button class=\"ds-btn-danger\" type=\"button\">Restaurar demonstração</button>",
-      "css": ".ds-btn-danger{font-family:\"DM Sans\",sans-serif;display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid #d5dce7;background:#fff;color:#36445b;min-height:40px;padding:9px 14px;border-radius:7px;font-weight:600;font-size:13px;line-height:1.4;transition:background-color .15s,border-color .15s;white-space:normal;cursor:pointer;background:#b73636;border-color:#b73636;color:#fff;}.ds-btn-danger:hover:not(:disabled){background:#952929;border-color:#952929;}.ds-btn-danger:focus-visible{outline:3px solid #8cb5ff;outline-offset:3px;}.ds-btn-danger:disabled{cursor:not-allowed;opacity:.52;}@media(prefers-reduced-motion:reduce){.ds-btn-danger{transition:none;}}"
+      "css": ".ds-btn-danger{font-family:\"DM Sans\",sans-serif;display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid #d5dce7;background:#fff;color:#36445b;min-height:40px;padding:9px 14px;border-radius:7px;font-weight:600;font-size:13px;line-height:1.4;transition:background-color .15s,border-color .15s;white-space:normal;cursor:pointer;background:#b73636;border-color:#b73636;color:#fff;}.ds-btn-danger:hover:not(:disabled){background:#952929;border-color:#952929;}.ds-btn-danger:focus-visible{outline:3px solid #e94e1d;outline-offset:3px;}.ds-btn-danger:disabled{cursor:not-allowed;opacity:.52;}@media(prefers-reduced-motion:reduce){.ds-btn-danger{transition:none;}}"
     },
     {
       "name": "Campo com label",
@@ -648,15 +666,15 @@
       "refersTo": "field",
       "description": "Campo de formulário com label persistente, dica e foco visível.",
       "html": "<label class=\"ds-field\"><span>Cidade ou local *</span><input type=\"text\" placeholder=\"A confirmar\"><small>Informe o local previsto para o evento.</small></label>",
-      "css": ".ds-field{font-family:\"DM Sans\",sans-serif;display:flex;flex-direction:column;gap:6px;margin-bottom:18px;min-width:0;color:#233149;font-size:14px;line-height:1.5;}.ds-field>span{font-size:12px;font-weight:600;color:#465773;}.ds-field>small{font-size:11px;color:var(--muted,#62718a);}.ds-field input{font:inherit;border:1px solid #cbd4e1;border-radius:7px;padding:10px 12px;color:#233149;background:#fff;min-width:0;max-width:100%;min-height:41px;transition:border-color .15s;caret-color:var(--blue,#245edb);}.ds-field input::placeholder{color:#596d89;}.ds-field input:focus{border-color:var(--blue,#245edb);}.ds-field input:focus-visible{outline:3px solid #8cb5ff;outline-offset:3px;}.ds-field input:disabled{background:#f4f6f9;}@media(max-width:760px){.ds-field input{font-size:16px;}}@media(prefers-reduced-motion:reduce){.ds-field input{transition:none;}}"
+      "css": ".ds-field{font-family:\"DM Sans\",sans-serif;display:flex;flex-direction:column;gap:6px;margin-bottom:18px;min-width:0;color:#233149;font-size:14px;line-height:1.5;}.ds-field>span{font-size:12px;font-weight:600;color:#465773;}.ds-field>small{font-size:11px;color:var(--muted,#62718a);}.ds-field input{font:inherit;border:1px solid #cbd4e1;border-radius:7px;padding:10px 12px;color:#233149;background:#fff;min-width:0;max-width:100%;min-height:41px;transition:border-color .15s;caret-color:var(--blue,#293e91);}.ds-field input::placeholder{color:#596d89;}.ds-field input:focus{border-color:var(--blue,#293e91);}.ds-field input:focus-visible{outline:3px solid #e94e1d;outline-offset:3px;}.ds-field input:disabled{background:#f4f6f9;}@media(max-width:760px){.ds-field input{font-size:16px;}}@media(prefers-reduced-motion:reduce){.ds-field input{transition:none;}}"
     },
     {
       "name": "Navegação principal",
       "kind": "nav",
       "refersTo": "navigation",
-      "description": "Trilho marinho com seleção preenchida e contexto de atendimento.",
+      "description": "Trilho azul Adviser com seleção branca e contexto de atendimento.",
       "html": "<nav class=\"ds-nav\" aria-label=\"Navegação principal\"><span class=\"ds-nav-label\">ATENDIMENTO</span><a href=\"#/\" class=\"ds-nav-link\">Visão geral</a><a href=\"#/demandas\" class=\"ds-nav-link ds-nav-active\" aria-current=\"page\">Demandas</a><a href=\"#/fornecedores\" class=\"ds-nav-link\">Fornecedores</a></nav>",
-      "css": ".ds-nav{font-family:\"DM Sans\",sans-serif;display:flex;flex-direction:column;padding:18px;background:var(--navy,#14243c);color:#fff;width:194px;}.ds-nav-label{font-size:9px;letter-spacing:.12em;color:#92a5bf;margin:20px 14px 9px;font-weight:600;}.ds-nav-link{display:flex;align-items:center;gap:11px;padding:12px 13px;margin:2px 0;border-radius:7px;color:#becce0;text-decoration:none;font-size:12px;line-height:1.5;font-weight:500;min-height:44px;}.ds-nav-link:hover{background:#1e3452;color:#fff;}.ds-nav-link.ds-nav-active{background:#2c5ab7;color:#fff;}.ds-nav-link:focus-visible{outline:3px solid #8cb5ff;outline-offset:3px;}"
+      "css": ".ds-nav{font-family:\"DM Sans\",sans-serif;display:flex;flex-direction:column;padding:18px;background:var(--brand-blue,#293e91);color:#fff;width:194px;}.ds-nav-label{font-size:9px;letter-spacing:.12em;color:#d0d8f2;margin:20px 14px 9px;font-weight:600;}.ds-nav-link{display:flex;align-items:center;gap:11px;padding:12px 13px;margin:2px 0;border-radius:7px;color:#e1e6f6;text-decoration:none;font-size:12px;line-height:1.5;font-weight:500;min-height:44px;}.ds-nav-link:hover{background:#223479;color:#fff;}.ds-nav-link.ds-nav-active{background:#fff;color:#293e91;}.ds-nav-link:focus-visible{outline:3px solid #fff;outline-offset:3px;}"
     },
     {
       "name": "Badges de estado",
@@ -664,7 +682,7 @@
       "refersTo": "badge-neutral",
       "description": "Estados compactos com cinco pares funcionais de cor e label textual.",
       "html": "<div class=\"ds-badges\"><span class=\"ds-badge\">Demonstração</span><span class=\"ds-badge ds-badge-blue\">Briefing</span><span class=\"ds-badge ds-badge-green\">Aprovada</span><span class=\"ds-badge ds-badge-amber\">Aguardando</span><span class=\"ds-badge ds-badge-red\">Recusada</span></div>",
-      "css": ".ds-badges{display:flex;flex-wrap:wrap;gap:10px;}.ds-badge{font-family:\"DM Sans\",sans-serif;display:inline-flex;gap:5px;align-items:center;border-radius:5px;background:#edf1f6;color:#526079;padding:4px 8px;white-space:nowrap;font-size:11px;font-weight:600;line-height:1.5;}.ds-badge-blue{background:#e9f0ff;color:#2455b3;}.ds-badge-green{background:#e7f3ed;color:#246346;}.ds-badge-amber{background:#fff2dd;color:#886017;}.ds-badge-red{background:#fcebea;color:#a03131;}"
+      "css": ".ds-badges{display:flex;flex-wrap:wrap;gap:10px;}.ds-badge{font-family:\"DM Sans\",sans-serif;display:inline-flex;gap:5px;align-items:center;border-radius:5px;background:#edf1f6;color:#526079;padding:4px 8px;white-space:nowrap;font-size:11px;font-weight:600;line-height:1.5;}.ds-badge-blue{background:#e9f0ff;color:#293e91;}.ds-badge-green{background:#e7f3ed;color:#246346;}.ds-badge-amber{background:#fff2dd;color:#886017;}.ds-badge-red{background:#fcebea;color:#a03131;}"
     },
     {
       "name": "Painel de trabalho",
@@ -680,7 +698,7 @@
       "refersTo": "workflow-step",
       "description": "Seis etapas consultáveis; ativo e concluído têm sinais diferentes e dependem de estados distintos.",
       "html": "<nav class=\"ds-workflow\" aria-label=\"Etapas da demanda\"><button class=\"ds-step ds-step-complete\" type=\"button\"><span class=\"ds-step-number\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m20 6-11 11-5-5\"/></svg></span>Briefing</button><button class=\"ds-step ds-step-active\" type=\"button\" aria-current=\"step\"><span class=\"ds-step-number\">2</span>Cotações</button><button class=\"ds-step\" type=\"button\"><span class=\"ds-step-number\">3</span>Comparativo</button><button class=\"ds-step\" type=\"button\"><span class=\"ds-step-number\">4</span>Proposta</button><button class=\"ds-step\" type=\"button\"><span class=\"ds-step-number\">5</span>Aprovação</button><button class=\"ds-step\" type=\"button\"><span class=\"ds-step-number\">6</span>Repasse</button></nav>",
-      "css": ".ds-workflow{font-family:\"DM Sans\",sans-serif;display:flex;border-bottom:1px solid #d8e0ec;margin-bottom:30px;overflow-x:auto;gap:6px;}.ds-step{font:inherit;display:flex;align-items:center;gap:8px;flex:1;justify-content:center;border:0;border-bottom:2px solid transparent;background:none;white-space:nowrap;padding:13px 10px;color:#596d89;font-size:12px;font-weight:600;cursor:pointer;}.ds-step-active{border-bottom-color:var(--blue,#245edb);color:var(--blue,#245edb);}.ds-step:hover{background:#eef3fc;}.ds-step:focus-visible{outline:3px solid #8cb5ff;outline-offset:3px;}.ds-step-number{display:grid;place-items:center;width:22px;height:22px;flex-shrink:0;border-radius:50%;background:#e7edf5;color:#596d89;font-size:10px;}.ds-step-active .ds-step-number{background:var(--blue,#245edb);color:#fff;}.ds-step-complete .ds-step-number{background:#e1efe7;color:#37875b;}@media(max-width:760px){.ds-workflow{gap:0;padding:0 12px;margin-bottom:25px;}.ds-step{flex:0 0 auto;padding:12px 11px;font-size:11px;}.ds-step-number{width:21px;height:21px;}}"
+      "css": ".ds-workflow{font-family:\"DM Sans\",sans-serif;display:flex;border-bottom:1px solid #d8e0ec;margin-bottom:30px;overflow-x:auto;gap:6px;}.ds-step{font:inherit;display:flex;align-items:center;gap:8px;flex:1;justify-content:center;border:0;border-bottom:2px solid transparent;background:none;white-space:nowrap;padding:13px 10px;color:#596d89;font-size:12px;font-weight:600;cursor:pointer;}.ds-step-active{border-bottom-color:var(--blue,#293e91);color:var(--blue,#293e91);}.ds-step:hover{background:#eef3fc;}.ds-step:focus-visible{outline:3px solid #e94e1d;outline-offset:3px;}.ds-step-number{display:grid;place-items:center;width:22px;height:22px;flex-shrink:0;border-radius:50%;background:#e7edf5;color:#596d89;font-size:10px;}.ds-step-active .ds-step-number{background:var(--blue,#293e91);color:#fff;}.ds-step-complete .ds-step-number{background:#e1efe7;color:#37875b;}@media(max-width:760px){.ds-workflow{gap:0;padding:0 12px;margin-bottom:25px;}.ds-step{flex:0 0 auto;padding:12px 11px;font-size:11px;}.ds-step-number{width:21px;height:21px;}}"
     },
     {
       "name": "Editor de itens responsivo",
@@ -688,12 +706,12 @@
       "refersTo": "supplier-items",
       "description": "Tabela financeira no desktop; campos agrupados e identificados por item no celular.",
       "html": "<div class=\"ds-item-scroll\"><table class=\"ds-items\"><thead><tr><th>Item e descrição</th><th>Qtd.</th><th>Unitário (R$)</th><th>Total</th><th><span class=\"ds-sr\">Remover</span></th></tr></thead><tbody><tr><td><input aria-label=\"Descrição do item 1\" value=\"Serviço principal\"><input class=\"ds-category\" aria-label=\"Grupo do item 1\" value=\"Serviços\"></td><td data-label=\"Quantidade\"><input type=\"number\" min=\"0.01\" step=\"0.01\" aria-label=\"Quantidade do item 1\" value=\"1\"></td><td data-label=\"Unitário (R$)\"><input type=\"number\" min=\"0\" step=\"0.01\" aria-label=\"Valor unitário do item 1\" value=\"4500\"></td><td class=\"ds-item-total\" data-label=\"Total\">R$ 4.500,00</td><td><button class=\"ds-item-remove\" type=\"button\" aria-label=\"Remover item 1\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M3 6h18M19 6v14H5V6M9 6V3h6v3M10 10v6M14 10v6\"/></svg></button></td></tr></tbody></table></div>",
-      "css": ".ds-item-scroll{font-family:\"DM Sans\",sans-serif;position:relative;max-width:100%;overflow-x:auto;color:#233149;font-variant-numeric:tabular-nums;}.ds-items{width:100%;min-width:690px;border-collapse:collapse;text-align:left;font-size:12px;line-height:1.5;}.ds-items th{font-size:9px;font-weight:600;color:#596d89;white-space:nowrap;background:#f7f9fc;border-top:1px solid var(--line,#e2e7ef);border-bottom:1px solid var(--line,#e2e7ef);padding:10px 6px;text-transform:uppercase;letter-spacing:.025em;}.ds-items th:first-child{width:34%;}.ds-items td{padding:14px 6px;vertical-align:middle;}.ds-items input{font:inherit;font-size:11px;padding:8px;min-height:35px;border:1px solid #cbd4e1;border-radius:7px;color:#233149;background:#fff;max-width:100%;transition:border-color .15s;}.ds-items input:focus{border-color:var(--blue,#245edb);}.ds-items input:focus-visible,.ds-item-remove:focus-visible{outline:3px solid #8cb5ff;outline-offset:3px;}.ds-items td:first-child input{width:100%;min-width:170px;}.ds-items td:nth-child(2) input{width:65px;}.ds-items td:nth-child(3) input{width:105px;}.ds-items .ds-category{display:block;border:0;font-size:10px;color:#596d89;padding:4px 6px;min-height:28px;background:transparent;}.ds-item-total{text-align:right;white-space:nowrap;}.ds-item-remove{display:inline-flex;align-items:center;justify-content:center;width:36px;min-height:36px;border:0;border-radius:6px;background:transparent;color:#a72f39;cursor:pointer;}.ds-item-remove:hover{background:#e9eff8;}.ds-sr{position:absolute;left:0;top:0;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;}@media(max-width:760px){.ds-items,.ds-items tbody{display:block;min-width:0;}.ds-items thead{display:none;}.ds-items tr{display:grid;grid-template-columns:1fr 1fr;gap:12px;position:relative;padding:16px 0;border-bottom:1px solid var(--line,#e2e7ef);}.ds-items td{display:block;padding:0;border:0;min-width:0;}.ds-items td:first-child{grid-column:1/-1;padding-right:36px;}.ds-items td:first-child input{min-width:0;}.ds-items td:last-child{position:absolute;right:0;top:16px;}.ds-items td:nth-child(2) input,.ds-items td:nth-child(3) input{width:100%;}.ds-items td[data-label]::before{content:attr(data-label);display:block;color:#596d89;font-size:10px;margin-bottom:6px;text-align:left;}.ds-items .ds-item-total{text-align:left;font-size:16px;}}@media(prefers-reduced-motion:reduce){.ds-items input{transition:none;}}"
+      "css": ".ds-item-scroll{font-family:\"DM Sans\",sans-serif;position:relative;max-width:100%;overflow-x:auto;color:#233149;font-variant-numeric:tabular-nums;}.ds-items{width:100%;min-width:690px;border-collapse:collapse;text-align:left;font-size:12px;line-height:1.5;}.ds-items th{font-size:9px;font-weight:600;color:#596d89;white-space:nowrap;background:#f7f9fc;border-top:1px solid var(--line,#e2e7ef);border-bottom:1px solid var(--line,#e2e7ef);padding:10px 6px;text-transform:uppercase;letter-spacing:.025em;}.ds-items th:first-child{width:34%;}.ds-items td{padding:14px 6px;vertical-align:middle;}.ds-items input{font:inherit;font-size:11px;padding:8px;min-height:35px;border:1px solid #cbd4e1;border-radius:7px;color:#233149;background:#fff;max-width:100%;transition:border-color .15s;}.ds-items input:focus{border-color:var(--blue,#293e91);}.ds-items input:focus-visible,.ds-item-remove:focus-visible{outline:3px solid #e94e1d;outline-offset:3px;}.ds-items td:first-child input{width:100%;min-width:170px;}.ds-items td:nth-child(2) input{width:65px;}.ds-items td:nth-child(3) input{width:105px;}.ds-items .ds-category{display:block;border:0;font-size:10px;color:#596d89;padding:4px 6px;min-height:28px;background:transparent;}.ds-item-total{text-align:right;white-space:nowrap;}.ds-item-remove{display:inline-flex;align-items:center;justify-content:center;width:36px;min-height:36px;border:0;border-radius:6px;background:transparent;color:#a72f39;cursor:pointer;}.ds-item-remove:hover{background:#e9eff8;}.ds-sr{position:absolute;left:0;top:0;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;}@media(max-width:760px){.ds-items,.ds-items tbody{display:block;min-width:0;}.ds-items thead{display:none;}.ds-items tr{display:grid;grid-template-columns:1fr 1fr;gap:12px;position:relative;padding:16px 0;border-bottom:1px solid var(--line,#e2e7ef);}.ds-items td{display:block;padding:0;border:0;min-width:0;}.ds-items td:first-child{grid-column:1/-1;padding-right:36px;}.ds-items td:first-child input{min-width:0;}.ds-items td:last-child{position:absolute;right:0;top:16px;}.ds-items td:nth-child(2) input,.ds-items td:nth-child(3) input{width:100%;}.ds-items td[data-label]::before{content:attr(data-label);display:block;color:#596d89;font-size:10px;margin-bottom:6px;text-align:left;}.ds-items .ds-item-total{text-align:left;font-size:16px;}}@media(prefers-reduced-motion:reduce){.ds-items input{transition:none;}}"
     }
   ],
   "narrative": {
     "northStar": "Quadro de produção de eventos",
-    "overview": "A Adviser organiza o trabalho do atendimento em uma fila legível e um dossiê numerado por evento. A navegação azul-marinho ancora um espaço de trabalho claro, com superfícies brancas, linhas finas e ações em azul-cobalto. A densidade serve à leitura de escopo, responsáveis, condições e valores; não depende de ilustrações ou efeitos decorativos.\n\nEste registro descreve o protótipo implementado em React, TypeScript e Vite. O estado é local ao navegador, a IA e os envios são simulados, e as etapas futuras recebem identificação explícita. A comunicação visual dessas limitações faz parte do sistema; a documentação não certifica prontidão para produção.",
+    "overview": "A Adviser organiza o trabalho do atendimento em uma fila legível e um dossiê numerado por evento. A navegação usa o azul da logo da Adviser, com superfícies brancas, linhas finas e ações principais em laranja. A logo oficial aparece no menu, cabeçalho móvel, portal e proposta. A densidade serve à leitura de escopo, responsáveis, condições e valores; não depende de ilustrações ou efeitos decorativos.\n\nEste registro descreve o protótipo implementado em React, TypeScript e Vite. O estado é local ao navegador, a IA e os envios são simulados, e as etapas futuras recebem identificação explícita. A comunicação visual dessas limitações faz parte do sistema; a documentação não certifica prontidão para produção.",
     "keyCharacteristics": [
       "Fila de demandas com responsável, fase e próxima ação visíveis.",
       "Dossiê numerado e fluxo vertical com início e fim explícitos.",
@@ -718,8 +736,8 @@
       }
     ],
     "dos": [
-      "Do preservar o trilho azul-marinho e a área clara de trabalho nas novas telas operacionais.",
-      "Do usar azul para ações e seleção, com rótulos explícitos junto aos estados coloridos.",
+      "Do preservar o trilho azul Adviser e a área clara de trabalho nas novas telas operacionais.",
+      "Do usar laranja nas ações principais e azul em links e seleção, com rótulos explícitos junto aos estados coloridos.",
       "Do manter labels, foco visível, formatação pt-BR e números tabulares nas interfaces de orçamento.",
       "Do conservar a próxima ação nas duas larguras, os itens editáveis com rótulos no celular e a rolagem contida das tabelas de leitura.",
       "Do identificar protótipo, dados locais, simulações e módulos futuros no contexto em que aparecem.",

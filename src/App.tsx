@@ -19,6 +19,7 @@ import { useStore, go } from "./store";
 import { stages } from "./data";
 import type { Stage, Demand } from "./types";
 import { Badge, Button, Empty } from "./components/UI";
+import { BrandLogo } from "./components/BrandLogo";
 import { Home } from "./pages/Home";
 import { Briefing } from "./pages/Briefing";
 import { Quotes, Compare, SupplierPortal } from "./pages/Quotes";
@@ -126,8 +127,7 @@ export default function App() {
       )}
       <aside className={`sidebar ${mobile ? "open" : ""}`}>
         <a className="brand" href="#/" aria-label="Adviser, visão geral">
-          adviser
-          <span className="brand-dot" />
+          <BrandLogo />
         </a>
         <div className="workspace-name">
           <span className="workspace-avatar">A</span>
@@ -168,7 +168,10 @@ export default function App() {
             >
               {mobile ? <X size={21} /> : <Menu size={21} />}
             </button>
-            <span>Workspace</span>
+            <span className="workspace-label">Workspace</span>
+            <a className="mobile-brand" href="#/" aria-label="Adviser, visão geral">
+              <BrandLogo />
+            </a>
             <ChevronRight size={14} />
             <strong>
               {parts[0] === "demandas" && parts[1]

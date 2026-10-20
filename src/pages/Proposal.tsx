@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { BrandLogo } from "../components/BrandLogo";
 import {
   Save,
   Download,
@@ -97,7 +98,7 @@ async function excel(v: Version) {
   ws.getRow(5).fill = {
     type: "pattern",
     pattern: "solid",
-    fgColor: { argb: "FF14243C" },
+    fgColor: { argb: "FF293E91" },
   };
   ws.eachRow((r) => (r.alignment = { vertical: "top", wrapText: true }));
   const buf = await wb.xlsx.writeBuffer();
@@ -118,8 +119,7 @@ export function ProposalDocument({ v }: { v: Version }) {
     <article className="proposal-document" id="proposal-document">
       <div className="document-header">
         <div className="document-brand">
-          adviser
-          <span />
+          <BrandLogo />
         </div>
         <div>
           Proposta de evento<strong>Versão {v.number || "rascunho"}</strong>

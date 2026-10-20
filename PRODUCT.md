@@ -21,3 +21,6 @@ Não impor portal ao cliente. Não criar site de evento ou inscrição no MVP. N
 
 ## Open questions
 Regras comerciais e fiscais; categorias e templates definitivos; volume real; contas Gmail/Workspace; fórmula de margem e pagamento direto; formatos de exportação finais. Trinta propostas mensais é hipótese.
+
+## Brand
+Usar a logo oficial da Agência Adviser e suas cores: azul #293E91 e laranja #E94E1D. Identidade registrada em docs/IDENTIDADE-VISUAL.md. Não redesenhar a marca.

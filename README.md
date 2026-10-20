@@ -67,3 +67,6 @@ Veja [arquitetura e evolução](docs/ARQUITETURA.md) e [critérios de validaçã
 ## Cópia independente para demonstração
 
 `npm run build:standalone` gera `standalone/adviser-prototipo.html`, com a aplicação, fontes, diagrama e exportador Excel embutidos. Abra esse arquivo em um navegador moderno. Ele não depende de hospedagem nem de instalação. O arquivo gerado não é versionado; o script e o lockfile permitem reproduzi-lo.
+
+## Identidade visual
+Logo oficial e cores azul/laranja da Adviser incorporadas ao protótipo, inclusive portal, proposta e diagrama. Consulte [origem e aplicação da marca](docs/IDENTIDADE-VISUAL.md). Os arquivos são locais e não exigem acesso ao site da agência.

@@ -28,7 +28,7 @@ const script = (
 const icon =
   "data:image/svg+xml;base64," +
   Buffer.from(await fs.readFile("public/favicon.svg")).toString("base64");
-const html = `<!doctype html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Adviser · Protótipo navegável</title><link rel="icon" href="${icon}"><style>${css}</style></head><body><div id="root"></div><script type="module">${script}</script></body></html>`;
+const html = `<!doctype html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="theme-color" content="#293e91"><title>Adviser · Protótipo navegável</title><link rel="icon" href="${icon}"><style>${css}</style></head><body><div id="root"></div><script type="module">${script}</script></body></html>`;
 await fs.mkdir("standalone", { recursive: true });
 await fs.writeFile("standalone/adviser-prototipo.html", html);
 console.log(

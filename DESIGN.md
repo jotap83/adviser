@@ -2,9 +2,10 @@
 name: "Adviser"
 description: "Quadro operacional de atendimento e produção de eventos, com uma próxima ação clara por demanda."
 colors:
-  navy: "#14243c"
-  blue: "#245edb"
-  blue-hover: "#174cb9"
+  blue: "#293e91"
+  orange: "#e94e1d"
+  orange-hover: "#f57143"
+  orange-ink: "#1c1c1c"
   canvas: "#f5f7fb"
   paper: "#fff"
   text: "#233149"
@@ -12,20 +13,20 @@ colors:
   secondary-text: "#596d89"
   line: "#e2e7ef"
   control-border: "#cbd4e1"
-  focus: "#8cb5ff"
+  focus: "#e94e1d"
   button-text: "#36445b"
   button-border: "#d5dce7"
   button-hover: "#f1f5fc"
   button-hover-border: "#b6c5db"
   ghost-text: "#4c607d"
   quiet-surface: "#edf2fa"
-  nav-text: "#becce0"
-  nav-hover: "#1e3452"
-  nav-selected: "#2c5ab7"
+  nav-text: "#e1e6f6"
+  nav-hover: "#223479"
+  nav-selected: "#fff"
   status-neutral-surface: "#edf1f6"
   status-neutral-text: "#526079"
   status-blue-surface: "#e9f0ff"
-  status-blue-text: "#2455b3"
+  status-blue-text: "#293e91"
   status-green-surface: "#e7f3ed"
   status-green-text: "#246346"
   status-amber-surface: "#fff2dd"
@@ -37,12 +38,6 @@ colors:
   note-surface: "#eef3fc"
   note-text: "#36547d"
 typography:
-  brand:
-    fontFamily: "DM Sans, sans-serif"
-    fontSize: "36px"
-    fontWeight: 700
-    lineHeight: 1
-    letterSpacing: "-0.045em"
   headline:
     fontFamily: "DM Sans, sans-serif"
     fontSize: "29px"
@@ -119,14 +114,14 @@ spacing:
   "48": "48px"
 components:
   button-primary:
-    backgroundColor: "{colors.blue}"
-    textColor: "{colors.paper}"
+    backgroundColor: "{colors.orange}"
+    textColor: "{colors.orange-ink}"
     typography: "{typography.button}"
     rounded: "{rounded.control}"
     padding: "9px 14px"
   button-primary-hover:
-    backgroundColor: "{colors.blue-hover}"
-    textColor: "{colors.paper}"
+    backgroundColor: "{colors.orange-hover}"
+    textColor: "{colors.orange-ink}"
   button-secondary:
     backgroundColor: "{colors.paper}"
     textColor: "{colors.button-text}"
@@ -161,14 +156,14 @@ components:
     rounded: "{rounded.control}"
     padding: "10px 12px"
   navigation:
-    backgroundColor: "{colors.navy}"
+    backgroundColor: "{colors.blue}"
     textColor: "{colors.nav-text}"
     typography: "{typography.navigation}"
     rounded: "{rounded.control}"
     padding: "12px 13px"
   navigation-selected:
     backgroundColor: "{colors.nav-selected}"
-    textColor: "{colors.paper}"
+    textColor: "{colors.blue}"
   badge-neutral:
     backgroundColor: "{colors.status-neutral-surface}"
     textColor: "{colors.status-neutral-text}"
@@ -227,7 +222,7 @@ components:
 
 **Creative North Star: "Quadro de produção de eventos"**
 
-A Adviser organiza o trabalho do atendimento em uma fila legível e um dossiê numerado por evento. A navegação azul-marinho ancora um espaço de trabalho claro, com superfícies brancas, linhas finas e ações em azul-cobalto. A densidade serve à leitura de escopo, responsáveis, condições e valores; não depende de ilustrações ou efeitos decorativos.
+A Adviser organiza o trabalho do atendimento em uma fila legível e um dossiê numerado por evento. A navegação usa o azul da logo da Adviser, com superfícies brancas, linhas finas e ações principais em laranja. A logo oficial aparece no menu, cabeçalho móvel, portal e proposta. A densidade serve à leitura de escopo, responsáveis, condições e valores; não depende de ilustrações ou efeitos decorativos.
 
 Este registro descreve o protótipo implementado em React, TypeScript e Vite. O estado é local ao navegador, a IA e os envios são simulados, e as etapas futuras recebem identificação explícita. A comunicação visual dessas limitações faz parte do sistema; a documentação não certifica prontidão para produção.
 
@@ -242,18 +237,18 @@ Extraído de src/styles.css, src/App.tsx, src/components/UI.tsx e das telas de a
 
 ## Colors
 
-A paleta combina marinho profundo, branco e azuis frios, com verde, âmbar e vermelho reservados a significado operacional.
+A paleta principal vem da logo oficial: azul #293E91 e laranja #E94E1D. Branco e neutros claros apoiam a leitura; verde, âmbar e vermelho mantêm significado operacional. A origem dos arquivos está em docs/IDENTIDADE-VISUAL.md.
 
 ### Primary
 
-- **Azul-cobalto:** ação principal, links, caret e seleção do fluxo; o tom mais escuro sinaliza hover do botão principal.
-- **Marinho profundo:** navegação persistente e identidade verbal. O azul de seleção da navegação é uma variante própria, observada no código.
+- **Azul Adviser:** navegação, links, caret, campos, seleção do fluxo e cabeçalhos de proposta.
+- **Laranja Adviser:** ações principais e foco. Botões usam texto #1C1C1C para contraste mínimo de 4,5:1; o hover usa laranja mais claro. A seleção da navegação usa branco sobre o trilho azul.
 
 ### Neutral
 
 - **Papel branco e fundo claro:** painéis, formulários e área de trabalho. Faixas azuis suaves contextualizam avisos e a demonstração.
 - **Tinta e textos secundários:** conteúdo, contexto e metadados, com cores separadas para texto principal, muted e texto auxiliar recorrente.
-- **Linhas e contornos:** separação entre linhas de tabela, campos e painéis; o azul claro de foco aparece com contorno deslocado.
+- **Linhas e contornos:** separação entre linhas de tabela, campos e painéis; o laranja de foco aparece com contorno deslocado; no trilho azul, o contorno é branco.
 
 ### Functional states
 
@@ -263,7 +258,7 @@ Os pares de superfície/texto de badges são normativos: neutro para contexto, a
 
 **Fonte única:** DM Sans, carregada localmente por @fontsource nas espessuras 400, 500, 600 e 700; fallback sans-serif. A família compacta e sem ornamento favorece leitura contínua de formulários e valores. O documento usa números tabulares globalmente, inclusive nas colunas numéricas alinhadas à direita.
 
-A hierarquia normativa está no frontmatter: headline para título da tela, title e subtitle para seções, body para leitura, label para campos, button para ações e badge para estado. O wordmark é tipográfico. Títulos de página equilibram quebras; descrições de abertura ficam em até 75ch. Tabelas usam cabeçalhos pequenos em caixa alta e conteúdo compacto; metadados existentes variam entre 9 e 13px, sem aplicar essa densidade à entrada móvel.
+A hierarquia normativa está no frontmatter: headline para título da tela, title e subtitle para seções, body para leitura, label para campos, button para ações e badge para estado. A marca é a imagem original da Adviser, incorporada localmente e preservada em suas proporções; não é recriada com uma fonte. Títulos de página equilibram quebras; descrições de abertura ficam em até 75ch. Tabelas usam cabeçalhos pequenos em caixa alta e conteúdo compacto; metadados existentes variam entre 9 e 13px, sem aplicar essa densidade à entrada móvel.
 
 No breakpoint móvel, o título de página passa a 26px, o título do evento a 23px e inputs dentro de campos passam a 16px. O título do evento no desktop é uma variante de 27px. Essas diferenças pertencem à composição, não a novas famílias tipográficas.
 
@@ -300,7 +295,7 @@ Painéis têm cantos moderados; controles são mais contidos e badges são peque
 
 Quatro variantes reais: primary, secondary, ghost e danger. Mantêm label explícito e ícone opcional de 16px, com altura mínima de 40px. Ações se agrupam em linhas que quebram quando necessário. Busy desativa o botão e troca o ícone por um indicador de processamento; disabled usa opacidade de 0,52 e cursor de indisponível. Botões apenas com ícone são de 36px e recebem nome acessível.
 
-Hover de botões e borda de campos transitam em 150ms. O foco de teclado usa outline sólido de 3px, com offset de 3px. Não há escala ou deslocamento decorativo em ações. O menu móvel entra por transformação em 200ms ease-out; o spinner gira em 800ms linear. A preferência por movimento reduzido remove transições, reduz animações a 0,01ms e mantém rolagem automática.
+Hover de botões e borda de campos transitam em 150ms. O foco de teclado usa outline laranja de 3px, com offset de 3px; no menu azul o outline é branco. Não há escala ou deslocamento decorativo em ações. O menu móvel entra por transformação em 200ms ease-out; o spinner gira em 800ms linear. A preferência por movimento reduzido remove transições, reduz animações a 0,01ms e mantém rolagem automática.
 
 ### Inputs / Fields
 
@@ -332,8 +327,8 @@ A confirmação de alinhamento fica depois dos esclarecimentos e exige ação hu
 
 ### Do:
 
-- Do preservar o trilho azul-marinho e a área clara de trabalho nas novas telas operacionais.
-- Do usar azul para ações e seleção, com rótulos explícitos junto aos estados coloridos.
+- Do preservar o trilho azul Adviser e a área clara de trabalho nas novas telas operacionais.
+- Do usar laranja nas ações principais e azul em links e seleção, com rótulos explícitos junto aos estados coloridos.
 - Do manter labels, foco visível, formatação pt-BR e números tabulares nas interfaces de orçamento.
 - Do conservar a próxima ação nas duas larguras, os itens editáveis com rótulos no celular e a rolagem contida das tabelas de leitura.
 - Do identificar protótipo, dados locais, simulações e módulos futuros no contexto em que aparecem.

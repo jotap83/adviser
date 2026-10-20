@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { BrandLogo } from "../components/BrandLogo";
 import {
   Plus,
   Mail,
@@ -595,9 +596,8 @@ export function SupplierPortal({ d, q }: { d: Demand; q: Quote }) {
   return (
     <div className="supplier-portal">
       <header className="portal-header">
-        <a href="#/" className="brand">
-          adviser
-          <span className="brand-dot" />
+        <a href="#/" className="brand" aria-label="Adviser, visão geral">
+          <BrandLogo />
         </a>
         <Badge>Portal do fornecedor · demonstração</Badge>
         <Button icon={ArrowLeft} onClick={() => go(`/demandas/${d.id}/quotes`)}>
