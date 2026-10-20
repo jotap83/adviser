@@ -11,6 +11,7 @@ import {
 import { useStore, go } from "../store";
 import { stages, createDemand } from "../data";
 import { Title, Button, Badge, Label, Empty } from "../components/UI";
+import { InboxSummary } from "../components/InboxSummary";
 const stageNames = Object.fromEntries(stages.map((s) => [s.id, s.label]));
 const nextAction: Record<string, string> = {
   briefing: "Revisar o briefing",
@@ -28,7 +29,7 @@ export function Home({ all = false }: { all?: boolean }) {
   const rows = state.demands.filter(
     (d) =>
       (filter === "all" || d.stage === filter) &&
-      `${d.title} ${state.clients.find((c) => c.id === d.clientId)?.name}`
+      `${d.reference} ${d.title} ${state.clients.find((c) => c.id === d.clientId)?.name}`
         .toLowerCase()
         .includes(search.toLowerCase()),
   );
@@ -131,20 +132,7 @@ export function Home({ all = false }: { all?: boolean }) {
           </button>
         ))}
       </div>
-      {!all && (
-        <div className="demo-spotlight">
-          <div className="demo-symbol">
-            <FileText size={26} />
-          </div>
-          <div>
-            <h2>Um briefing. Muitas possibilidades.</h2>
-            <p>Acompanhe o Encontro Horizonte do e-mail à proposta aprovada.</p>
-          </div>
-          <Button icon={ArrowRight} onClick={() => go("/demandas/d1/briefing")}>
-            Explorar demonstração
-          </Button>
-        </div>
-      )}
+      {!all && <InboxSummary />}
       <div className={`home-columns ${all ? "full" : ""}`}>
         <section className="panel demand-panel">
           <div className="section-heading">
@@ -159,7 +147,7 @@ export function Home({ all = false }: { all?: boolean }) {
               <Search size={17} />
               <input
                 aria-label="Buscar demandas"
-                placeholder="Buscar evento ou cliente"
+                placeholder="Buscar código, evento ou cliente"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
@@ -193,6 +181,7 @@ export function Home({ all = false }: { all?: boolean }) {
                     <span className="demand-main">
                       <strong>{d.title}</strong>
                       <span>
+                        {d.reference} <span className="dot-sep">·</span>{" "}
                         {c?.name} <span className="dot-sep">·</span>{" "}
                         {d.guests ? `${d.guests} pessoas` : "Público a definir"}
                       </span>

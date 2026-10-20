@@ -30,7 +30,7 @@ node tests/browser.mjs
 
 ## Roteiro de demonstração
 
-1. Abra **Explorar demonstração** na visão geral.
+1. Na visão geral, clique em **Encontro Horizonte** na seção **Sua fila de trabalho**.
 2. Clique em **Organizar com IA**, aplique as sugestões, revise, confirme o alinhamento com o cliente e valide o briefing.
 3. Em **Cotações**, abra o link de **Mesa & Afeto**. Preencha o exemplo e envie a cotação simulada.
 4. No **Comparativo**, escolha a alternativa e os adicionais de cada fornecedor, confirme a composição e leve somente os itens escolhidos para a proposta. A conversa permite dúvidas, pedido de ajustes e novas versões.
@@ -84,3 +84,11 @@ Teste adicional: `node tests/management-browser.mjs` com o app na porta 4173.
 Menu lateral recolhível e cabeçalho fixo durante a rolagem. No briefing, experimente o exemplo completo, os anexos PDF/DOCX/XLSX, a linha do tempo com o cliente e a revisão de apresentações por versão. Veja [funcionamento e limites](docs/BRIEFING-E-CRIACAO.md).
 
 Testes: `node tests/briefing-browser.mjs` com app na porta 4173 e `node tests/standalone-briefing.mjs` após `npm run build:standalone`.
+
+## Triagem de e-mails
+
+Na visão geral, clique em **Revisar e-mails** ou acesse `#/emails`. O exemplo inicial tem quatro mensagens para identificar e uma associada por código. Compare os motivos das sugestões, selecione um atendimento e confirme o vínculo. Depois, abra o briefing para revisar o conteúdo. Também é possível escolher outro atendimento, criar demanda/cliente, ignorar e restaurar mensagens ou corrigir um vínculo.
+
+Cada demanda conserva uma referência `ADV-ano-sequência`, exibida na fila e nos assuntos e textos preparados para envio. As sugestões são uma simulação por regras; Gmail não está conectado. Associar uma mensagem inclui conversa e anexos fictícios, sem alterar campos, valores ou aceite da proposta. Consulte [funcionamento e roteiro](docs/TRIAGEM-DE-EMAILS.md) e [registro da revisão](docs/REVISAO-VISUAL-TRIAGEM.md).
+
+Com o servidor de desenvolvimento na porta 4173, execute `node tests/inbox-browser.mjs`. Para o arquivo independente, execute `npm run build:standalone` e depois `node tests/standalone-inbox.mjs`; este teste abre `standalone/adviser-prototipo.html` offline, sem servidor. `CHROMIUM_PATH` é opcional nos dois testes; `DEMO_URL` altera a URL do teste com servidor.

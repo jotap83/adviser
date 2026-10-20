@@ -8,7 +8,9 @@ import {
   Check,
 } from "lucide-react";
 import type { Demand, ClientMessage } from "../types";
-import { useStore, copy } from "../store";
+import { useStore, copy, go } from "../store";
+import { mailSubject, referenceText } from "../mail-reference";
+import { MailSubject } from "./MailSubject";
 import { briefingFields, scopeSummary } from "../briefing-model";
 import { clientReplyExample } from "../briefing-example";
 import { Badge, Button, Label } from "./UI";
@@ -38,7 +40,7 @@ export function ClientConversation({
     .map((f) => `${f.label}: ${d.briefingDetails![f.id]}`)
     .join("\n");
   const generated = `Olá, ${client?.contact.split(" ")[0] || "tudo bem"}!\n\nConsolidamos nosso entendimento para ${d.title}:\n${d.date ? `Data: ${d.date.split("-").reverse().join("/")}\n` : ""}Público: ${d.guests || "a confirmar"} pessoas\nLocal: ${d.location || "a confirmar"}\nObjetivo: ${d.objective || "a confirmar"}\n${d.budget ? `Investimento de referência: ${d.budget.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}\n` : ""}\n${plan ? `${plan}\n\n` : ""}${scopeSummary(d) ? `Escopo para cotação\n${scopeSummary(d)}\n\n` : ""}Pontos que precisamos confirmar:\n${d.questions || "Confirma o entendimento e as premissas acima? Há algum ajuste?"}\n\nCom sua confirmação, seguimos para as cotações.\n\n${d.owner} · Adviser`;
-  const draft = d.clientDraft ?? generated;
+  const draft = d.clientDraft ?? referenceText(generated, d);
   const legacy = d.briefingLog.filter(
     (t) => !messages.some((m) => m.direction === "in" && m.text === t),
   );
@@ -67,26 +69,28 @@ export function ClientConversation({
         >
           <h3>Do pedido ao alinhamento</h3>
           <ol className="conversation-timeline">
-            <li className="incoming">
-              <span className="conversation-icon">
-                <ArrowDownLeft size={16} />
-              </span>
-              <div>
-                <div className="conversation-meta">
-                  <strong>Cliente · pedido inicial</strong>
-                  <span>{d.source}</span>
+            {(d.message || !messages.length) && (
+              <li className="incoming">
+                <span className="conversation-icon">
+                  <ArrowDownLeft size={16} />
+                </span>
+                <div>
+                  <div className="conversation-meta">
+                    <strong>Cliente · pedido inicial</strong>
+                    <span>{d.source}</span>
+                  </div>
+                  <details>
+                    <summary>
+                      {d.message
+                        ? d.message.slice(0, 150) +
+                          (d.message.length > 150 ? "…" : "")
+                        : "Mensagem ainda não registrada"}
+                    </summary>
+                    <p className="message-body">{d.message}</p>
+                  </details>
                 </div>
-                <details>
-                  <summary>
-                    {d.message
-                      ? d.message.slice(0, 150) +
-                        (d.message.length > 150 ? "…" : "")
-                      : "Mensagem ainda não registrada"}
-                  </summary>
-                  <p className="message-body">{d.message}</p>
-                </details>
-              </div>
-            </li>
+              </li>
+            )}
             {legacy.map((text, i) => (
               <li className="incoming" key={`legacy-${i}`}>
                 <span className="conversation-icon">
@@ -132,6 +136,7 @@ export function ClientConversation({
                     {m.channel} · {m.direction === "in" ? "De" : "Para"}:{" "}
                     {m.contact}
                   </small>
+                  {m.subject && <p className="mail-reference">{m.subject}</p>}
                   <details>
                     <summary>
                       {m.text.slice(0, 160)}
@@ -139,6 +144,14 @@ export function ClientConversation({
                     </summary>
                     <p className="message-body">{m.text}</p>
                   </details>
+                  {m.inboxEmailId && (
+                    <Button
+                      variant="ghost"
+                      onClick={() => go(`/emails/${m.inboxEmailId}`)}
+                    >
+                      Ver associação do e-mail
+                    </Button>
+                  )}
                   {m.direction === "in" && (
                     <div className="actions message-actions">
                       {m.reviewedAt ? (
@@ -230,6 +243,7 @@ export function ClientConversation({
                   placeholder="Nome ou e-mail do contato"
                 />
               </Label>
+              <MailSubject d={d} purpose="Alinhamento do briefing" />
               <Label label="Texto sugerido de formalização">
                 <textarea
                   className="email-draft"
@@ -265,7 +279,7 @@ export function ClientConversation({
                   disabled={!draft.trim()}
                   onClick={async () =>
                     notify(
-                      (await copy(draft))
+                      (await copy(referenceText(draft, d)))
                         ? "Texto copiado. Revise e envie pelo Gmail."
                         : "Selecione o texto e copie manualmente.",
                     )
@@ -281,7 +295,8 @@ export function ClientConversation({
                     const message: ClientMessage = {
                       id: crypto.randomUUID(),
                       direction: "out",
-                      text: draft,
+                      text: referenceText(draft, d),
+                      subject: mailSubject(d, "Alinhamento do briefing"),
                       contact: contact.trim(),
                       channel: "E-mail",
                       at: new Date().toISOString(),

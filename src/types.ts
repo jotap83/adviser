@@ -114,6 +114,7 @@ export type Version = {
 };
 export type Demand = {
   id: string;
+  reference?: string;
   title: string;
   clientId: string;
   owner: string;
@@ -168,6 +169,9 @@ export type AppState = {
   readAlerts?: string[];
   managementDemo?: boolean;
   alertRules?: { idleDays: number; dueDays: number };
+  referenceCounters?: Record<string, number>;
+  inbox?: InboxEmail[];
+  inboxDemo?: boolean;
 };
 export type AIResult = {
   title: string;
@@ -200,6 +204,28 @@ export type ClientMessage = {
   contact: string;
   channel: string;
   reviewedAt?: string;
+  subject?: string;
+  inboxEmailId?: string;
+};
+export type InboxEmail = {
+  id: string;
+  account: string;
+  threadId: string;
+  from: string;
+  to: string[];
+  subject: string;
+  text: string;
+  receivedAt: string;
+  attachments: { name: string; kind: "pdf" | "docx" | "xlsx"; text: string }[];
+  status: "pending" | "linked" | "ignored";
+  demandId?: string;
+  method?: "reference" | "thread" | "suggestion" | "manual" | "new";
+  history: {
+    at: string;
+    actor: string;
+    action: string;
+    demandId?: string;
+  }[];
 };
 export type BriefingSuggestion = {
   path: string;

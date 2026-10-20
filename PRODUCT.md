@@ -27,3 +27,6 @@ Usar a logo oficial da Agência Adviser e suas cores: azul #293E91 e laranja #E9
 
 ## Gestão e planejamento do briefing
 A extensão do protótipo inclui visão dos sócios, alertas acionáveis e detalhamento por nove blocos de serviço. Indicadores são calculados a partir dos exemplos, sem alegações de receita ou ganho de produtividade. A proposta privada fundamenta somente a taxonomia e as perguntas. Histórico real, notificações multiusuário, automação de Gmail e regras comerciais/fiscais dependem da implementação e validação de produção. Ver docs/GESTAO-E-BRIEFING.md.
+
+## Referência do atendimento e triagem de e-mails
+Extensão aprovada: referência permanente por demanda e fila de mensagens para identificar, com candidatos, motivos e confirmação humana explícita. O protótipo associa automaticamente apenas código único conhecido ou conversa conhecida da mesma conta, sem conflito; as demais sugestões usam regras determinísticas simuladas. Permite escolha manual, nova demanda/cliente, ignorar/restaurar e correção auditada do vínculo. Associar inclui mensagem e anexos fictícios na conversa, sem aplicar campos do briefing, valores ou aceite. Corrigir move as fontes e preserva dados já aplicados. Gmail, IA externa, envio real, sincronização multiusuário e unicidade dos códigos em produção continuam futuros. Ver docs/TRIAGEM-DE-EMAILS.md.

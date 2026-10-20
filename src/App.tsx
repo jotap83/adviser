@@ -18,8 +18,9 @@ import {
   ChartNoAxesCombined,
   PanelLeftClose,
   PanelLeftOpen,
+  Copy,
 } from "lucide-react";
-import { useStore, go } from "./store";
+import { useStore, go, copy } from "./store";
 import { stages } from "./data";
 import type { Stage, Demand } from "./types";
 import { Badge, Button, Empty } from "./components/UI";
@@ -33,6 +34,7 @@ import { Settings } from "./pages/Settings";
 import { Flow, Roadmap } from "./pages/Flow";
 import { Management, Alerts } from "./pages/Management";
 import { collectAlerts } from "./operations";
+import { Inbox } from "./pages/Inbox";
 const nav = [
   { path: "/", label: "Visão geral", icon: LayoutDashboard },
   { path: "/demandas", label: "Demandas", icon: Layers },
@@ -140,6 +142,7 @@ export default function App() {
       />
     );
   else if (parts[0] === "demandas") page = <Home all />;
+  else if (parts[0] === "emails") page = <Inbox emailId={parts[1]} />;
   else if (parts[0] === "gestao") page = <Management />;
   else if (parts[0] === "alertas") page = <Alerts />;
   else if (parts[0] === "fornecedores")
@@ -329,7 +332,7 @@ function Toast({ toast, close }: { toast: string; close: () => void }) {
   ) : null;
 }
 function Workspace({ d, tab }: { d: Demand; tab: Stage }) {
-  const { state } = useStore();
+  const { state, notify } = useStore();
   const [history, setHistory] = useState(false);
   const client = state.clients.find((c) => c.id === d.clientId);
   const index = stages.findIndex((s) => s.id === d.stage);
@@ -346,6 +349,20 @@ function Workspace({ d, tab }: { d: Demand; tab: Stage }) {
         <div>
           <h1>{d.title}</h1>
           <div className="event-meta">
+            <button
+              className="demand-reference"
+              title="Copiar referência do atendimento"
+              onClick={async () =>
+                notify(
+                  (await copy(d.reference || ""))
+                    ? "Referência copiada."
+                    : "Selecione a referência e copie manualmente.",
+                )
+              }
+            >
+              <Copy size={13} />
+              {d.reference}
+            </button>
             <span>{client?.name}</span>
             <span>
               {d.date

@@ -15,6 +15,7 @@ const errors = [];
 page.on("pageerror", (e) => errors.push(e.message));
 
 async function capture(p, path) {
+  if (process.env.SKIP_SCREENSHOTS === "1") return;
   const close = p.getByRole("button", { name: "Fechar aviso", exact: true });
   if (await close.count()) await close.click();
   await p.evaluate(() => {
@@ -205,7 +206,7 @@ assert.equal(
   ),
   true,
 );
-await mp.getByRole("button", { name: "Explorar demonstração" }).click();
+await mp.locator(".demand-row").filter({ hasText: "Encontro Horizonte" }).click();
 await mp.getByRole("button", { name: "Organizar com IA", exact: true }).click();
 await mp.getByRole("button", { name: "Aplicar e revisar nos campos" }).click();
 await capture(mp, ".impeccable/review/mobile-briefing.png");

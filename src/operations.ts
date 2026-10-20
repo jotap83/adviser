@@ -81,6 +81,22 @@ export function collectAlerts(state: AppState, now = new Date()): AlertItem[] {
         });
     }
     const lastMessage = d.conversation?.at(-1);
+    for (const message of d.conversation || []) {
+      if (
+        message.direction === "in" &&
+        message.inboxEmailId &&
+        !message.reviewedAt
+      )
+        add({
+          id: `inbox-reply-${message.inboxEmailId}-${d.id}`,
+          title: "E-mail associado, conteúdo a revisar",
+          detail: `${message.contact} · ${message.subject || "Mensagem recebida"}`,
+          kind: "response",
+          severity: "info",
+          action: "Revisar mensagem",
+          path: path("briefing"),
+        });
+    }
     if (
       lastMessage?.direction === "out" &&
       d.clientResponseDue &&

@@ -9,7 +9,11 @@ import {
 import type { AppState, Demand } from "./types";
 import { seed, timestamp } from "./data";
 import { withManagementDemo } from "./operations";
+import { withReferences } from "./mail-reference";
+import { withInboxDemo } from "./inbox-model";
 const KEY = "adviser-demo-v1";
+const prepare = (s: AppState) =>
+  withInboxDemo(withReferences(withManagementDemo(s)));
 type Context = {
   state: AppState;
   setState: (f: (s: AppState) => AppState) => void;
@@ -31,10 +35,10 @@ export function Store({ children }: { children: ReactNode }) {
       if (raw) {
         const parsed = JSON.parse(raw);
         if (parsed.schema === 1 && Array.isArray(parsed.demands))
-          return withManagementDemo(parsed);
+          return prepare(parsed);
       }
     } catch {}
-    return withManagementDemo(seed());
+    return prepare(seed());
   });
   const [toast, setToast] = useState("");
   useEffect(() => {
@@ -43,7 +47,7 @@ export function Store({ children }: { children: ReactNode }) {
       try {
         const parsed = JSON.parse(event.newValue);
         if (parsed.schema === 1 && Array.isArray(parsed.demands))
-          setRaw(withManagementDemo(parsed));
+          setRaw(prepare(parsed));
       } catch {
         /* Preserve the current state if a different tab wrote invalid data. */
       }
@@ -51,19 +55,17 @@ export function Store({ children }: { children: ReactNode }) {
     window.addEventListener("storage", sync);
     return () => window.removeEventListener("storage", sync);
   }, []);
+  useEffect(() => {
+    try {
+      localStorage.setItem(KEY, JSON.stringify(state));
+    } catch {
+      setToast(
+        "Não foi possível salvar neste navegador. Exporte seus dados antes de sair.",
+      );
+    }
+  }, [state]);
   const setState = useCallback(
-    (f: (s: AppState) => AppState) =>
-      setRaw((prev) => {
-        const next = f(prev);
-        try {
-          localStorage.setItem(KEY, JSON.stringify(next));
-        } catch {
-          setToast(
-            "Não foi possível salvar neste navegador. Exporte seus dados antes de sair.",
-          );
-        }
-        return next;
-      }),
+    (f: (s: AppState) => AppState) => setRaw((prev) => withReferences(f(prev))),
     [],
   );
   const updateDemand = useCallback(
@@ -76,6 +78,7 @@ export function Store({ children }: { children: ReactNode }) {
           const now = new Date().toISOString();
           const next = {
             ...changed,
+            reference: d.reference,
             updatedAt: now,
             stageEnteredAt: changed.stage !== d.stage ? now : d.stageEnteredAt,
             quotes: changed.quotes.map((q) => {
@@ -105,7 +108,7 @@ export function Store({ children }: { children: ReactNode }) {
         toast,
         clearToast: () => setToast(""),
         reset: () => {
-          setState(() => withManagementDemo(seed()));
+          setState(() => prepare(seed()));
           setToast("Demonstração reiniciada com os exemplos fictícios.");
         },
       }}

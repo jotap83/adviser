@@ -13,6 +13,8 @@ import {
   Copy,
 } from "lucide-react";
 import type { Demand, Version } from "../types";
+import { referenceText } from "../mail-reference";
+import { MailSubject } from "../components/MailSubject";
 import { useStore, go, download, copy } from "../store";
 import { uid, timestamp } from "../data";
 import { money, totals, lineTotal } from "../domain.mjs";
@@ -585,21 +587,28 @@ export function Approval({ d }: { d: Demand }) {
               <textarea
                 className="email-draft"
                 key={chosen}
-                defaultValue={text}
+                defaultValue={referenceText(text, d)}
                 id="client-email"
               />
             </Label>
+            <MailSubject
+              d={d}
+              purpose={`Proposta · versão ${version?.number || ""}`}
+            />
             <div className="actions">
               <Button
                 icon={Copy}
                 onClick={async () =>
                   notify(
                     (await copy(
-                      (
-                        document.getElementById(
-                          "client-email",
-                        ) as HTMLTextAreaElement
-                      ).value,
+                      referenceText(
+                        (
+                          document.getElementById(
+                            "client-email",
+                          ) as HTMLTextAreaElement
+                        ).value,
+                        d,
+                      ),
                     ))
                       ? "Texto copiado. Anexe o PDF ou Excel antes do envio pelo Gmail."
                       : "Selecione e copie o texto manualmente.",
