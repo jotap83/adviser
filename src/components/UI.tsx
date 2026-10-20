@@ -1,4 +1,10 @@
-import type { ReactNode, ButtonHTMLAttributes } from "react";
+import {
+  cloneElement,
+  isValidElement,
+  useId,
+  type ReactNode,
+  type ButtonHTMLAttributes,
+} from "react";
 import {
   ArrowRight,
   Check,
@@ -99,13 +105,22 @@ export const Label = ({
   label: string;
   children: ReactNode;
   hint?: string;
-}) => (
-  <label className="field">
-    <span>{label}</span>
-    {children}
-    {hint && <small>{hint}</small>}
-  </label>
-);
+}) => {
+  const id = useId();
+  const control = isValidElement<Record<string, unknown>>(children)
+    ? cloneElement(children, {
+        "aria-labelledby": `${id}-label`,
+        ...(hint ? { "aria-describedby": `${id}-hint` } : {}),
+      })
+    : children;
+  return (
+    <label className="field">
+      <span id={`${id}-label`}>{label}</span>
+      {control}
+      {hint && <small id={`${id}-hint`}>{hint}</small>}
+    </label>
+  );
+};
 export const SaveMark = () => (
   <span className="save-mark">
     <Check size={13} /> Salvo neste navegador

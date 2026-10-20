@@ -55,6 +55,7 @@ export type Quote = {
   attachment: string;
   selected: boolean;
   sentAt?: string;
+  receivedAt?: string;
 };
 export type Version = {
   id: string;
@@ -100,6 +101,15 @@ export type Demand = {
   acceptedVersion?: string;
   handoff: boolean;
   history: { at: string; text: string }[];
+  createdAt?: string;
+  updatedAt?: string;
+  stageEnteredAt?: string;
+  dueAt?: string;
+  briefingDetails?: Record<string, string>;
+  scope?: Record<
+    string,
+    { included: boolean; answers: Record<string, string> }
+  >;
 };
 export type AppState = {
   schema: 1;
@@ -110,6 +120,9 @@ export type AppState = {
   users: Person[];
   aiMode: "available" | "offline";
   provider: string;
+  readAlerts?: string[];
+  managementDemo?: boolean;
+  alertRules?: { idleDays: number; dueDays: number };
 };
 export type AIResult = {
   title: string;

@@ -43,7 +43,7 @@ Também é possível criar clientes, fornecedores e demandas; editar modelos de 
 
 ## Limites explícitos
 
-- Estado em `localStorage`, com versão de esquema e opção de reiniciar. Sem banco de dados ou sincronização entre dispositivos/abas.
+- Estado em `localStorage`, com versão de esquema e opção de reiniciar. Atualização entre abas do mesmo site/navegador; sem banco de dados ou sincronização entre dispositivos/usuários.
 - Portal do fornecedor demonstrativo: não oferece autenticação, isolamento ou segurança de acesso real. Não use com informações reais. O frontend contém todos os exemplos.
 - Anexos registram apenas o nome; conteúdo não é armazenado nem enviado.
 - Não há chamadas de IA, Gmail, e-mail transacional ou Conta Azul.
@@ -70,3 +70,9 @@ Veja [arquitetura e evolução](docs/ARQUITETURA.md) e [critérios de validaçã
 
 ## Identidade visual
 Logo oficial e cores azul/laranja da Adviser incorporadas ao protótipo, inclusive portal, proposta e diagrama. Consulte [origem e aplicação da marca](docs/IDENTIDADE-VISUAL.md). Os arquivos são locais e não exigem acesso ao site da agência.
+
+## Gestão e briefing detalhado
+
+Acesse **Visão dos sócios** e **Central de alertas** no menu. Simule um retorno e veja as pendências mudarem. No briefing, selecione os blocos do evento, analise as sugestões de escopo e leve os pontos ainda abertos ao rascunho de esclarecimento. Consulte [escopo e roteiro gerencial](docs/GESTAO-E-BRIEFING.md).
+
+Teste adicional: `node tests/management-browser.mjs` com o app na porta 4173.

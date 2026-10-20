@@ -16,6 +16,7 @@ import type { Demand, Quote, Line } from "../types";
 import { useStore, go, copy } from "../store";
 import { uid } from "../data";
 import { money, lineTotal, selectedLines } from "../domain.mjs";
+import { scopeSummary } from "../briefing-model";
 import {
   Button,
   Label,
@@ -42,9 +43,10 @@ export function Quotes({ d }: { d: Demand }) {
     url.hash = `/fornecedor/${d.id}/${q.id}`;
     return url.href;
   };
+  const scopeContext = active ? scopeSummary(d, active.template.id) : "";
   const email =
     active && sup
-      ? `Olá, ${sup.contact}!\n\nEstamos preparando o evento ${d.title}, em ${d.date || "[data a confirmar]"}, para ${d.guests || "[público a confirmar]"} pessoas, em ${d.location || "[local a confirmar]"}.\n\nGostaríamos de receber sua cotação para ${active.template.name.toLowerCase()}. Preencha os itens, valores e condições neste link até ${active.deadline.split("-").reverse().join("/")}:\n\n${link(active)}\n\nObjetivo do evento: ${d.objective || "A confirmar"}.\n\nA solicitação é uma cotação e não representa contratação.\n\nObrigada,\n${d.owner} · Adviser`
+      ? `Olá, ${sup.contact}!\n\nEstamos preparando o evento ${d.title}, em ${d.date || "[data a confirmar]"}, para ${d.guests || "[público a confirmar]"} pessoas, em ${d.location || "[local a confirmar]"}.\n\nGostaríamos de receber sua cotação para ${active.template.name.toLowerCase()}. Preencha os itens, valores e condições neste link até ${active.deadline.split("-").reverse().join("/")}:\n\n${link(active)}\n\nObjetivo do evento: ${d.objective || "A confirmar"}.\n\nHorários: ${d.briefingDetails?.hours || "A confirmar"}.\nMontagem e desmontagem: ${d.briefingDetails?.setup || "A confirmar"}.\n\n${scopeContext ? `Escopo a cotar:\n${scopeContext}\n\n` : ""}A solicitação é uma cotação e não representa contratação.\n\nObrigada,\n${d.owner} · Adviser`
       : "";
   function add() {
     const qs: Quote[] = picked.map((id) => {
@@ -541,7 +543,15 @@ export function SupplierPortal({ d, q }: { d: Demand; q: Quote }) {
       {
         quotes: d.quotes.map((x) =>
           x.id === q.id
-            ? { ...x, status: "received", fields, lines, terms, attachment }
+            ? {
+                ...x,
+                status: "received",
+                fields,
+                lines,
+                terms,
+                attachment,
+                receivedAt: new Date().toISOString(),
+              }
             : x,
         ),
       },
@@ -673,6 +683,16 @@ export function SupplierPortal({ d, q }: { d: Demand; q: Quote }) {
                 {d.objective ||
                   "Detalhes do briefing disponíveis após validação."}
               </p>
+              {d.briefingValid && scopeSummary(d, q.template.id) && (
+                <details className="supplier-scope" open>
+                  <summary>Escopo solicitado pela Adviser</summary>
+                  <p>{scopeSummary(d, q.template.id)}</p>
+                  <small>
+                    Horários: {d.briefingDetails?.hours || "A confirmar"}.
+                    Montagem: {d.briefingDetails?.setup || "A confirmar"}.
+                  </small>
+                </details>
+              )}
               <div className="form-grid">
                 {q.template.fields.map((f) => (
                   <Label

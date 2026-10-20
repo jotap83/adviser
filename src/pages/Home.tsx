@@ -58,13 +58,18 @@ export function Home({ all = false }: { all?: boolean }) {
             : "Uma visão clara do que precisa avançar."
         }
         actions={
-          <Button
-            variant="primary"
-            icon={Plus}
-            onClick={() => setAdding((v) => !v)}
-          >
-            Nova demanda
-          </Button>
+          <>
+            {!all && (
+              <Button onClick={() => go("/gestao")}>Visão dos sócios</Button>
+            )}
+            <Button
+              variant="primary"
+              icon={Plus}
+              onClick={() => setAdding((v) => !v)}
+            >
+              Nova demanda
+            </Button>
+          </>
         }
       />
       {adding && (

@@ -14,6 +14,8 @@ import {
   Check,
   ArrowLeft,
   Clock3,
+  Bell,
+  ChartNoAxesCombined,
 } from "lucide-react";
 import { useStore, go } from "./store";
 import { stages } from "./data";
@@ -27,6 +29,8 @@ import { Proposal, Approval, Handoff } from "./pages/Proposal";
 import { Directory, Templates } from "./pages/Directory";
 import { Settings } from "./pages/Settings";
 import { Flow, Roadmap } from "./pages/Flow";
+import { Management, Alerts } from "./pages/Management";
+import { collectAlerts } from "./operations";
 const nav = [
   { path: "/", label: "Visão geral", icon: LayoutDashboard },
   { path: "/demandas", label: "Demandas", icon: Layers },
@@ -54,6 +58,9 @@ export default function App() {
     }
   }, [toast]);
   const parts = path.split("/").filter(Boolean);
+  const unread = collectAlerts(state).filter(
+    (a) => a.kind === "response" && !a.read,
+  ).length;
   const d = state.demands.find((x) => x.id === parts[1]);
   const q = d?.quotes.find((x) => x.id === parts[2]);
   let page: React.ReactNode;
@@ -82,6 +89,8 @@ export default function App() {
       />
     );
   else if (parts[0] === "demandas") page = <Home all />;
+  else if (parts[0] === "gestao") page = <Management />;
+  else if (parts[0] === "alertas") page = <Alerts />;
   else if (parts[0] === "fornecedores")
     page = <Directory key="suppliers" kind="suppliers" />;
   else if (parts[0] === "clientes")
@@ -136,6 +145,17 @@ export default function App() {
           </div>
         </div>
         <nav aria-label="Navegação principal">
+          <span className="nav-label">GESTÃO</span>
+          {navButton({
+            path: "/gestao",
+            label: "Visão dos sócios",
+            icon: ChartNoAxesCombined,
+          })}
+          {navButton({
+            path: "/alertas",
+            label: "Central de alertas",
+            icon: Bell,
+          })}
           <span className="nav-label">ATENDIMENTO</span>
           {nav.map(navButton)}
           <span className="nav-label">PLANEJAMENTO</span>
@@ -169,7 +189,11 @@ export default function App() {
               {mobile ? <X size={21} /> : <Menu size={21} />}
             </button>
             <span className="workspace-label">Workspace</span>
-            <a className="mobile-brand" href="#/" aria-label="Adviser, visão geral">
+            <a
+              className="mobile-brand"
+              href="#/"
+              aria-label="Adviser, visão geral"
+            >
               <BrandLogo />
             </a>
             <ChevronRight size={14} />
@@ -186,6 +210,14 @@ export default function App() {
             </strong>
           </div>
           <div className="topbar-right">
+            <button
+              className="notification-bell"
+              aria-label={`Abrir central de alertas, ${unread} novos retornos`}
+              onClick={() => go("/alertas")}
+            >
+              <Bell size={19} />
+              {unread > 0 && <span>{unread}</span>}
+            </button>
             <span className="demo-label">
               <span /> Protótipo navegável
             </span>

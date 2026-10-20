@@ -12,6 +12,7 @@ import type { Demand, AIResult } from "../types";
 import { useStore, go, copy } from "../store";
 import { DemoBriefingAI } from "../ai";
 import { Button, Label, Note, Badge, SaveMark } from "../components/UI";
+import { BriefingScope } from "../components/BriefingScope";
 export function Briefing({ d }: { d: Demand }) {
   const { state, updateDemand, notify } = useStore();
   const [result, setResult] = useState<AIResult | null>(null);
@@ -245,6 +246,7 @@ export function Briefing({ d }: { d: Demand }) {
           </p>
         </section>
       </div>
+      <BriefingScope d={d} patch={patch} />
       <div className="briefing-grid secondary-grid">
         <section className="panel">
           <div className="section-heading">
@@ -279,10 +281,11 @@ export function Briefing({ d }: { d: Demand }) {
               if (!text) return;
               updateDemand(
                 d.id,
-                { briefingLog: [...d.briefingLog, text] },
+                { briefingLog: [...d.briefingLog, text], briefingValid: false },
                 "Resposta do cliente registrada manualmente.",
               );
               e.currentTarget.reset();
+              setAligned(false);
               notify(
                 "Resposta registrada. Atualize os campos do briefing com os pontos confirmados.",
               );

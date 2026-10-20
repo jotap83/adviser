@@ -171,6 +171,9 @@ const suppliers = [
 export function createDemand(clientId = "c1", title = "Nova demanda"): Demand {
   return {
     id: uid(),
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    stageEnteredAt: new Date().toISOString(),
     title,
     clientId,
     owner: "Marina Costa",

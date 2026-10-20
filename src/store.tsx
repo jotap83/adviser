@@ -3,10 +3,12 @@ import {
   useContext,
   useState,
   useCallback,
+  useEffect,
   type ReactNode,
 } from "react";
 import type { AppState, Demand } from "./types";
 import { seed, timestamp } from "./data";
+import { withManagementDemo } from "./operations";
 const KEY = "adviser-demo-v1";
 type Context = {
   state: AppState;
@@ -28,12 +30,27 @@ export function Store({ children }: { children: ReactNode }) {
       const raw = localStorage.getItem(KEY);
       if (raw) {
         const parsed = JSON.parse(raw);
-        if (parsed.schema === 1 && Array.isArray(parsed.demands)) return parsed;
+        if (parsed.schema === 1 && Array.isArray(parsed.demands))
+          return withManagementDemo(parsed);
       }
     } catch {}
-    return seed();
+    return withManagementDemo(seed());
   });
   const [toast, setToast] = useState("");
+  useEffect(() => {
+    const sync = (event: StorageEvent) => {
+      if (event.key !== KEY || !event.newValue) return;
+      try {
+        const parsed = JSON.parse(event.newValue);
+        if (parsed.schema === 1 && Array.isArray(parsed.demands))
+          setRaw(withManagementDemo(parsed));
+      } catch {
+        /* Preserve the current state if a different tab wrote invalid data. */
+      }
+    };
+    window.addEventListener("storage", sync);
+    return () => window.removeEventListener("storage", sync);
+  }, []);
   const setState = useCallback(
     (f: (s: AppState) => AppState) =>
       setRaw((prev) => {
@@ -55,7 +72,19 @@ export function Store({ children }: { children: ReactNode }) {
         ...s,
         demands: s.demands.map((d) => {
           if (d.id !== id) return d;
-          const next = typeof p === "function" ? p(d) : { ...d, ...p };
+          const changed = typeof p === "function" ? p(d) : { ...d, ...p };
+          const now = new Date().toISOString();
+          const next = {
+            ...changed,
+            updatedAt: now,
+            stageEnteredAt: changed.stage !== d.stage ? now : d.stageEnteredAt,
+            quotes: changed.quotes.map((q) => {
+              const previous = d.quotes.find((old) => old.id === q.id);
+              return q.status === "received" && previous?.status !== "received"
+                ? { ...q, receivedAt: now }
+                : q;
+            }),
+          };
           return log
             ? {
                 ...next,
@@ -76,7 +105,7 @@ export function Store({ children }: { children: ReactNode }) {
         toast,
         clearToast: () => setToast(""),
         reset: () => {
-          setState(() => seed());
+          setState(() => withManagementDemo(seed()));
           setToast("Demonstração reiniciada com os exemplos fictícios.");
         },
       }}

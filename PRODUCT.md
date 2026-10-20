@@ -24,3 +24,6 @@ Regras comerciais e fiscais; categorias e templates definitivos; volume real; co
 
 ## Brand
 Usar a logo oficial da Agência Adviser e suas cores: azul #293E91 e laranja #E94E1D. Identidade registrada em docs/IDENTIDADE-VISUAL.md. Não redesenhar a marca.
+
+## Gestão e planejamento do briefing
+A extensão do protótipo inclui visão dos sócios, alertas acionáveis e detalhamento por nove blocos de serviço. Indicadores são calculados a partir dos exemplos, sem alegações de receita ou ganho de produtividade. A proposta privada fundamenta somente a taxonomia e as perguntas. Histórico real, notificações multiusuário, automação de Gmail e regras comerciais/fiscais dependem da implementação e validação de produção. Ver docs/GESTAO-E-BRIEFING.md.
