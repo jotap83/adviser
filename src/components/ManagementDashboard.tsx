@@ -7,6 +7,7 @@ import { money } from "../domain.mjs";
 import { Badge, Button, Empty, Label, Note, Title } from "./UI";
 import { ManagementPortfolio } from "./ManagementPortfolio";
 import { ManagementRecordEditor } from "./ManagementRecordEditor";
+import { IntelligenceEntry } from "./Intelligence";
 import type { Demand } from "../types";
 import {
   cycleRows,
@@ -198,6 +199,7 @@ export function ManagementDashboard() {
           </>
         }
       />
+      <IntelligenceEntry ids={["management"]} />
       <div className="management-filters insight-filters">
         <Label label="Período dos resultados">
           <select

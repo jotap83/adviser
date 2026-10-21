@@ -213,11 +213,21 @@ export type AppState = {
   productionProjects?: ProductionProject[];
   productionDemo?: boolean;
   financeEntries?: FinanceEntry[];
+  intelligencePriorities?: Record<string, boolean>;
+  intelligenceNotes?: {
+    id: string;
+    opportunity: string;
+    contextId: string;
+    title: string;
+    content: string;
+    at: string;
+  }[];
 };
 
 export type TaskStatus = "todo" | "doing" | "waiting" | "done";
 export type ProductionTask = {
   id: string;
+  aiOrigin?: string;
   title: string;
   description: string;
   status: TaskStatus;

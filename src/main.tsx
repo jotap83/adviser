@@ -10,6 +10,7 @@ import "./quote-workspace.css";
 import "./inbox-workspace.css";
 import "./production-workspace.css";
 import "./organization.css";
+import "./intelligence.css";
 import App from "./App";
 import { Store } from "./store";
 ReactDOM.createRoot(document.getElementById("root")!).render(

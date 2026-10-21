@@ -11,6 +11,7 @@ import {
   TriangleAlert,
 } from "lucide-react";
 import { Badge, Button, Empty, Label, Note, Title } from "../components/UI";
+import { IntelligenceEntry } from "../components/Intelligence";
 import { useStore, go } from "../store";
 import { uid } from "../data";
 import { money } from "../domain.mjs";
@@ -173,6 +174,7 @@ export function Operations({ projectId }: { projectId?: string }) {
           </Button>
         }
       />
+      <IntelligenceEntry ids={["operations"]} contextId={project.id} />
       <div className="production-project-picker">
         <Label label="Projeto / evento">
           <select

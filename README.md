@@ -41,6 +41,12 @@ node tests/browser.mjs
 
 Também é possível criar clientes, fornecedores e demandas; editar modelos de cotação; consultar o histórico; explorar a sequência em **Fluxo do sistema** e a separação das entregas em **Escopo e etapas**.
 
+## IA na operação
+
+Use **Explorar IA** no cabeçalho (`#/escopo/ia`) para acessar nove demonstrações: comparação de cotações, revisão de proposta, impacto de mudanças, retomada do atendimento, consulta gerencial, memória da carteira, direção criativa, planejamento operacional e conferência financeira. Os atalhos **Apoio com IA** nas telas existentes abrem o contexto correspondente.
+
+Os resultados são simulados, têm fontes e rascunhos editáveis e exigem revisão humana. É possível guardar análises, marcar prioridades para conversa, registrar uma direção criativa e adicionar tarefas escolhidas ao quadro local. Consulte [funcionamento, limites e roteiro de apresentação](docs/IA-NA-OPERACAO.md). As prioridades não fixam prazo ou contratação.
+
 ## Operações e entregas
 
 A navegação e as páginas identificam **MVP**, **etapa 2**, **etapa 3** e **evolução opcional**. Em **Operações**, selecione um evento, crie uma tarefa, abra os detalhes, marque o checklist, registre um comentário e mova a tarefa por arraste ou pelo seletor. Tarefas bloqueadas ou com checklist pendente não podem ser concluídas. No celular, escolha a coluna pelos botões acima do quadro.

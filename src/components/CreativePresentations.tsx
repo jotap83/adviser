@@ -15,6 +15,7 @@ import type { Demand, Presentation } from "../types";
 import { useStore } from "../store";
 import { getPresentationFile, savePresentationFile } from "../attachments";
 import { Badge, Button, Label, Note } from "./UI";
+import { IntelligenceEntry } from "./Intelligence";
 
 const statusText = {
   draft: "Rascunho",
@@ -146,6 +147,7 @@ export function CreativePresentations({ d }: { d: Demand }) {
   }
   return (
     <section id="briefing-criacao" className="briefing-section">
+      <IntelligenceEntry ids={["creative"]} contextId={d.id} />
       <div className="section-heading">
         <div>
           <h2>Apresentação criativa</h2>

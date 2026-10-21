@@ -1,4 +1,4 @@
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, WandSparkles } from "lucide-react";
 import { Badge, Button, Note, Title } from "../components/UI";
 import { go } from "../store";
 
@@ -101,9 +101,34 @@ export function ScopeOverview() {
   return (
     <>
       <Title
-        title="O que entra em cada entrega"
-        sub="Proposta de escopo para validar com a Adviser. Ter uma tela na demonstração não significa que ela faz parte da primeira contratação."
+        title="Evolução da plataforma"
+        sub="Uma visão completa para construir em conjunto. As etapas organizam o caminho; as próximas entregas serão priorizadas conforme as necessidades da Adviser."
       />
+      <section className="panel intelligence-scope">
+        <div className="section-heading">
+          <div>
+            <h2>IA presente no trabalho de cada área</h2>
+            <p>
+              Compare cotações, revise propostas, entenda mudanças, consulte a
+              gestão e explore criação, operações e financeiro.
+            </p>
+          </div>
+          <Badge tone="blue">9 demonstrações</Badge>
+        </div>
+        <p>
+          Em um possível acordo mensal, cada ciclo começa pela escolha do
+          problema, segue com a entrega e termina com a avaliação do resultado.
+          As prioridades marcadas no protótipo servem para a conversa; não fixam
+          prazo ou contratação.
+        </p>
+        <Button
+          variant="primary"
+          icon={WandSparkles}
+          onClick={() => go("/escopo/ia")}
+        >
+          Explorar possibilidades com IA
+        </Button>
+      </section>
       <Note>
         Os percentuais comerciais, a coluna “Estudo”, os campos internos da
         proposta e as regras de pagamento ainda precisam de confirmação. A IA

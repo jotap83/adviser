@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { Badge, Button, Empty, Label, Note, Title } from "../components/UI";
+import { IntelligenceEntry } from "../components/Intelligence";
 import { go, useStore } from "../store";
 import { money } from "../domain.mjs";
 export function Finance({ projectId }: { projectId?: string }) {
@@ -26,6 +27,7 @@ export function Finance({ projectId }: { projectId?: string }) {
         financeiras após validarmos o uso atual, a migração e as necessidades
         fiscais e bancárias. A substituição completa ainda não está definida.
       </Note>
+      <IntelligenceEntry ids={["finance"]} contextId={project?.id} />
       <div className="production-project-picker">
         <Label label="Projeto / evento">
           <select
@@ -94,9 +96,15 @@ export function Finance({ projectId }: { projectId?: string }) {
                   .filter((e) => !kind || e.direction === kind)
                   .map((entry) => (
                     <tr key={entry.id}>
-                      <td className="finance-entry-description">{entry.description}</td>
-                      <td data-label="Tipo">{entry.direction === "pay" ? "Pagar" : "Receber"}</td>
-                      <td data-label="Vencimento">{entry.due.split("-").reverse().join("/")}</td>
+                      <td className="finance-entry-description">
+                        {entry.description}
+                      </td>
+                      <td data-label="Tipo">
+                        {entry.direction === "pay" ? "Pagar" : "Receber"}
+                      </td>
+                      <td data-label="Vencimento">
+                        {entry.due.split("-").reverse().join("/")}
+                      </td>
                       <td data-label="Valor">{money(entry.amount)}</td>
                       <td data-label="Estado">
                         <Badge tone={entry.settled ? "green" : "amber"}>

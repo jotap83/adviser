@@ -22,6 +22,7 @@ import {
   Columns3,
   Wallet,
   Mail,
+  WandSparkles,
 } from "lucide-react";
 import { useStore, go, copy } from "./store";
 import { stages } from "./data";
@@ -42,6 +43,10 @@ import { ScopeBanner } from "./components/ScopeBanner";
 import { Management, Alerts } from "./pages/Management";
 import { collectAlerts } from "./operations";
 import { Inbox } from "./pages/Inbox";
+import {
+  IntelligenceEntry,
+  IntelligenceWorkspace,
+} from "./components/Intelligence";
 import {
   accountOwner,
   demoPerson,
@@ -183,6 +188,14 @@ export default function App() {
   else if (parts[0] === "configuracoes")
     page = <Settings key={parts[1]} initialTab={parts[1]} />;
   else if (parts[0] === "fluxo") page = <Flow />;
+  else if (parts[0] === "escopo" && parts[1] === "ia")
+    page = (
+      <IntelligenceWorkspace
+        key={path}
+        opportunity={parts[2]}
+        contextId={parts[3]}
+      />
+    );
   else if (parts[0] === "roadmap" || parts[0] === "escopo")
     page = <ScopeOverview />;
   else if (parts[0] === "operacoes") page = <Operations projectId={parts[1]} />;
@@ -344,6 +357,11 @@ export default function App() {
             </strong>
           </div>
           <div className="topbar-right">
+            <div className="intelligence-topbar">
+              <Button icon={WandSparkles} onClick={() => go("/escopo/ia")}>
+                Explorar IA
+              </Button>
+            </div>
             <button
               className="notification-bell"
               aria-label={`Abrir central de alertas, ${unread} novos retornos`}
@@ -514,6 +532,20 @@ function Workspace({ d, tab }: { d: Demand; tab: Stage }) {
         ))}
       </nav>
       <div className="workspace-content">
+        <IntelligenceEntry
+          contextId={d.id}
+          ids={
+            tab === "briefing"
+              ? ["summary", "changes", "memory"]
+              : tab === "quotes" || tab === "compare"
+                ? ["quotes"]
+                : tab === "proposal"
+                  ? ["review", "changes"]
+                  : tab === "approval"
+                    ? ["changes", "summary"]
+                    : ["summary"]
+          }
+        />
         {tab === "briefing" ? (
           <Briefing key={d.id} d={d} />
         ) : tab === "quotes" ? (

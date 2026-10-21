@@ -1,6 +1,10 @@
 <!-- impeccable:product-schema 1 -->
 # Adviser
 
+## Evolução contínua com IA — 21/10/2026
+
+O usuário autorizou ampliar a demonstração além do MVP para apresentar aos sócios nove oportunidades: comparação de cotações, revisão de proposta, impacto de alterações, continuidade do atendimento, consulta gerencial, memória da carteira, apoio criativo, planejamento operacional e conferência financeira. O possível pacote mensal é uma hipótese comercial; prioridades serão definidas em conjunto, sem promessas automáticas de prazo ou escopo. As etapas e a referência histórica ao MVP continuam como orientação, não como limite das demonstrações de IA. Todo comportamento permanece local e simulado; cálculos não são atribuídos a um modelo. Rascunhos exigem revisão; sugestões operacionais podem virar tarefas locais e uma direção criativa pode ser registrada por ação explícita. Não há mensagens, contratação, aceite ou pagamento automático. Ver docs/IA-NA-OPERACAO.md.
+
 ## Product
 Sistema sob medida para atendimento de uma agência de eventos físicos. A Adviser será proprietária do software produzido para ela, com entrega de fonte, documentação e instruções de operação. O repositório do usuário é jotap83/adviser.
 
