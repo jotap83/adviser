@@ -1,6 +1,15 @@
 import { completeBriefingExample } from "./briefing-example";
 import type { AppState, Demand, Quote, Template, Line } from "./types";
-export const uid = () => crypto.randomUUID();
+export const uid = () => {
+  if (typeof crypto.randomUUID === "function") return crypto.randomUUID();
+  const bytes = crypto.getRandomValues(new Uint8Array(16));
+  bytes[6] = (bytes[6] & 0x0f) | 0x40;
+  bytes[8] = (bytes[8] & 0x3f) | 0x80;
+  const hex = Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join(
+    "",
+  );
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+};
 export const timestamp = () => new Date().toLocaleString("pt-BR");
 export const stages = [
   { id: "briefing", label: "Briefing" },
@@ -173,6 +182,7 @@ export function createDemand(clientId = "c1", title = "Nova demanda"): Demand {
   return {
     id: uid(),
     createdAt: new Date().toISOString(),
+    management: { firstContactAt: new Date().toISOString(), events: [] },
     updatedAt: new Date().toISOString(),
     stageEnteredAt: new Date().toISOString(),
     title,

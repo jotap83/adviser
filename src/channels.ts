@@ -1,3 +1,4 @@
+import { uid } from "./data";
 import type { AppState, Demand, InboxEmail } from "./types";
 import { receiveMail, phoneNumber, messageChannel } from "./inbox-model";
 
@@ -16,11 +17,11 @@ export function incomingExample(
       ? `Referência: ${d.reference}\n\n`
       : "";
   return {
-    id: crypto.randomUUID(),
+    id: uid(),
     channel,
     account:
       channel === "email" ? "marina@adviser.example.com" : demoBusinessPhone,
-    threadId: `conversation-${crypto.randomUUID()}`,
+    threadId: `conversation-${uid()}`,
     from:
       channel === "email"
         ? client?.email || "ana@horizonte.example.com"

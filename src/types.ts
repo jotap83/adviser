@@ -101,6 +101,8 @@ export type Quote = {
   selected: boolean;
   sentAt?: string;
   receivedAt?: string;
+  firstReceivedAt?: string;
+  firstResponseComplete?: boolean;
   options?: QuoteOption[];
   revision?: number;
   revisions?: QuoteRevision[];
@@ -162,12 +164,30 @@ export type Demand = {
   createdAt?: string;
   updatedAt?: string;
   stageEnteredAt?: string;
+  management?: ManagementRecord;
   dueAt?: string;
   briefingDetails?: Record<string, string>;
   scope?: Record<
     string,
     { included: boolean; answers: Record<string, string> }
   >;
+};
+export type ManagementEvent = {
+  kind: "proposal_sent" | "accepted" | "declined" | "revision";
+  at: string;
+  versionId?: string;
+  dueAt?: string;
+  reason?: string;
+};
+export type ManagementRecord = {
+  firstContactAt?: string;
+  proposalDueAt?: string;
+  complexity?: "standard" | "high";
+  waitingOn?: "team" | "client" | "supplier";
+  lossReason?: string;
+  revisionReason?: string;
+  events?: ManagementEvent[];
+  forecast?: { versionId: string; internalCost: number; otherCost: number };
 };
 export type AppState = {
   schema: 1;
@@ -183,6 +203,8 @@ export type AppState = {
   provider: string;
   readAlerts?: string[];
   managementDemo?: boolean;
+  managementInsightsDemo?: boolean;
+  managementTargets?: { cycleDays: number; marginPercent: number };
   alertRules?: { idleDays: number; dueDays: number };
   referenceCounters?: Record<string, number>;
   inbox?: InboxEmail[];

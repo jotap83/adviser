@@ -1,3 +1,4 @@
+import { uid } from "../data";
 import { useState } from "react";
 import { Copy, Send, Sparkles, Check } from "lucide-react";
 import type { Demand, InboxEmail } from "../types";
@@ -76,7 +77,7 @@ export function ReplyComposer({
         conversation: [
           ...(current.conversation || []),
           {
-            id: crypto.randomUUID(),
+            id: uid(),
             direction: "out",
             text: referenceText(body.trim(), current),
             subject:

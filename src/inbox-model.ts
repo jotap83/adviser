@@ -1,3 +1,4 @@
+import { uid } from "./data";
 import type { AppState, Demand, InboxEmail } from "./types";
 
 const normalized = (text: string) =>
@@ -452,7 +453,7 @@ export function demoFollowUp(state: AppState): InboxEmail | undefined {
   if (!prior) return;
   return {
     ...prior,
-    id: crypto.randomUUID(),
+    id: uid(),
     subject: "Re: Retorno da equipe",
     text: "Olá, recebemos o retorno. Vamos revisar o material e confirmar os pontos pendentes.\n\nEquipe do cliente",
     attachments: [],

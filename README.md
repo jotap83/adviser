@@ -83,9 +83,11 @@ Logo oficial e cores azul/laranja da Adviser incorporadas ao protótipo, inclusi
 
 ## Gestão e briefing detalhado
 
-Acesse **Painel Gerencial** e **Central de alertas** no menu. Simule um retorno e veja as pendências mudarem. No briefing, selecione os blocos do evento, analise as sugestões de escopo e leve os pontos ainda abertos ao rascunho de esclarecimento. Consulte [escopo e roteiro gerencial](docs/GESTAO-E-BRIEFING.md).
+Acesse **Painel Gerencial** no menu: filtre período e carteira, clique nos indicadores para abrir sua base e explore **Decisões de hoje**, **Carteira e prazos** e **Clientes e fornecedores**. O editor **Revisar registro** completa marcos e custos manualmente. Ciclo e conversão usam decisões registradas; riscos mostram a situação atual. A margem estimada usa fee menos custos explícitos, vinculados à versão, e não representa lucro líquido. A migração acrescenta exemplos fictícios sem substituir o trabalho local.
 
-Teste adicional: `node tests/management-browser.mjs` com o app na porta 4173.
+Na **Central de alertas**, simule um retorno e veja as pendências mudarem. No briefing, selecione os blocos do evento, analise as sugestões de escopo e leve os pontos ainda abertos ao rascunho de esclarecimento. Consulte [fórmulas, limites e roteiro gerencial](docs/GESTAO-E-BRIEFING.md).
+
+Testes das métricas: `npm test` inclui `tests/management-insights.test.mjs`. Teste adicional do fluxo de gestão e briefing: `node tests/management-browser.mjs` com o app na porta 4173.
 
 ## Briefing e colaboração
 

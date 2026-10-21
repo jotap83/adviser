@@ -197,7 +197,7 @@ export function collectAlerts(state: AppState, now = new Date()): AlertItem[] {
         id: `handoff-${d.id}-${d.acceptedVersion}`,
         title: "Aprovada, aguardando repasse",
         detail:
-          "Confira a versão aceita e prepare as informações para o financeiro.",
+          "Confira a versão aceita e prepare as informações para Operações.",
         kind: "decision",
         severity: "medium",
         action: "Preparar repasse",

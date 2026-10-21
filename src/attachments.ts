@@ -1,3 +1,4 @@
+import { uid } from "./data";
 import type { BriefingAttachment } from "./types";
 
 const maxText = 100_000;
@@ -12,7 +13,7 @@ export async function readBriefingFile(
       "Este arquivo ultrapassa 10 MB. Use uma versão menor ou cole o texto do briefing.",
     );
   const attachment: BriefingAttachment = {
-    id: crypto.randomUUID(),
+    id: uid(),
     name: file.name,
     size: file.size,
     kind,

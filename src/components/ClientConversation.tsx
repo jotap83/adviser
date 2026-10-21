@@ -1,3 +1,4 @@
+import { uid } from "../data";
 import { useState } from "react";
 import {
   ArrowDownLeft,
@@ -265,7 +266,7 @@ export function ClientConversation({
                 e.preventDefault();
                 if (!reply.trim() || !contact.trim()) return;
                 const message: ClientMessage = {
-                  id: crypto.randomUUID(),
+                  id: uid(),
                   direction: "in",
                   text: reply.trim(),
                   contact: contact.trim(),

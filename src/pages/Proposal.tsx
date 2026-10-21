@@ -1,3 +1,8 @@
+import {
+  lossReasons,
+  revisionReasons,
+  withManagementReason,
+} from "../management-model";
 import { useState } from "react";
 import { BrandLogo } from "../components/BrandLogo";
 import {
@@ -568,6 +573,23 @@ export function Approval({ d }: { d: Demand }) {
         <div className="briefing-grid">
           <section className="panel">
             <h3>Preparar envio</h3>
+            <Label
+              label="Compromisso para o primeiro envio"
+              hint="Este prazo alimenta o indicador de pontualidade do Painel Gerencial."
+            >
+              <input
+                type="date"
+                value={d.management?.proposalDueAt || ""}
+                onChange={(e) =>
+                  updateDemand(d.id, {
+                    management: {
+                      ...d.management,
+                      proposalDueAt: e.target.value,
+                    },
+                  })
+                }
+              />
+            </Label>
             <Label label="Versão da proposta">
               <select
                 value={chosen}
@@ -626,6 +648,18 @@ export function Approval({ d }: { d: Demand }) {
                     d.id,
                     {
                       sentVersion: chosen,
+                      management: {
+                        ...d.management,
+                        events: [
+                          ...(d.management?.events || []),
+                          {
+                            kind: "proposal_sent",
+                            at: new Date().toISOString(),
+                            versionId: chosen,
+                            dueAt: d.management?.proposalDueAt,
+                          },
+                        ],
+                      },
                       decision: "pending",
                       stage: "approval",
                     },
@@ -672,6 +706,65 @@ export function Approval({ d }: { d: Demand }) {
                 placeholder="Exemplo fictício: cliente aprovou por e-mail a versão 1, com os itens e condições apresentados."
               />
             </Label>
+            <details className="management-decision-reasons">
+              <summary>Motivos para análise gerencial</summary>
+              <Label
+                label={
+                  d.decision === "declined"
+                    ? "Motivo da recusa registrada"
+                    : "Motivo se a proposta não for aprovada"
+                }
+              >
+                <select
+                  value={d.management?.lossReason || ""}
+                  onChange={(e) =>
+                    updateDemand(
+                      d.id,
+                      (current) =>
+                        withManagementReason(
+                          current,
+                          "lossReason",
+                          e.target.value,
+                        ),
+                      "Motivo de recusa atualizado.",
+                    )
+                  }
+                >
+                  <option value="">Sem classificação</option>
+                  {lossReasons.map((reason) => (
+                    <option key={reason}>{reason}</option>
+                  ))}
+                </select>
+              </Label>
+              <Label
+                label={
+                  d.decision === "changes"
+                    ? "Motivo da revisão registrada"
+                    : "Motivo se houver ajustes"
+                }
+              >
+                <select
+                  value={d.management?.revisionReason || ""}
+                  onChange={(e) =>
+                    updateDemand(
+                      d.id,
+                      (current) =>
+                        withManagementReason(
+                          current,
+                          "revisionReason",
+                          e.target.value,
+                        ),
+                      "Motivo de revisão atualizado.",
+                    )
+                  }
+                >
+                  <option value="">Sem classificação</option>
+                  {revisionReasons.map((reason) => (
+                    <option key={reason}>{reason}</option>
+                  ))}
+                </select>
+              </Label>
+            </details>
             <div className="decision-actions">
               <Button
                 variant="primary"

@@ -14,11 +14,19 @@ import { withInboxDemo } from "./inbox-model";
 import { withProductionDemo } from "./production-model";
 import { withChannelsDemo } from "./channels";
 import { withOrganization } from "./organization";
+import { withManagementInsightsDemo } from "./management-demo";
+import { trackManagementChange } from "./management-model";
 const KEY = "adviser-demo-v1";
 const prepare = (s: AppState) =>
-  withOrganization(
-    withChannelsDemo(
-      withProductionDemo(withInboxDemo(withReferences(withManagementDemo(s)))),
+  withReferences(
+    withManagementInsightsDemo(
+      withOrganization(
+        withChannelsDemo(
+          withProductionDemo(
+            withInboxDemo(withReferences(withManagementDemo(s))),
+          ),
+        ),
+      ),
     ),
   );
 type Context = {
@@ -72,7 +80,21 @@ export function Store({ children }: { children: ReactNode }) {
     }
   }, [state]);
   const setState = useCallback(
-    (f: (s: AppState) => AppState) => setRaw((prev) => withReferences(f(prev))),
+    (f: (s: AppState) => AppState) =>
+      setRaw((prev) => {
+        const next = f(prev);
+        const now = new Date().toISOString();
+        return withReferences({
+          ...next,
+          demands: next.demands.map((d) =>
+            trackManagementChange(
+              prev.demands.find((old) => old.id === d.id),
+              d,
+              now,
+            ),
+          ),
+        });
+      }),
     [],
   );
   const updateDemand = useCallback(

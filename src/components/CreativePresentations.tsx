@@ -1,3 +1,4 @@
+import { uid } from "../data";
 import { useEffect, useState } from "react";
 import {
   Presentation as PresentationIcon,
@@ -97,7 +98,7 @@ export function CreativePresentations({ d }: { d: Demand }) {
     setSaving(true);
     setError("");
     const version: Presentation = {
-      id: crypto.randomUUID(),
+      id: uid(),
       number: (versions.at(-1)?.number || 0) + 1,
       title: title.trim(),
       concept: concept.trim(),
