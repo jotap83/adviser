@@ -146,6 +146,7 @@ export type Demand = {
   clientDraft?: string;
   clientResponseDue?: string;
   presentations?: Presentation[];
+  supplierShortlist?: string[];
   quotes: Quote[];
   lines: Line[];
   fee: number;

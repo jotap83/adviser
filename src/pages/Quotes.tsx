@@ -1,30 +1,14 @@
 import { useState } from "react";
-import {
-  Plus,
-  Mail,
-  Link,
-  ExternalLink,
-  Copy,
-  ArrowRight,
-  Send,
-} from "lucide-react";
+import { Mail, Link, ExternalLink, Copy, ArrowRight, Send } from "lucide-react";
 import type { Demand, Quote } from "../types";
 import { useStore, go, copy } from "../store";
-import { uid } from "../data";
 import { quoteRange } from "../quote-model";
 import { scopeSummary } from "../briefing-model";
-import { Button, Label, Note, Badge, Empty } from "../components/UI";
+import { Button, Label, Badge, Empty } from "../components/UI";
+import { SupplierSuggestions } from "../components/SupplierSuggestions";
 export function Quotes({ d }: { d: Demand }) {
   const { state, updateDemand, notify } = useStore();
-  const [adding, setAdding] = useState(false);
-  const [category, setCategory] = useState("all");
-  const [picked, setPicked] = useState<string[]>([]);
   const [preview, setPreview] = useState<string | null>(null);
-  const available = state.suppliers.filter(
-    (s) =>
-      !d.quotes.some((q) => q.supplierId === s.id) &&
-      (category === "all" || s.category === category),
-  );
   const active = d.quotes.find((q) => q.id === preview);
   const sup = state.suppliers.find((s) => s.id === active?.supplierId);
   const link = (q: Quote) => {
@@ -37,115 +21,18 @@ export function Quotes({ d }: { d: Demand }) {
     active && sup
       ? `Olá, ${sup.contact}!\n\nEstamos preparando o evento ${d.title}, em ${d.date || "[data a confirmar]"}, para ${d.guests || "[público a confirmar]"} pessoas, em ${d.location || "[local a confirmar]"}.\n\nGostaríamos de receber sua cotação para ${active.template.name.toLowerCase()}. Preencha os itens, valores e condições neste link até ${active.deadline.split("-").reverse().join("/")}:\n\n${link(active)}\n\nObjetivo do evento: ${d.objective || "A confirmar"}.\n\nHorários: ${d.briefingDetails?.hours || "A confirmar"}.\nMontagem e desmontagem: ${d.briefingDetails?.setup || "A confirmar"}.\n\n${scopeContext ? `Escopo a cotar:\n${scopeContext}\n\n` : ""}A solicitação é uma cotação e não representa contratação.\n\nObrigada,\n${d.owner ? `${d.owner} · Adviser` : "Equipe Adviser"}`
       : "";
-  function add() {
-    const qs: Quote[] = picked.map((id) => {
-      const s = state.suppliers.find((s) => s.id === id)!;
-      const template = state.templates.find((t) => t.id === s.category)!;
-      return {
-        id: uid(),
-        supplierId: id,
-        template: structuredClone(template),
-        status: "draft",
-        deadline: new Date(Date.now() + 7 * 86400000)
-          .toISOString()
-          .slice(0, 10),
-        fields: {},
-        lines: [],
-        terms: "",
-        attachment: "",
-        selected: false,
-      };
-    });
-    updateDemand(
-      d.id,
-      { quotes: [...d.quotes, ...qs] },
-      `${qs.length} solicitações de cotação preparadas.`,
-    );
-    setPicked([]);
-    setAdding(false);
-    notify(
-      "Solicitações preparadas. Revise o e-mail individual antes de simular o envio.",
-    );
-  }
   return (
     <>
-      <div className="section-heading">
+      <SupplierSuggestions key={d.id} d={d} />
+      <div className="section-heading" id="quote-requests">
         <div>
-          <h2>Os fornecedores certos para cada serviço.</h2>
+          <h2>Solicitações de cotação</h2>
           <p>
-            Uma solicitação por fornecedor. Um formato de resposta para cada
-            categoria.
+            Revise o e-mail e o link de cada fornecedor antes de simular o
+            envio.
           </p>
         </div>
-        <Button
-          variant="primary"
-          icon={Plus}
-          disabled={!d.briefingValid}
-          onClick={() => setAdding((v) => !v)}
-        >
-          Solicitar cotações
-        </Button>
       </div>
-      {!d.briefingValid && (
-        <Note>
-          Valide o briefing antes de criar solicitações. As cotações já visíveis
-          nesta demanda são exemplos para navegação.
-        </Note>
-      )}
-      {adding && (
-        <section className="panel">
-          <div className="section-heading">
-            <h3>Selecionar fornecedores</h3>
-            <select
-              aria-label="Categoria de fornecedores"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-            >
-              <option value="all">Todas as categorias</option>
-              {state.templates.map((t) => (
-                <option key={t.id} value={t.id}>
-                  {t.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="supplier-picker">
-            {available.map((s) => (
-              <label className="selection-row" key={s.id}>
-                <input
-                  type="checkbox"
-                  checked={picked.includes(s.id)}
-                  onChange={(e) =>
-                    setPicked(
-                      e.target.checked
-                        ? [...picked, s.id]
-                        : picked.filter((id) => id !== s.id),
-                    )
-                  }
-                />
-                <span>
-                  <strong>{s.name}</strong>
-                  <small>
-                    {state.templates.find((t) => t.id === s.category)?.name} ·{" "}
-                    {s.city}
-                  </small>
-                </span>
-              </label>
-            ))}
-            {!available.length && (
-              <p className="muted">
-                Todos os fornecedores desta categoria já foram incluídos.
-              </p>
-            )}
-          </div>
-          <div className="actions">
-            <Button variant="primary" disabled={!picked.length} onClick={add}>
-              Preparar {picked.length || ""} solicitações
-            </Button>
-            <Button onClick={() => setAdding(false)}>Cancelar</Button>
-          </div>
-        </section>
-      )}
       <div className="quote-stats">
         <span>
           <strong>{d.quotes.length}</strong> fornecedores
@@ -319,7 +206,13 @@ export function Quotes({ d }: { d: Demand }) {
             <Button
               variant="primary"
               icon={Send}
-              disabled={active.status === "received"}
+              disabled={
+                active.status === "received" ||
+                !d.briefingValid ||
+                d.decision === "accepted" ||
+                d.decision === "declined" ||
+                d.handoff
+              }
               onClick={() => {
                 updateDemand(
                   d.id,

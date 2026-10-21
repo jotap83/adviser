@@ -59,3 +59,10 @@ Testes novos: `tests/briefing-browser.mjs` e `tests/standalone-briefing.mjs`. N�
 `tests/standalone-quotes.mjs` passou por `file://`, offline: duas alternativas, composição sem adicional, confirmação do fornecedor e persistência após recarregar. Zero requisições externas e zero erros de página. Não foram testados Safari/Firefox ou aparelho físico.
 
 A revisão visual usa seis capturas (opções, escolha e confirmação, cada uma em desktop/mobile). Capturas isoladas da escolha ocultam o cabeçalho somente para evitar sobreposição na evidência; o aplicativo mantém o cabeçalho fixo. O detector executou uma vez; duas sugestões tipográficas foram resolvidas com o tamanho já existente de 19px.
+
+
+## Sugestões e pré-seleção de fornecedores — 21/10/2026
+
+`npm test`: 13 testes aprovados (cinco existentes e oito em `tests/supplier-matching.test.mjs`). Cobertura nova: mensagem e anexos incluídos; origem da sugestão; exclusão manual prevalecendo sobre textos; comparação conservadora de cidade; seleção de vários fornecedores por categoria; fornecedor de outra cidade; duplicatas e cadastros/modelos ausentes; rascunhos sem envio/contratação; modelo copiado; propostas/cotações anteriores preservadas; bloqueio por briefing inválido ou demanda encerrada; reidratação da seleção em renderização a partir do estado serializado, inclusive com IA offline; seletor presente em Briefing e Cotações.
+
+Build TypeScript/Vite aprovado. Revisão de componentes React e detector mecânico executados. As verificações de componentes usaram renderização estática, sem servidor HTTP nem navegador. Não houve teste interativo ou captura visual desta extensão: o mecanismo de navegador permitido não estava disponível nesta sessão. As capturas anteriores serviram apenas de referência do padrão visual existente.

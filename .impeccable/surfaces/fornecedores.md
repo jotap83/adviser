@@ -13,3 +13,7 @@ Na análise da cotação: fornecedor, versão, alternativas e contexto dos valor
 
 ## Qualidade
 Leitura desktop e 390px, sem alargamento; campos rotulados, controles nativos e foco existente. Histórico, envio simulado e pendências explícitos. Nenhum dado do PDF privado no protótipo. Testes verificam valores escolhidos, imutabilidade, ajustes, importação e ausência de contratação automática.
+
+
+## Pré-seleção de fornecedores — 21/10/2026
+No briefing e em Cotações, agrupar fornecedores pelas categorias da demanda, com motivo da sugestão e contexto em um disclosure nativo. Checkboxes escolhem quem consultar; a composição comercial continua sendo uma decisão posterior. Manter a seleção visível mesmo ao filtrar e permitir consultar todo o cadastro. Preparar solicitações exige briefing validado e cria somente rascunhos. Preservar as mesmas cores, controles e separadores do produto. O modelo local é demonstrativo; não indicar disponibilidade, capacidade, preço ou pontuação sem dados.

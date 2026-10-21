@@ -33,3 +33,12 @@ No **Comparativo**, escolha **Menu Celebração**, marque **Open bar** e confirm
 Persistir versões e seleções imutáveis em banco, validar ações no servidor e usar controle de concorrência. O token do link deve autorizar apenas a solicitação daquele fornecedor, com expiração e revogação. Notificações precisam de envio real, tentativas e auditoria. Autenticação, armazenamento de anexos e sincronização entre dispositivos não são implementados nesta demonstração.
 
 Validar com a Adviser as regras de validade, reserva, itens obrigatórios, seleção de vários fornecedores da mesma categoria, mudanças após aprovação e formalização da contratação.
+
+
+## Fornecedores sugeridos na demanda — MVP
+
+O briefing e a aba Cotações compartilham a seção Fornecedores sugeridos. Ela relaciona as categorias do cadastro aos serviços incluídos no escopo. Quando a categoria ainda não foi revisada, a demonstração procura termos na mensagem recebida, nos retornos do cliente e nos anexos incluídos na análise, identificando a origem da sugestão. Uma exclusão manual do escopo prevalece sobre os textos antigos. A demonstração usa regras locais; não há chamada de IA nem consulta externa de fornecedores.
+
+O atendimento pode selecionar vários fornecedores da mesma categoria, consultar todo o cadastro, buscar por nome/cidade/serviço e remover escolhas. A seleção é própria de cada demanda e persiste no navegador, inclusive entre Briefing e Cotações. Um fornecedor de outra cidade pode ser escolhido; a cidade cadastrada não comprova cobertura, disponibilidade ou capacidade. Seleções fora das sugestões atuais continuam visíveis para revisão. Serviços sem fornecedores cadastrados são sinalizados.
+
+Depois de validar o briefing, Preparar solicitações cria um rascunho individual para cada fornecedor apto, com cópia do modelo de sua categoria. Solicitações existentes são preservadas e não se duplicam. Fornecedores sem modelo não são incluídos. A preparação não seleciona uma proposta comercial, não envia mensagens e não contrata serviços. A revisão do e-mail, o link do fornecedor e o envio simulado continuam na tabela de solicitações. Demandas encerradas ou repassadas não recebem novas solicitações por este fluxo.

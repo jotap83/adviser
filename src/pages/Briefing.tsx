@@ -8,6 +8,7 @@ import { BriefingScope } from "../components/BriefingScope";
 import { BriefingAttachments } from "../components/BriefingAttachments";
 import { ClientConversation } from "../components/ClientConversation";
 import { CreativePresentations } from "../components/CreativePresentations";
+import { SupplierSuggestions } from "../components/SupplierSuggestions";
 import { completeBriefingExample } from "../briefing-example";
 import {
   briefingSources,
@@ -110,6 +111,7 @@ export function Briefing({ d }: { d: Demand }) {
         {[
           ["entrada", "Mensagem e anexos"],
           ["escopo", "Escopo do evento"],
+          ["fornecedores", "Fornecedores sugeridos"],
           ["conversa", "Conversa com o cliente"],
           ["criacao", "Apresentação criativa"],
         ].map(([id, label]) => (
@@ -400,6 +402,9 @@ export function Briefing({ d }: { d: Demand }) {
       </div>
       <div id="briefing-escopo" className="briefing-section">
         <BriefingScope d={d} patch={patch} />
+      </div>
+      <div id="briefing-fornecedores" className="briefing-section">
+        <SupplierSuggestions key={d.id} d={d} fromBriefing />
       </div>
       <ClientConversation
         d={d}
