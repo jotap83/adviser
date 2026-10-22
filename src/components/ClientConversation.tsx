@@ -13,7 +13,7 @@ import { referenceText } from "../mail-reference";
 import { ReplyComposer } from "./ReplyComposer";
 import { briefingFields, scopeSummary } from "../briefing-model";
 import { clientReplyExample } from "../briefing-example";
-import { Badge, Button, Label } from "./UI";
+import { AIBadge, Badge, Button, Label } from "./UI";
 
 export function ClientConversation({
   d,
@@ -180,7 +180,7 @@ export function ClientConversation({
                             icon={Sparkles}
                             onClick={() => analyzeReply(m)}
                           >
-                            Analisar retorno com IA
+                            Analisar retorno com IA <AIBadge decorative />
                           </Button>
                           <Button
                             variant="ghost"

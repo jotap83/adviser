@@ -1,6 +1,10 @@
 <!-- impeccable:product-schema 1 -->
 # Adviser
 
+## Origem da cobrança e identificação de IA
+
+Extensão autorizada: a conferência financeira começa com recebimento fictício por Gmail/WhatsApp ou arquivo/texto informado diretamente. A origem e o original ficam visíveis; os campos são extraídos por simulação ou preenchidos manualmente, revisados e confrontados com um lançamento escolhido do mesmo evento. Nenhuma comparação autoriza pagamento. A etiqueta compartilhada “IA prevista” identifica os apoios de IA em ações, sugestões, oportunidades e fluxo, separada das fases do projeto. Cálculos, cadastros, aceite e pagamentos não recebem a etiqueta como se fossem decisões de IA.
+
 ## Tours para apresentação aos sócios
 
 O usuário autorizou um seletor de tours no cabeçalho para guiar a apresentação. O roteiro principal cobre a mensagem inicial, cadastro, briefing com IA e anexos, esclarecimentos, criação, fornecedores, negociação, versões e aceite pelo cliente. Outros roteiros percorrem gestão, canais, cadastros e núcleos, as nove oportunidades de IA, operações, financeiro e evolução da plataforma. As cenas usam dados fictícios temporários sobre as mesmas telas funcionais. Avançar ou pular prepara um exemplo da etapa, sem representar execução real de envio, aceite ou pagamento. As alterações da apresentação não substituem os registros salvos; o progresso do roteiro é guardado separadamente. Ver docs/TOURS-DE-APRESENTACAO.md.

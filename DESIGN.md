@@ -313,6 +313,8 @@ A navegação principal combina ícone, label e estado ativo preenchido. Seus al
 
 Badges compactos identificam etapa, recebimento, seleção e limites de escopo. Notas usam ícone informativo, texto e fundo tonal; o protótipo mantém uma faixa persistente de demonstração. O portal do fornecedor repete o limite de dados locais e ausência de autenticação real. O aviso flutuante é anunciado como status e pode ser fechado; desaparece após sete segundos.
 
+O componente compartilhado `AIBadge` usa o badge azul existente, ícone e o texto **IA prevista** junto a ações e sugestões com apoio de IA planejado. O texto explicativo informa simulação e revisão humana. A etiqueta fica separada das fases de entrega e não indica integração ativa; cálculos aritméticos, cadastros, aceite e pagamentos não a recebem como se fossem decisões de IA. Preserve o nome da ação e a legenda contextual quando o marcador for decorativo dentro de um botão.
+
 ### Cards / Containers
 
 Painel branco com contorno fino e padding amplo é o contêiner básico. A variante sem padding recebe tabelas. Cartões de comparação mostram fornecedor, valor, itens e condições; a seleção muda contorno e fundo, além do badge textual e do botão. Estados vazios explicam a situação e oferecem uma ação contextual quando há caminho de saída.

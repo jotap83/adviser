@@ -492,7 +492,9 @@ export const tours: Tour[] = [
         `/escopo/ia/${o.id}/${["operations", "finance"].includes(o.id) ? P : D}`,
         ".intelligence-form",
         "handoff",
-        `Clique em ${o.action}. Confira as fontes, edite o resultado e revise antes de guardar ou aplicar. Use Priorizar para conversa para registrar o interesse nesta possibilidade.`,
+        o.id === "finance"
+          ? "Simule Gmail ou WhatsApp, ou anexe uma cobrança. Use Extrair dados com IA ou preencha manualmente, confirme a revisão e escolha o lançamento. Depois clique em Conferir com o valor previsto."
+          : `Clique em ${o.action}. Confira as fontes, edite o resultado e revise antes de guardar ou aplicar. Use Priorizar para conversa para registrar o interesse nesta possibilidade.`,
         `${o.benefit} A análise é simulada neste protótipo. Como medir: ${o.measure.toLowerCase()}`,
       ),
     ),
@@ -584,11 +586,11 @@ export const tours: Tour[] = [
       step(
         "conferencia",
         "Financeiro",
-        "Encontre uma divergência",
+        "Receba e confira uma cobrança",
         `/escopo/ia/finance/${P}`,
         ".intelligence-form",
         "handoff",
-        "Clique em Conferir documento. O texto de exemplo tem R$ 450 a mais que o lançamento; veja como a diferença aparece para revisão.",
+        "Simule Gmail ou WhatsApp, ou anexe um documento. Extraia ou preencha os dados, confirme a revisão e escolha o lançamento correspondente. Clique em Conferir com o valor previsto; o exemplo recebido tem um adicional de R$ 450.",
         "Uma conferência assistida pode sinalizar divergências antes da decisão de pagamento.",
       ),
       step(

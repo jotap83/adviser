@@ -9,7 +9,7 @@ import {
   Check,
   Download,
 } from "lucide-react";
-import { Title, Button, Badge } from "../components/UI";
+import { AIBadge, Title, Button, Badge } from "../components/UI";
 const flow = [
   {
     n: 1,
@@ -108,6 +108,10 @@ export function Flow() {
         <Badge tone="blue">Operações · etapa 2</Badge>
         <Badge tone="green">Financeiro · etapa 3</Badge>
       </div>
+      <p className="ai-legend">
+        <AIBadge /> Apoio previsto com revisão humana. As sugestões do protótipo
+        são simuladas.
+      </p>
       <div className="flow-diagram">
         <div className="flow-terminal start">INÍCIO</div>
         {flow.map((s) => (
@@ -117,14 +121,19 @@ export function Flow() {
               <span className="flow-number">{s.n}</span>
               <div>
                 <span className="flow-owner">{s.owner}</span>
-                <h3>{s.title}</h3>
+                <h3 className="ai-feature-label">
+                  {s.title}
+                  {[2, 3, 4, 5, 7].includes(s.n) && <AIBadge />}
+                </h3>
                 <p>{s.desc}</p>
                 {s.branch && <div className="flow-branch">{s.branch}</div>}
                 {s.creative && (
                   <div className="flow-creative">
                     <Palette size={18} />
                     <div>
-                      <strong>Criação contribui aqui</strong>
+                      <strong className="ai-feature-label">
+                        Criação contribui aqui <AIBadge />
+                      </strong>
                       <p>
                         Conceito e apresentação podem ser desenvolvidos durante
                         o briefing e antes da proposta. No MVP, referências,
@@ -155,6 +164,10 @@ export function Flow() {
                 fornecedores e cronograma, produzir e executar o evento. A
                 criação apoia os desdobramentos necessários.
               </p>
+              <p className="ai-feature-note">
+                <AIBadge /> Sugestão de tarefas e checklists para revisão da
+                equipe.
+              </p>
               <div className="flow-branch">
                 Operações: nome da área e responsabilidades a confirmar com a
                 Adviser.
@@ -171,6 +184,10 @@ export function Flow() {
                 Recebimentos e pagamentos ocorrem ao longo do projeto. Depois do
                 evento: conciliação, previsto × realizado e fechamento, com
                 financeiro próprio e eventual migração do Conta Azul a validar.
+              </p>
+              <p className="ai-feature-note">
+                <AIBadge /> Leitura de cobranças antes da comparação com os
+                valores previstos.
               </p>
             </div>
           </div>

@@ -1,5 +1,5 @@
 import { ArrowRight, WandSparkles } from "lucide-react";
-import { Badge, Button, Note, Title } from "../components/UI";
+import { AIBadge, Badge, Button, Note, Title } from "../components/UI";
 import { go } from "../store";
 
 const deliveries = [
@@ -56,6 +56,10 @@ const deliveries = [
     path: "/operacoes",
     rows: [
       [
+        "Planejamento assistido",
+        "IA poderá sugerir tarefas e checklists a partir do escopo aprovado, com revisão da equipe.",
+      ],
+      [
         "Projetos e repasse",
         "Projeto vinculado à versão aceita, briefing, fornecedores, condições e pendências.",
       ],
@@ -83,6 +87,10 @@ const deliveries = [
     path: "/financeiro",
     rows: [
       [
+        "Cobranças de fornecedores",
+        "Receber mensagens ou arquivos, revisar os dados sugeridos pela IA e comparar com a conta a pagar do evento.",
+      ],
+      [
         "Contas a pagar e receber",
         "Parcelas, vencimentos, pagamentos diretos, comprovantes e aprovações a definir.",
       ],
@@ -107,7 +115,9 @@ export function ScopeOverview() {
       <section className="panel intelligence-scope">
         <div className="section-heading">
           <div>
-            <h2>IA presente no trabalho de cada área</h2>
+            <h2 className="ai-feature-label">
+              IA presente no trabalho de cada área <AIBadge />
+            </h2>
             <p>
               Compare cotações, revise propostas, entenda mudanças, consulte a
               gestão e explore criação, operações e financeiro.
@@ -136,6 +146,10 @@ export function ScopeOverview() {
         comunicação por Gmail e WhatsApp são simuladas; nenhuma conta está
         conectada.
       </Note>
+      <p className="ai-legend">
+        <AIBadge /> Marca os apoios de IA previstos; as fases continuam
+        indicadas separadamente.
+      </p>
       <div className="delivery-list">
         {deliveries.map((phase) => (
           <section className="delivery-section" key={phase.title}>
@@ -150,7 +164,16 @@ export function ScopeOverview() {
             <dl>
               {phase.rows.map(([title, desc]) => (
                 <div key={title}>
-                  <dt>{title}</dt>
+                  <dt className="ai-feature-label">
+                    {title}
+                    {[
+                      "Briefing e comunicação",
+                      "Gmail e WhatsApp integrados com IA",
+                      "IA assistiva",
+                      "Planejamento assistido",
+                      "Cobranças de fornecedores",
+                    ].includes(title) && <AIBadge />}
+                  </dt>
                   <dd>{desc}</dd>
                 </div>
               ))}

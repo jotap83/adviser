@@ -11,7 +11,7 @@ import {
   type ReplyChannel,
 } from "../channels";
 import { referenceText, mailSubject } from "../mail-reference";
-import { Badge, Button, Label } from "./UI";
+import { AIBadge, Badge, Button, Label } from "./UI";
 
 export function ReplyComposer({
   d,
@@ -279,7 +279,7 @@ export function ReplyComposer({
             setSent("");
           }}
         >
-          Preparar resposta com IA
+          Preparar resposta com IA <AIBadge decorative />
         </Button>
       )}
       {!closed && Boolean(d.attachments?.length) && (

@@ -4,7 +4,7 @@ import type { Demand, Quote } from "../types";
 import { useStore, go, copy } from "../store";
 import { quoteRange } from "../quote-model";
 import { scopeSummary } from "../briefing-model";
-import { Button, Label, Badge, Empty } from "../components/UI";
+import { AIBadge, Button, Label, Badge, Empty } from "../components/UI";
 import { SupplierSuggestions } from "../components/SupplierSuggestions";
 export function Quotes({ d }: { d: Demand }) {
   const { state, updateDemand, notify } = useStore();
@@ -160,11 +160,17 @@ export function Quotes({ d }: { d: Demand }) {
         <section className="panel email-panel">
           <div className="section-heading">
             <div>
-              <h3>E-mail para {sup?.name}</h3>
+              <h3 className="ai-feature-label">
+                E-mail para {sup?.name} <AIBadge />
+              </h3>
               <p>{sup?.email}</p>
             </div>
             <Badge>Envio simulado</Badge>
           </div>
+          <p className="field-hint">
+            Redação assistida por IA prevista. O exemplo atual usa um modelo
+            preenchido com o briefing; revise antes de enviar.
+          </p>
           <Label label="Texto da solicitação">
             <textarea
               key={active.id}

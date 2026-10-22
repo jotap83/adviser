@@ -1,6 +1,6 @@
 import { ArrowRight, Mail } from "lucide-react";
 import { useStore, go } from "../store";
-import { Badge, Button } from "./UI";
+import { AIBadge, Badge, Button } from "./UI";
 
 export function InboxSummary() {
   const { state } = useStore();
@@ -22,7 +22,7 @@ export function InboxSummary() {
             : "Nenhuma mensagem aguardando associação. A fila está em dia."}
         </p>
         <span className="inbox-summary-meta">
-          <Badge tone="blue">MVP · comunicação com IA</Badge> {linked}{" "}
+          <Badge tone="blue">MVP</Badge> <AIBadge /> {linked}{" "}
           {linked === 1 ? "mensagem associada" : "mensagens associadas"} · Gmail
           e WhatsApp simulados
         </span>

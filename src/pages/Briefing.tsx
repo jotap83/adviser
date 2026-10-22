@@ -3,7 +3,7 @@ import { Sparkles, Check, ArrowRight, AlertCircle } from "lucide-react";
 import type { Demand, AIResult, ClientMessage } from "../types";
 import { useStore, go } from "../store";
 import { DemoBriefingAI } from "../ai";
-import { Button, Label, Badge, SaveMark } from "../components/UI";
+import { AIBadge, Button, Label, Badge, SaveMark } from "../components/UI";
 import { BriefingScope } from "../components/BriefingScope";
 import { BriefingAttachments } from "../components/BriefingAttachments";
 import { ClientConversation } from "../components/ClientConversation";
@@ -224,7 +224,8 @@ export function Briefing({ d }: { d: Demand }) {
               busy={busy}
               onClick={() => organize()}
             >
-              {busy ? "Organizando..." : "Organizar com IA"}
+              {busy ? "Organizando..." : "Organizar com IA"}{" "}
+              <AIBadge decorative />
             </Button>
             <small>Simulação sem API externa</small>
           </div>

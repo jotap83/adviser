@@ -9,7 +9,7 @@ import {
   scopeSuggestions,
 } from "../briefing-model";
 import { useStore } from "../store";
-import { Badge, Button, Label, Note } from "./UI";
+import { AIBadge, Badge, Button, Label, Note } from "./UI";
 
 export function BriefingScope({
   d,
@@ -141,7 +141,8 @@ export function BriefingScope({
                 <p>Selecione os blocos. Os detalhes aparecem abaixo.</p>
               </div>
               <Button icon={Sparkles} busy={busy} onClick={analyze}>
-                {busy ? "Analisando..." : "Analisar escopo com IA"}
+                {busy ? "Analisando..." : "Analisar escopo com IA"}{" "}
+                <AIBadge decorative />
               </Button>
             </div>
             <div className="scope-options">
@@ -168,7 +169,7 @@ export function BriefingScope({
               <div className="scope-ai-review">
                 <div className="section-heading">
                   <h3>Blocos sugeridos a partir da conversa</h3>
-                  <Badge>IA simulada</Badge>
+                  <AIBadge />
                 </div>
                 <p>
                   As menções são pistas, inclusive se o texto contiver uma

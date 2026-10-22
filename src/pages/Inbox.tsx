@@ -26,7 +26,15 @@ import {
   channelName,
   messageChannel,
 } from "../inbox-model";
-import { Badge, Button, Empty, Label, Note, Title } from "../components/UI";
+import {
+  AIBadge,
+  Badge,
+  Button,
+  Empty,
+  Label,
+  Note,
+  Title,
+} from "../components/UI";
 import { ReceiveMessage } from "../components/ReceiveMessage";
 import { ReplyComposer } from "../components/ReplyComposer";
 
@@ -515,7 +523,7 @@ function MailReview({
                     ? "Corrigir atendimento"
                     : "Atendimentos sugeridos"}
                 </h3>
-                {!correcting && <Badge>IA simulada</Badge>}
+                {!correcting && <AIBadge />}
               </div>
               {correcting && (
                 <Note>

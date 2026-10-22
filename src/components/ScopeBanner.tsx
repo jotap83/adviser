@@ -5,6 +5,7 @@ export function ScopeBanner({ path }: { path: string }) {
   const intelligence = path.startsWith("/escopo/ia");
   const phase = section === "operacoes" ? 2 : section === "financeiro" ? 3 : 1;
   const messages = ["emails", "mensagens"].includes(section);
+  if (intelligence) return null;
   return (
     <div className="scope-banner">
       <Badge tone={planning ? "gray" : phase > 1 ? "amber" : "blue"}>

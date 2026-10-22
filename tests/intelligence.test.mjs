@@ -18,6 +18,9 @@ const {
   financeDocument,
   contextFingerprint,
 } = await compiler.ssrLoadModule("/src/intelligence-model.ts");
+const { billingExample } = await compiler.ssrLoadModule(
+  "/src/billing-example.ts",
+);
 const now = Date.parse("2026-10-21T12:00:00Z");
 const demo = () => withManagementInsightsDemo(withProductionDemo(seed()), now);
 
@@ -70,6 +73,10 @@ test("documento recusa formatos monetários ambíguos e datas impossíveis sem i
   const doc = (value) =>
     `Descrição: Buffet\nValor: ${value}\nVencimento: 2026-12-10`;
   assert.equal(financeDocument(doc("R$ 1.234,56")).value, 1234.56);
+  assert.ok(
+    !financeDocument(doc("100").replace("Descrição: Buffet", "Descrição: "))
+      .description,
+  );
   for (const text of [
     "1,234.56",
     "1.23",
@@ -91,11 +98,18 @@ test("documento recusa formatos monetários ambíguos e datas impossíveis sem i
 test("conferência não cruza projetos e não cria baixas ou lançamentos", () => {
   const s = demo(),
     p = s.productionProjects[0],
-    input = defaultInputs(s, undefined, p),
+    example = billingExample(s, p.id, "gmail"),
+    input = {
+      ...defaultInputs(s, undefined, p),
+      document: example.text,
+      documentOrigin: example.origin,
+      entryId: example.entryId,
+    },
     before = structuredClone(s);
   const result = simulateIntelligence(s, "finance", p.id, input, now);
   assert.ok(!result.blocked);
   assert.match(result.findings[0].detail, /450,00/);
+  assert.match(result.findings[0].source, /Gmail/);
   assert.deepEqual(s, before);
   s.financeEntries.find((e) => e.id === input.entryId).projectId =
     "another-project";
@@ -148,4 +162,44 @@ test("alterar registros invalida análise; guardar notas e priorizar não invali
   assert.equal(contextFingerprint(s), key);
   s.demands[0].guests = 999;
   assert.notEqual(contextFingerprint(s), key);
+});
+
+test("a conferência começa sem cobrança inventada ou lançamento pré-associado", () => {
+  const s = demo(),
+    p = s.productionProjects[0];
+  const input = defaultInputs(s, undefined, p);
+  assert.equal(input.document, "");
+  assert.equal(input.entryId, "");
+  assert.ok(simulateIntelligence(s, "finance", p.id, input, now).blocked);
+  const first = s.financeEntries.find(
+    (e) => e.projectId === p.id && e.direction === "pay",
+  );
+  assert.ok(
+    simulateIntelligence(
+      s,
+      "finance",
+      p.id,
+      { ...input, entryId: first.id },
+      now,
+    ).blocked,
+  );
+});
+
+test("exemplo recebido é explícito, preserva origem e não segue mudanças no lançamento", () => {
+  const s = demo(),
+    p = s.productionProjects[0],
+    before = structuredClone(s);
+  const receipt = billingExample(s, p.id, "whatsapp");
+  assert.match(receipt.origin, /WhatsApp.*simulado/);
+  const entry = s.financeEntries.find((e) => e.id === receipt.entryId);
+  const receivedValue = financeDocument(receipt.text).value;
+  assert.equal(receivedValue, entry.amount + 450);
+  assert.deepEqual(s, before);
+  entry.amount += 1000;
+  assert.equal(financeDocument(receipt.text).value, receivedValue);
+  assert.equal(billingExample(s, "evento-inexistente", "gmail"), undefined);
+  s.financeEntries = s.financeEntries.filter(
+    (e) => e.projectId !== p.id || e.direction !== "pay",
+  );
+  assert.equal(billingExample(s, p.id, "gmail"), undefined);
 });

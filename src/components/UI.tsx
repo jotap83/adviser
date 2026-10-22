@@ -10,6 +10,7 @@ import {
   Check,
   Info,
   LoaderCircle,
+  Sparkles,
   Plus,
   Trash2,
   type LucideIcon,
@@ -51,6 +52,18 @@ export const Badge = ({
   children: ReactNode;
   tone?: string;
 }) => <span className={`badge ${tone}`}>{children}</span>;
+export function AIBadge({ decorative = false }: { decorative?: boolean }) {
+  return (
+    <span
+      className="badge blue ai-badge"
+      aria-hidden={decorative || undefined}
+      title="Uso de IA previsto. Neste protótipo, as sugestões são simuladas e precisam de revisão humana."
+    >
+      <Sparkles size={12} aria-hidden="true" />
+      IA prevista
+    </span>
+  );
+}
 export function Title({
   title,
   sub,

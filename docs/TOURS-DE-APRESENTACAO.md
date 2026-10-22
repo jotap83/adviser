@@ -20,9 +20,9 @@ Os oito roteiros somam **63 paradas**. Você controla o ritmo; nenhuma etapa ava
 | Painel Gerencial e alertas | 5 | Indicadores, ciclo até o aceite, decisões, filtros e alertas acionáveis. |
 | Gmail, WhatsApp e entrada manual | 5 | Recebimento, identificação de conversas, vínculo, resposta e cadastro direto. |
 | Clientes, fornecedores e núcleos | 6 | Carteiras, responsáveis, pessoas, núcleos, fornecedores e modelos de resposta. |
-| IA em toda a operação | 9 | Nove possibilidades de IA, revisão dos resultados e prioridades para a evolução. |
+| IA em toda a operação | 9 | Nove possibilidades identificadas como IA prevista, revisão dos resultados e prioridades para a evolução. |
 | Do aceite à operação do evento | 5 | Repasse aprovado, projeto, quadro, tarefas e planejamento assistido — etapa 2. |
-| Financeiro por evento | 4 | Previsões, lançamentos, divergências e definição do alcance — etapa 3. |
+| Financeiro por evento | 4 | Previsões, lançamentos, recebimento e conferência de cobrança, definição do alcance — etapa 3. |
 | Visão da plataforma e evolução | 4 | Fluxo entre áreas, entregas, prioridades e continuidade sem IA. |
 
 ## A história principal
@@ -39,6 +39,14 @@ O exemplo acompanha **Encontro Horizonte · apresentação**, referência **ADV-
 | 6. Revisão e aceite | 22–25 | Mudança de público, comparação das versões, evidência e registro da aprovação. |
 
 Para tornar o processo concreto, experimente **Organizar com IA** e **Aplicar e revisar nos campos**, confirme o alinhamento antes de **Validar briefing** e, na parada **Registre o OK do cliente**, clique em **Registrar aprovação**. A última cena já apresenta o aceite fictício da v2. O repasse e a execução continuam no tour de Operações.
+
+## Apresentar a cobrança e os usos de IA
+
+Na parada **Receba e confira uma cobrança**, do tour **Financeiro por evento**, e na oportunidade **Conferir cobrança do fornecedor**, do tour **IA em toda a operação**, a cobrança começa vazia. Clique em **Simular Gmail** ou **Simular WhatsApp**, ou use **Anexar ou colar** com um documento fictício. Mostre a origem e o original antes de **Extrair dados com IA** ou preencher os três campos manualmente. Confirme **Conferi os dados com a mensagem ou o documento original**, escolha a conta a pagar do mesmo evento e clique em **Conferir com o valor previsto**.
+
+As mensagens simuladas incluem um adicional fictício de **R$ 450,00** em relação ao lançamento usado no exemplo. A comparação usa regras aritméticas e não cria lançamento, autoriza pagamento ou efetua baixa. Com a IA indisponível, a extração fica desativada e o caminho manual continua funcionando. O original anexado é temporário: consulte ou baixe enquanto a tela estiver aberta; ele não permanece ao sair ou recarregar.
+
+Use a etiqueta **IA prevista** para apontar onde há apoio de IA planejado no atendimento, nas nove oportunidades e no fluxo da plataforma. Ela é separada das etiquetas **MVP**, **etapa 2**, **etapa 3** e **evolução opcional**. Os oito roteiros e suas 63 paradas permanecem os mesmos; as instruções de cobrança agora acompanham recebimento, revisão e comparação.
 
 ## Navegação e preservação dos registros
 

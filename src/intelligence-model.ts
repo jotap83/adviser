@@ -74,11 +74,11 @@ export const opportunities = [
   },
   {
     id: "finance",
-    title: "Conferir o financeiro",
+    title: "Conferir cobrança do fornecedor",
     area: "Financeiro",
     benefit:
-      "Confrontar um documento com o lançamento escolhido e explicar diferenças.",
-    action: "Conferir documento",
+      "Receber a cobrança, revisar os dados e comparar com o lançamento do evento.",
+    action: "Conferir com o valor previsto",
     measure: "Tempo de conferência e divergências antes do pagamento.",
   },
 ] as const;
@@ -90,6 +90,7 @@ export type AIInputs = {
   query: string;
   direction: string;
   document: string;
+  documentOrigin?: string;
   entryId: string;
   category: string;
 };
@@ -145,13 +146,10 @@ export const contextFingerprint = (s: AppState) =>
   ]);
 
 export function defaultInputs(
-  s: AppState,
+  _s: AppState,
   d?: Demand,
-  p?: ProductionProject,
+  _p?: ProductionProject,
 ): AIInputs {
-  const entry = (s.financeEntries || []).find(
-    (e) => e.projectId === p?.id && e.direction === "pay",
-  );
   return {
     guests: String(d?.guests ? d.guests + 30 : 180),
     date: d?.date || "",
@@ -159,10 +157,9 @@ export function defaultInputs(
     query: "",
     direction: "conexoes",
     category: "",
-    entryId: entry?.id || "",
-    document: entry
-      ? `Documento fictício: DEMO-001\nDescrição: ${entry.description}\nValor: ${money(entry.amount + 450)}\nVencimento: ${entry.due}\nObservação: serviço adicional a confirmar.`
-      : "",
+    entryId: "",
+    document: "",
+    documentOrigin: "",
   };
 }
 export function financeDocument(text: string) {
@@ -176,7 +173,7 @@ export function financeDocument(text: string) {
       : undefined;
   const due = text.match(/(?:^|\n)Vencimento:[ \t]*([^\n]*)/i)?.[1]?.trim();
   const description = text
-    .match(/(?:^|\n)Descri[çc][ãa]o:\s*(.+)/i)?.[1]
+    .match(/(?:^|\n)Descri[çc][ãa]o:[ \t]*([^\n]*)/i)?.[1]
     ?.trim();
   const value = amount
     ? Number(amount.replace(/\./g, "").replace(",", "."))
@@ -370,7 +367,7 @@ export function simulateIntelligence(
     facts.push({
       title: difference ? "Valor divergente" : "Valores coincidem",
       detail: `Documento: ${money(document.value)}. Lançamento: ${money(entry.amount)}. Diferença: ${money(difference)}.`,
-      source: "Documento informado × lançamento selecionado",
+      source: `${input.documentOrigin || "Documento informado"} × lançamento selecionado`,
       tone: difference ? "amber" : "green",
       path: `/financeiro/${p.id}`,
     });
@@ -391,7 +388,7 @@ export function simulateIntelligence(
       difference
         ? "Há uma diferença que precisa ser esclarecida."
         : "O valor coincide; confirme identidade, descrição e vencimento.",
-      `Revisar documento de ${document.description} no evento ${p.title}.\nValor informado: ${money(document.value)}; previsto: ${money(entry.amount)}; diferença: ${money(difference)}.\nConfirmar a origem do documento, eventuais adicionais e a autorização antes de alterar qualquer lançamento.`,
+      `Revisar documento de ${document.description} no evento ${p.title}.\nOrigem: ${input.documentOrigin || "Documento informado"}.\nValor informado: ${money(document.value)}; previsto: ${money(entry.amount)}; diferença: ${money(difference)}.\nConfirmar a origem do documento, eventuais adicionais e a autorização antes de alterar qualquer lançamento.`,
       "Conferência demonstrativa, sem validação fiscal ou bancária. Não cria lançamento, autoriza pagamento nem efetua baixa.",
     );
   }

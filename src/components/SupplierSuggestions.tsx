@@ -10,7 +10,7 @@ import {
   eligibleSupplierIds,
   prepareSupplierRequests,
 } from "../supplier-matching";
-import { Badge, Button, Empty, Label } from "./UI";
+import { AIBadge, Badge, Button, Empty, Label } from "./UI";
 import "../supplier-suggestions.css";
 
 export function SupplierSuggestions({
@@ -113,12 +113,15 @@ export function SupplierSuggestions({
             com mais de um fornecedor por categoria.
           </p>
         </div>
-        <Badge tone="blue">MVP</Badge>
+        <div className="actions">
+          <Badge tone="blue">MVP</Badge>
+          <AIBadge />
+        </div>
       </div>
       <p className="supplier-match-disclosure">
-        Sugestões demonstrativas a partir das categorias do briefing e do
-        cadastro. Disponibilidade, capacidade e valores serão confirmados na
-        cotação.
+        Apoio com IA previsto. Neste protótipo, sugestões por regras a partir
+        das categorias do briefing e do cadastro. Disponibilidade, capacidade e
+        valores serão confirmados na cotação.
       </p>
       <div
         className="supplier-view"

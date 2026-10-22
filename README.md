@@ -55,6 +55,10 @@ Use **Explorar IA** no cabeçalho (`#/escopo/ia`) para acessar nove demonstraç�
 
 Os resultados são simulados, têm fontes e rascunhos editáveis e exigem revisão humana. É possível guardar análises, marcar prioridades para conversa, registrar uma direção criativa e adicionar tarefas escolhidas ao quadro local. Consulte [funcionamento, limites e roteiro de apresentação](docs/IA-NA-OPERACAO.md). As prioridades não fixam prazo ou contratação.
 
+A etiqueta **IA prevista** identifica os apoios planejados no briefing, escopo, vínculo de mensagens, respostas, fornecedores, solicitações de cotação, nas nove oportunidades e no fluxo e planejamento da plataforma. Ela é separada das etiquetas de fase; cálculos, cadastros, aceite e pagamentos não são apresentados como decisões de IA.
+
+Em **Conferir cobrança do fornecedor**, comece por **Anexar ou colar**, **Simular Gmail** ou **Simular WhatsApp**. A cobrança começa vazia; os canais criam um exemplo fictício por ação explícita, sem conta conectada, com adicional de R$ 450,00 para demonstrar uma divergência. Confira a origem e o original, extraia ou preencha os três campos, confirme a revisão e escolha uma conta a pagar do mesmo evento. **Conferir com o valor previsto** compara os dados sem alterar contas ou autorizar pagamento. O caminho manual e a comparação continuam disponíveis com a IA indisponível.
+
 ## Operações e entregas
 
 A navegação e as páginas identificam **MVP**, **etapa 2**, **etapa 3** e **evolução opcional**. Em **Operações**, selecione um evento, crie uma tarefa, abra os detalhes, marque o checklist, registre um comentário e mova a tarefa por arraste ou pelo seletor. Tarefas bloqueadas ou com checklist pendente não podem ser concluídas. No celular, escolha a coluna pelos botões acima do quadro.
@@ -70,6 +74,7 @@ Para demonstrar a negociação, use **Exemplo com duas opções** no link do for
 - Registros em `localStorage` e arquivos de apresentações em IndexedDB, com versão de esquema e opção de reiniciar. Atualização entre abas do mesmo site/navegador; sem banco de dados ou sincronização entre dispositivos/usuários.
 - Portal do fornecedor demonstrativo: não oferece autenticação, isolamento ou segurança de acesso real. Não use com informações reais. O frontend contém todos os exemplos.
 - Briefing: leitura local de texto de PDF, DOCX e XLSX; sem OCR ou interpretação real por IA. Apresentações: arquivos persistidos em IndexedDB neste navegador, com prévia de PDF/imagens; PPTX pode ser baixado. Anexos de cotações continuam registrando apenas o nome.
+- Cobranças: leitura local de PDF com texto, DOCX, XLSX e TXT, até 10 MB; imagens têm prévia, sem OCR. A extração simulada reconhece linhas estruturadas de descrição, valor e vencimento; os três campos também podem ser preenchidos manualmente. O original pode ser baixado e fica disponível apenas enquanto a tela estiver aberta; sair ou recarregar o descarta. Guardar uma análise não persiste o arquivo. Use somente documentos fictícios.
 - Não há chamadas de IA, Gmail, WhatsApp, e-mail transacional ou Conta Azul. Gmail e WhatsApp integrados com IA pertencem ao MVP planejado, mas nenhuma conta está conectada no protótipo.
 - Não há autenticação, convites ou controle de permissões reais. Os cadastros de usuários demonstram a interface.
 - O exportador Excel é carregado apenas quando solicitado; ExcelJS e o leitor PDF.js usam chunks maiores que o aviso padrão do Vite e são carregados sob demanda.

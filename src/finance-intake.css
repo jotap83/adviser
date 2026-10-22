@@ -1,0 +1,139 @@
+.billing-intake h3,
+.billing-match h3 {
+  font-size: 16px;
+  margin: 0 0 8px;
+}
+.billing-intake section,
+.billing-match {
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+  margin-top: 24px;
+}
+.billing-intake p {
+  margin: 8px 0 14px;
+  max-width: 72ch;
+}
+.billing-sources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 16px 0;
+}
+.billing-sources [aria-pressed="true"] {
+  color: var(--blue);
+  background: #edf2fa;
+  border-color: var(--blue);
+}
+.billing-manual .field {
+  margin: 20px 0 12px;
+}
+.billing-original {
+  margin-top: 20px;
+}
+.billing-original .section-heading {
+  margin-bottom: 6px;
+}
+.billing-original strong {
+  overflow-wrap: anywhere;
+}
+.billing-original pre {
+  font-family: inherit;
+  font-size: 13px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  background: #f5f7fb;
+  padding: 16px;
+  border-radius: 8px;
+  max-height: 280px;
+  overflow: auto;
+}
+.billing-original summary {
+  color: var(--blue);
+  cursor: pointer;
+  font-weight: 600;
+}
+.billing-original .actions {
+  margin: 16px 0;
+}
+.billing-original .btn {
+  text-decoration: none;
+}
+.billing-preview-image {
+  max-width: 100%;
+  max-height: 360px;
+  object-fit: contain;
+  display: block;
+}
+.billing-preview-pdf {
+  border: 1px solid var(--line);
+  width: 100%;
+  height: 320px;
+  border-radius: 7px;
+}
+.billing-fields {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 16px;
+  margin: 20px 0;
+}
+.billing-fields .field:first-child {
+  grid-column: 1/-1;
+}
+.billing-reading {
+  background: #eef3fc;
+  color: #36547d;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 12px;
+}
+.billing-reviewed {
+  color: #246346;
+  font-size: 12px;
+}
+.billing-match .field {
+  margin-top: 16px;
+}
+.billing-match-summary {
+  padding: 12px;
+  background: #f5f7fb;
+  border-radius: 8px;
+  font-size: 12px;
+}
+.billing-review h3:focus-visible {
+  outline: 3px solid var(--brand-orange);
+  outline-offset: 3px;
+}
+.intelligence-workspace > .page-heading {
+  margin-bottom: 12px;
+}
+.intelligence-workspace > .page-heading > .actions:empty {
+  display: none;
+}
+.intelligence-workspace .intelligence-context {
+  margin-top: 0;
+}
+.intelligence-workspace .intelligence-context .field,
+.intelligence-workspace .intelligence-mobile-nav .field {
+  margin-bottom: 0;
+}
+.intelligence-footer {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 24px;
+  color: var(--muted);
+  font-size: 12px;
+}
+@media (max-width: 760px) {
+  .billing-fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .billing-sources .btn {
+    flex: 1 1 auto;
+  }
+  .billing-original .section-heading {
+    flex-wrap: wrap;
+  }
+}

@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { useStore, go, copy } from "../store";
 import { uid } from "../data";
-import { Badge, Button, Empty, Label, Note, Title } from "./UI";
+import { AIBadge, Badge, Button, Empty, Label, Note, Title } from "./UI";
 import {
   contextFingerprint,
   defaultInputs,
@@ -21,6 +21,8 @@ import {
   type OpportunityId,
   type SuggestedTask,
 } from "../intelligence-model";
+import { FinanceDocumentIntake } from "./FinanceDocumentIntake";
+import { money } from "../domain.mjs";
 import type { ProductionTask } from "../types";
 
 export function IntelligenceEntry({
@@ -43,6 +45,7 @@ export function IntelligenceEntry({
         {ids.map((id) => (
           <Button key={id} onClick={() => go(`/escopo/ia/${id}/${contextId}`)}>
             {opportunities.find((o) => o.id === id)?.title}
+            <AIBadge decorative />
             <ArrowRight size={14} />
           </Button>
         ))}
@@ -99,6 +102,7 @@ export function IntelligenceWorkspace({
   const entries = (state.financeEntries || []).filter(
     (e) => e.projectId === project?.id && e.direction === "pay",
   );
+  const selectedEntry = entries.find((entry) => entry.id === input.entryId);
   const takenTask = (task: SuggestedTask) =>
     !!project?.tasks.some(
       (t) =>
@@ -117,7 +121,8 @@ export function IntelligenceWorkspace({
     setApplied(false);
   }
   function run() {
-    if (offline) return;
+    if (offline && item.id !== "finance") return;
+    if (item.id === "finance" && (!input.document || !input.entryId)) return;
     const next = simulateIntelligence(state, item.id, actualContext, input);
     setResult(next);
     setDraft(
@@ -231,28 +236,12 @@ export function IntelligenceWorkspace({
             )
           : "/demandas";
   return (
-    <>
-      <Title
-        title="IA na operação"
-        sub="Explore como a inteligência pode ajudar em cada área. As prioridades e entregas são combinadas a cada ciclo de evolução."
-        actions={
-          <Button onClick={() => go("/escopo")} icon={ArrowLeft}>
-            Ver etapas
-          </Button>
-        }
-      />
-      <div className="intelligence-intro">
-        <p>
-          <strong>
-            Escolher o problema. Demonstrar o ganho. Priorizar a próxima
-            entrega.
-          </strong>
-          <br />
-          Nove possibilidades para discutir com a Adviser. Dados fictícios e
-          análises simuladas, sem IA externa conectada.
-        </p>
-        <Badge tone="blue">Evolução contínua</Badge>
-      </div>
+    <div className="intelligence-workspace">
+      <Title title={item.title} sub={item.benefit} />
+      <p className="ai-legend">
+        <AIBadge /> Demonstração com dados fictícios e análises simuladas.
+        Nenhuma IA está conectada.
+      </p>
       <div className="intelligence-layout">
         <div className="intelligence-mobile-nav">
           <Label label="Qual possibilidade você quer explorar?">
@@ -283,6 +272,7 @@ export function IntelligenceWorkspace({
               <span>
                 {o.title}
                 <small>{o.area}</small>
+                <AIBadge />
               </span>
               {state.intelligencePriorities?.[o.id] ? (
                 <Check size={15} aria-label="Priorizado para conversa" />
@@ -302,14 +292,7 @@ export function IntelligenceWorkspace({
           </p>
         </nav>
         <div className="intelligence-main">
-          <section className="panel intelligence-form">
-            <div className="section-heading">
-              <div>
-                <h2>{item.title}</h2>
-                <p>{item.benefit}</p>
-              </div>
-              <Badge tone="amber">Simulação</Badge>
-            </div>
+          <section className="panel intelligence-form" aria-label={item.title}>
             <div className="intelligence-context">
               {item.id !== "management" && (
                 <Label
@@ -436,32 +419,61 @@ export function IntelligenceWorkspace({
             )}
             {item.id === "finance" && (
               <>
-                <Label label="Lançamento a pagar para comparar">
-                  <select
-                    value={input.entryId}
-                    onChange={(e) => changeInput({ entryId: e.target.value })}
-                  >
-                    <option value="">Selecione um lançamento</option>
-                    {entries.map((e) => (
-                      <option value={e.id} key={e.id}>
-                        {e.description}
-                      </option>
-                    ))}
-                  </select>
-                </Label>
-                <Label
-                  label="Texto do documento de exemplo"
-                  hint="Edite o valor para testar a comparação. Esta simulação reconhece Descrição, Valor e Vencimento; não lê um arquivo real."
-                >
-                  <textarea
-                    rows={6}
-                    value={input.document}
-                    onChange={(e) => changeInput({ document: e.target.value })}
-                  />
-                </Label>
+                <FinanceDocumentIntake
+                  key={actualContext}
+                  projectId={actualContext}
+                  onReviewed={(document, documentOrigin) =>
+                    changeInput({ document, documentOrigin })
+                  }
+                />
+                <section className="billing-match" data-tour="billing-match">
+                  <h3>3. Conferir com o valor previsto</h3>
+                  <p>
+                    Escolha a conta a pagar que corresponde à cobrança. O
+                    vínculo é confirmado por você.
+                  </p>
+                  <Label label="Lançamento a pagar para comparar">
+                    <select
+                      value={input.entryId}
+                      onChange={(e) => changeInput({ entryId: e.target.value })}
+                    >
+                      <option value="">Selecione um lançamento</option>
+                      {entries.map((e) => (
+                        <option value={e.id} key={e.id}>
+                          {e.description} · {money(e.amount)}
+                        </option>
+                      ))}
+                    </select>
+                  </Label>
+                  {selectedEntry && (
+                    <p className="billing-match-summary">
+                      Previsto: {money(selectedEntry.amount)} · Vencimento:{" "}
+                      {entries
+                        .find((e) => e.id === input.entryId)!
+                        .due.split("-")
+                        .reverse()
+                        .join("/")}
+                    </p>
+                  )}
+                  {!entries.length && (
+                    <p className="field-hint">
+                      Este evento não tem lançamentos a pagar para comparação.
+                    </p>
+                  )}
+                  {!input.document && (
+                    <p className="field-hint">
+                      Receba a cobrança e confirme a revisão dos dados na etapa
+                      2 para habilitar a conferência.
+                    </p>
+                  )}
+                  <p className="field-hint">
+                    A comparação de valores usa regras do sistema. A IA apoia a
+                    leitura; nenhum pagamento ou lançamento é alterado.
+                  </p>
+                </section>
               </>
             )}
-            {offline && (
+            {offline && item.id !== "finance" && (
               <Note tone="warning">
                 A IA está indisponível nesta simulação. Você pode continuar pela
                 tela de origem e preencher tudo manualmente, ou reativá-la em
@@ -471,13 +483,16 @@ export function IntelligenceWorkspace({
             <div className="intelligence-controls">
               <Button
                 variant="primary"
-                icon={WandSparkles}
+                icon={item.id === "finance" ? Check : WandSparkles}
                 onClick={run}
                 disabled={
-                  offline || (!actualContext && item.id !== "management")
+                  (offline && item.id !== "finance") ||
+                  (!actualContext && item.id !== "management") ||
+                  (item.id === "finance" && (!input.document || !input.entryId))
                 }
               >
                 {item.action}
+                {item.id !== "finance" && <AIBadge decorative />}
               </Button>
               <Button
                 icon={priority ? Check : ListChecks}
@@ -810,6 +825,14 @@ export function IntelligenceWorkspace({
           </section>
         </div>
       </div>
-    </>
+      <div className="intelligence-footer">
+        <Button onClick={() => go("/escopo")} icon={ArrowLeft}>
+          Ver etapas
+        </Button>
+        <p>
+          As prioridades e entregas são combinadas a cada ciclo de evolução.
+        </p>
+      </div>
+    </div>
   );
 }
