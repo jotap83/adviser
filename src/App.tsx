@@ -29,6 +29,7 @@ import { stages } from "./data";
 import type { Stage, Demand } from "./types";
 import { Badge, Button, Empty } from "./components/UI";
 import { BrandLogo } from "./components/BrandLogo";
+import { TourMenuButton } from "./components/Tours";
 import { Home } from "./pages/Home";
 import { Briefing } from "./pages/Briefing";
 import { Quotes, Compare, SupplierPortal } from "./pages/Quotes";
@@ -61,7 +62,8 @@ const nav = [
   { path: "/modelos", label: "Modelos de cotação", icon: SlidersHorizontal },
 ];
 export default function App() {
-  const { state, toast, clearToast } = useStore();
+  const { state, toast, clearToast, presentation, presentationRevision } =
+    useStore();
   const currentPerson = demoPerson(state);
   const initials =
     currentPerson?.name
@@ -145,7 +147,7 @@ export default function App() {
   if (parts[0] === "fornecedor" && d && q)
     return (
       <>
-        <SupplierPortal key={q.id} d={d} q={q} />
+        <SupplierPortal key={`${presentationRevision}-${q.id}`} d={d} q={q} />
         <Toast toast={toast} close={clearToast} />
       </>
     );
@@ -357,9 +359,14 @@ export default function App() {
             </strong>
           </div>
           <div className="topbar-right">
+            <TourMenuButton />
             <div className="intelligence-topbar">
-              <Button icon={WandSparkles} onClick={() => go("/escopo/ia")}>
-                Explorar IA
+              <Button
+                icon={WandSparkles}
+                aria-label="Explorar IA"
+                onClick={() => go("/escopo/ia")}
+              >
+                <span className="intelligence-topbar-label">Explorar IA</span>
               </Button>
             </div>
             <button
@@ -379,16 +386,21 @@ export default function App() {
           </div>
         </header>
         <div className="demo-ribbon">
-          <span>Ambiente de demonstração</span>
           <span>
-            Dados fictícios · IA e envios simulados · alterações locais neste
-            navegador
+            {presentation
+              ? "Cenário de apresentação"
+              : "Ambiente de demonstração"}
+          </span>
+          <span>
+            {presentation
+              ? "Exemplo temporário do tour · seus registros estão preservados"
+              : "Dados fictícios · IA e envios simulados · alterações locais neste navegador"}
           </span>
         </div>
         <main
           className="main-content"
           id="main-content"
-          key={d?.id || parts[0] || "home"}
+          key={`${presentationRevision}-${d?.id || parts[0] || "home"}`}
         >
           <ScopeBanner path={path} />
           {page}

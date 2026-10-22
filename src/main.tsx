@@ -11,12 +11,16 @@ import "./inbox-workspace.css";
 import "./production-workspace.css";
 import "./organization.css";
 import "./intelligence.css";
+import "./tours.css";
 import App from "./App";
 import { Store } from "./store";
+import { Tours } from "./components/Tours";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <Store>
-      <App />
+      <Tours>
+        <App />
+      </Tours>
     </Store>
   </React.StrictMode>,
 );

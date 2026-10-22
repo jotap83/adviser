@@ -28,7 +28,15 @@ node tests/browser.mjs
 
 `DEMO_URL` permite testar outra URL. `CHROMIUM_PATH` é opcional. As capturas ficam em `.impeccable/review/` e não são versionadas.
 
-## Roteiro de demonstração
+## Apresentação aos sócios
+
+Use **Tours** no cabeçalho e comece por **Da primeira mensagem ao aceite**: são 25 paradas em seis capítulos, do contato inicial à aprovação da proposta v2. O guia destaca a área da tela, orienta a navegação e inclui **O que destacar aos sócios** para apoiar a fala.
+
+O menu reúne oito roteiros e 63 paradas, incluindo gestão, canais, cadastros, IA, Operações e Financeiro. Cada parada prepara um exemplo fictício temporário; avançar, voltar ou pular descarta as alterações da cena anterior. Ao encerrar, os registros salvos voltam. O progresso fica neste navegador, mas as alterações das cenas não sobrevivem à recarga da página.
+
+Consulte o [guia dos tours de apresentação](docs/TOURS-DE-APRESENTACAO.md) para a ordem sugerida, os controles e os limites da demonstração.
+
+## Roteiro manual de demonstração
 
 1. Na visão geral, clique em **Encontro Horizonte** na seção **Sua fila de trabalho**.
 2. Clique em **Organizar com IA**, aplique as sugestões, revise, confirme o alinhamento com o cliente e valide o briefing.

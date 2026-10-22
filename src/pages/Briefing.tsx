@@ -220,6 +220,7 @@ export function Briefing({ d }: { d: Demand }) {
             <Button
               variant="primary"
               icon={Sparkles}
+              data-tour="briefing-ai"
               busy={busy}
               onClick={() => organize()}
             >

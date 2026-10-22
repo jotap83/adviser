@@ -115,7 +115,12 @@ export function Directory({
         }
       />
       {editing && (
-        <form className="panel" onSubmit={save} key={editing.id}>
+        <form
+          className="panel"
+          data-tour="client-form"
+          onSubmit={save}
+          key={editing.id}
+        >
           <div className="section-heading">
             <h2>{editing.name ? "Editar cadastro" : "Novo cadastro"}</h2>
             <Button variant="ghost" onClick={() => setEditing(null)}>

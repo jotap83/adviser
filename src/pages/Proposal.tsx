@@ -571,7 +571,7 @@ export function Approval({ d }: { d: Demand }) {
         />
       ) : (
         <div className="briefing-grid">
-          <section className="panel">
+          <section className="panel" data-tour="proposal-send">
             <h3>Preparar envio</h3>
             <Label
               label="Compromisso para o primeiro envio"
@@ -678,7 +678,7 @@ export function Approval({ d }: { d: Demand }) {
               há envio real nem conexão com Gmail.
             </p>
           </section>
-          <section className="panel">
+          <section className="panel" data-tour="proposal-decision">
             <h3>Retorno do cliente</h3>
             {sent ? (
               <p>

@@ -15,7 +15,7 @@ export function Settings({ initialTab }: { initialTab?: string }) {
       />
       <TeamManagement initialTab={initialTab} />
       <div className="briefing-grid">
-        <section className="panel">
+        <section className="panel" data-tour="ai-settings">
           <div className="section-heading">
             <h2>Assistente de briefing</h2>
             <PlugZap size={20} />

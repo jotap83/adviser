@@ -15,6 +15,7 @@ import {
 } from "../quote-model";
 import { scopeSummary } from "../briefing-model";
 import { BrandLogo } from "../components/BrandLogo";
+import { TourMenuButton } from "../components/Tours";
 import { Badge, Button, Label, LinesEditor, Note } from "../components/UI";
 import {
   QuoteConversation,
@@ -223,6 +224,7 @@ export function SupplierPortal({ d, q }: { d: Demand; q: Quote }) {
           <BrandLogo />
         </a>
         <Badge tone="blue">MVP · portal do fornecedor · demonstração</Badge>
+        <TourMenuButton />
         <Button
           icon={ArrowLeft}
           onClick={() => go(`/demandas/${d.id}/compare`)}

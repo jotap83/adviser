@@ -134,7 +134,7 @@ export function Home({
         }
       />
       {adding && (
-        <form className="panel new-form" onSubmit={add}>
+        <form className="panel new-form" data-tour="new-demand" onSubmit={add}>
           <div className="section-heading">
             <h2>Cadastrar demanda diretamente</h2>
             <Button variant="ghost" onClick={() => setAdding(false)}>

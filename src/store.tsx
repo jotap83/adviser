@@ -8,29 +8,16 @@ import {
 } from "react";
 import type { AppState, Demand } from "./types";
 import { seed, timestamp } from "./data";
-import { withManagementDemo } from "./operations";
 import { withReferences } from "./mail-reference";
-import { withInboxDemo } from "./inbox-model";
-import { withProductionDemo } from "./production-model";
-import { withChannelsDemo } from "./channels";
-import { withOrganization } from "./organization";
-import { withManagementInsightsDemo } from "./management-demo";
 import { trackManagementChange } from "./management-model";
+import { prepareDemoState as prepare } from "./demo-state";
 const KEY = "adviser-demo-v1";
-const prepare = (s: AppState) =>
-  withReferences(
-    withManagementInsightsDemo(
-      withOrganization(
-        withChannelsDemo(
-          withProductionDemo(
-            withInboxDemo(withReferences(withManagementDemo(s))),
-          ),
-        ),
-      ),
-    ),
-  );
 type Context = {
   state: AppState;
+  presentation: boolean;
+  presentationRevision: number;
+  loadPresentation: (s: AppState) => void;
+  endPresentation: () => void;
   setState: (f: (s: AppState) => AppState) => void;
   updateDemand: (
     id: string,
@@ -44,7 +31,7 @@ type Context = {
 };
 const C = createContext<Context | null>(null);
 export function Store({ children }: { children: ReactNode }) {
-  const [state, setRaw] = useState<AppState>(() => {
+  const [savedState, setSavedState] = useState<AppState>(() => {
     try {
       const raw = localStorage.getItem(KEY);
       if (raw) {
@@ -55,6 +42,20 @@ export function Store({ children }: { children: ReactNode }) {
     } catch {}
     return prepare(seed());
   });
+  const [presentationState, setPresentationState] = useState<AppState | null>(
+    null,
+  );
+  const [presentationRevision, setPresentationRevision] = useState(0);
+  const presentation = presentationState !== null;
+  const state = presentationState || savedState;
+  const loadPresentation = useCallback((next: AppState) => {
+    setPresentationState(structuredClone(next));
+    setPresentationRevision((n) => n + 1);
+  }, []);
+  const endPresentation = useCallback(() => {
+    setPresentationState(null);
+    setPresentationRevision((n) => n + 1);
+  }, []);
   const [toast, setToast] = useState("");
   useEffect(() => {
     const sync = (event: StorageEvent) => {
@@ -62,7 +63,7 @@ export function Store({ children }: { children: ReactNode }) {
       try {
         const parsed = JSON.parse(event.newValue);
         if (parsed.schema === 1 && Array.isArray(parsed.demands))
-          setRaw(prepare(parsed));
+          setSavedState(prepare(parsed));
       } catch {
         /* Preserve the current state if a different tab wrote invalid data. */
       }
@@ -72,16 +73,16 @@ export function Store({ children }: { children: ReactNode }) {
   }, []);
   useEffect(() => {
     try {
-      localStorage.setItem(KEY, JSON.stringify(state));
+      localStorage.setItem(KEY, JSON.stringify(savedState));
     } catch {
       setToast(
         "Não foi possível salvar neste navegador. Exporte seus dados antes de sair.",
       );
     }
-  }, [state]);
+  }, [savedState]);
   const setState = useCallback(
-    (f: (s: AppState) => AppState) =>
-      setRaw((prev) => {
+    (f: (s: AppState) => AppState) => {
+      const update = (prev: AppState) => {
         const next = f(prev);
         const now = new Date().toISOString();
         return withReferences({
@@ -94,8 +95,12 @@ export function Store({ children }: { children: ReactNode }) {
             ),
           ),
         });
-      }),
-    [],
+      };
+      if (presentation)
+        setPresentationState((prev) => (prev ? update(prev) : prev));
+      else setSavedState(update);
+    },
+    [presentation],
   );
   const updateDemand = useCallback(
     (id: string, p: Partial<Demand> | ((d: Demand) => Demand), log?: string) =>
@@ -131,6 +136,10 @@ export function Store({ children }: { children: ReactNode }) {
     <C.Provider
       value={{
         state,
+        presentation,
+        presentationRevision,
+        loadPresentation,
+        endPresentation,
         setState,
         updateDemand,
         notify: setToast,

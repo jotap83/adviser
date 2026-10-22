@@ -1,6 +1,10 @@
 <!-- impeccable:product-schema 1 -->
 # Adviser
 
+## Tours para apresentação aos sócios
+
+O usuário autorizou um seletor de tours no cabeçalho para guiar a apresentação. O roteiro principal cobre a mensagem inicial, cadastro, briefing com IA e anexos, esclarecimentos, criação, fornecedores, negociação, versões e aceite pelo cliente. Outros roteiros percorrem gestão, canais, cadastros e núcleos, as nove oportunidades de IA, operações, financeiro e evolução da plataforma. As cenas usam dados fictícios temporários sobre as mesmas telas funcionais. Avançar ou pular prepara um exemplo da etapa, sem representar execução real de envio, aceite ou pagamento. As alterações da apresentação não substituem os registros salvos; o progresso do roteiro é guardado separadamente. Ver docs/TOURS-DE-APRESENTACAO.md.
+
 ## Evolução contínua com IA — 21/10/2026
 
 O usuário autorizou ampliar a demonstração além do MVP para apresentar aos sócios nove oportunidades: comparação de cotações, revisão de proposta, impacto de alterações, continuidade do atendimento, consulta gerencial, memória da carteira, apoio criativo, planejamento operacional e conferência financeira. O possível pacote mensal é uma hipótese comercial; prioridades serão definidas em conjunto, sem promessas automáticas de prazo ou escopo. As etapas e a referência histórica ao MVP continuam como orientação, não como limite das demonstrações de IA. Todo comportamento permanece local e simulado; cálculos não são atribuídos a um modelo. Rascunhos exigem revisão; sugestões operacionais podem virar tarefas locais e uma direção criativa pode ser registrada por ação explícita. Não há mensagens, contratação, aceite ou pagamento automático. Ver docs/IA-NA-OPERACAO.md.
