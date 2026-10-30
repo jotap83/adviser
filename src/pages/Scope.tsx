@@ -18,7 +18,7 @@ const deliveries = [
       ],
       [
         "Briefing e comunicação",
-        "Cadastro direto completo, Gmail e WhatsApp na mesma central; mensagens, ligações, reuniões e anexos PDF, DOCX e XLSX no histórico da demanda. Todos os campos podem ser preenchidos sem IA.",
+        "Cadastro direto completo, Gmail e WhatsApp na mesma central; mensagens, ligações, reuniões e anexos PDF, DOCX e XLSX no histórico do evento. Todos os campos podem ser preenchidos sem IA.",
       ],
       [
         "Gmail e WhatsApp integrados com IA",
@@ -37,12 +37,16 @@ const deliveries = [
         "Orçamento por grupo, condições, versões, PDF/Excel, revisão interna com responsáveis e avisos, envio ao cliente, registro do aceite e pacote para Operações.",
       ],
       [
+        "Validação do briefing",
+        "Revisão interna com responsáveis avisados, decisão do cliente com evidência e liberação para cotação.",
+      ],
+      [
         "Gestão e alertas",
-        "Painel Gerencial por núcleo, responsável pela conta e pela demanda, filtros de carteira, distribuição pendente, prazos, novas mensagens e retornos dos fornecedores.",
+        "Painel Gerencial por núcleo, responsável pela conta e pelo evento, filtros de carteira, distribuição pendente, prazos, novas mensagens e retornos dos fornecedores.",
       ],
       [
         "Apoio criativo",
-        "Referências, apresentação, versões e registro manual de feedback, ligados ao atendimento.",
+        "Conceito e apresentação criativa na elaboração da proposta, versões, revisão interna e registro de feedback do cliente.",
       ],
     ],
   },
@@ -61,7 +65,7 @@ const deliveries = [
       ],
       [
         "Projetos e repasse",
-        "Projeto vinculado à versão aceita, briefing, fornecedores, condições e pendências.",
+        "Evento único desde o pedido, com solicitações vinculadas, visitas antes do fechamento e repasse da versão aceita após contrato.",
       ],
       [
         "Quadro de tarefas",
@@ -69,7 +73,11 @@ const deliveries = [
       ],
       [
         "Produção e criação",
-        "Pré-produção, montagem, evento, desmontagem e pós-evento; tarefas da criação e aprovações.",
+        "Contratos, cronograma, materiais criativos, extras, pré-produção, montagem, execução, desmontagem, relatório pós-evento e aprovações por versão.",
+      ],
+      [
+        "Pós-evento",
+        "Relatório, prestação de contas, satisfação, próximo contato comercial e conferência das pendências antes do encerramento.",
       ],
       [
         "Acompanhamento",
@@ -92,7 +100,7 @@ const deliveries = [
       ],
       [
         "Contas a pagar e receber",
-        "Visão global e por evento, lançamentos, vencimentos, aprovação com avisos e baixa integral demonstrados. Parcelas, pagamentos parciais, pagamentos diretos, comprovantes e regras de alçada a detalhar.",
+        "Visão global e por evento, parcelas do contrato, lançamentos e documento de origem, natureza da despesa, revisão com avisos, baixa integral e conciliação manual demonstradas. Pagamentos parciais e regras de alçada definitivas a detalhar.",
       ],
       [
         "Caixa e resultado",

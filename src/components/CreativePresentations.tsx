@@ -1,3 +1,5 @@
+import { ApprovalRequestPanel } from "./ApprovalRequest";
+import { isApproved } from "../approval-model";
 import { uid } from "../data";
 import { useEffect, useState } from "react";
 import {
@@ -23,10 +25,18 @@ const statusText = {
   changes: "Ajustes solicitados",
   approved: "Aprovada pelo cliente",
 };
-export function CreativePresentations({ d }: { d: Demand }) {
-  const { updateDemand, notify } = useStore();
+export function CreativePresentations({
+  d,
+  initialVersionId,
+}: {
+  d: Demand;
+  initialVersionId?: string;
+}) {
+  const { state, updateDemand, notify } = useStore();
   const versions = d.presentations || [];
-  const [selected, setSelected] = useState(versions.at(-1)?.id || "");
+  const [selected, setSelected] = useState(
+    initialVersionId || versions.at(-1)?.id || "",
+  );
   const current = versions.find((v) => v.id === selected) || versions.at(-1);
   const [form, setForm] = useState(false);
   const [title, setTitle] = useState("Conexões que ficam");
@@ -447,6 +457,15 @@ export function CreativePresentations({ d }: { d: Demand }) {
               )}
             </div>
             <aside className="creative-review">
+              <ApprovalRequestPanel
+                key={current.id}
+                target={{
+                  kind: "creative",
+                  targetId: d.id,
+                  versionId: current.id,
+                }}
+              />
+
               <h3>Revisão desta versão</h3>
               <p>{current.concept || "Conceito ainda não descrito."}</p>
               {current.changes && (
@@ -463,7 +482,22 @@ export function CreativePresentations({ d }: { d: Demand }) {
                   </Note>
                   <Button
                     icon={Send}
+                    disabled={
+                      !isApproved(state, {
+                        kind: "creative",
+                        targetId: d.id,
+                        versionId: current.id,
+                      })
+                    }
                     onClick={() => {
+                      if (
+                        !isApproved(state, {
+                          kind: "creative",
+                          targetId: d.id,
+                          versionId: current.id,
+                        })
+                      )
+                        return;
                       patch(
                         { status: "sent", sentAt: new Date().toISOString() },
                         `Envio da apresentação v${current.number} registrado manualmente.`,

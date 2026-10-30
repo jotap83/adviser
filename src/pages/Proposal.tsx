@@ -1,3 +1,8 @@
+import {
+  contractReady,
+  eventProject,
+  ensureEventProject,
+} from "../event-lifecycle";
 import { ApprovalRequestPanel } from "../components/ApprovalRequest";
 import { isApproved } from "../approval-model";
 import {
@@ -49,6 +54,16 @@ function snapshot(d: Demand, client: string): Version {
     date: d.date,
     guests: d.guests,
     location: d.location,
+    creative: d.presentations?.length
+      ? ((p) => ({
+          id: p.id,
+          number: p.number,
+          title: p.title,
+          concept: p.concept,
+          url: p.url,
+          fileName: p.fileName,
+        }))(d.presentations.at(-1)!)
+      : undefined,
   };
 }
 async function excel(v: Version) {
@@ -206,6 +221,20 @@ export function ProposalDocument({ v }: { v: Version }) {
           </>
         )}
       </div>
+      {v.creative && (
+        <section className="document-terms">
+          <h3>Apresentação criativa associada</h3>
+          <p>
+            {v.creative.title} · versão {v.creative.number}
+          </p>
+          <p>{v.creative.concept}</p>
+          {v.creative.url && (
+            <a href={v.creative.url} target="_blank" rel="noopener noreferrer">
+              Abrir apresentação
+            </a>
+          )}
+        </section>
+      )}
       <div className="document-terms">
         <h3>Condições da proposta</h3>
         <p>{v.terms}</p>
@@ -297,12 +326,18 @@ export function Proposal({ d }: { d: Demand }) {
           {view ? "Voltar à edição" : "Prévia do cliente"}
         </Button>
       </div>
+      <div className="cross-area-links">
+        <span>Orçamento e apresentação compõem a proposta.</span>
+        <Button onClick={() => go(`/eventos/${d.id}/creative`)}>
+          Preparar apresentação criativa
+        </Button>
+      </div>
       {stale && !locked && (
         <Note tone="warning">
           Uma cotação ou composição mudou após a importação. Revise as escolhas
           e reimporte os itens antes de salvar outra versão. As versões já
           salvas continuam preservadas.{" "}
-          <Button onClick={() => go(`/demandas/${d.id}/compare`)}>
+          <Button onClick={() => go(`/eventos/${d.id}/compare`)}>
             Revisar composições
           </Button>
         </Note>
@@ -487,7 +522,7 @@ export function Proposal({ d }: { d: Demand }) {
           variant="primary"
           icon={ArrowRight}
           disabled={!d.versions.length}
-          onClick={() => go(`/demandas/${d.id}/approval`)}
+          onClick={() => go(`/eventos/${d.id}/approval`)}
         >
           Ir para aprovação
         </Button>
@@ -577,7 +612,7 @@ export function Approval({
           title="Salve a primeira versão"
           text="A aprovação precisa estar vinculada a uma proposta com valores preservados."
           action={
-            <Button onClick={() => go(`/demandas/${d.id}/proposal`)}>
+            <Button onClick={() => go(`/eventos/${d.id}/proposal`)}>
               Preparar proposta
             </Button>
           }
@@ -867,7 +902,7 @@ export function Approval({
                       },
                       "Revisão aberta. O aceite anterior permanece no histórico.",
                     );
-                  go(`/demandas/${d.id}/proposal`);
+                  go(`/eventos/${d.id}/proposal`);
                 }}
               >
                 {d.decision === "accepted"
@@ -891,7 +926,7 @@ export function Approval({
           variant="primary"
           icon={ArrowRight}
           disabled={d.decision !== "accepted"}
-          onClick={() => go(`/demandas/${d.id}/handoff`)}
+          onClick={() => go(`/eventos/${d.id}/handoff`)}
         >
           Preparar repasse
         </Button>
@@ -907,7 +942,7 @@ export function Handoff({ d }: { d: Demand }) {
   const pack = () => ({
     demonstracao: true,
     exportadoEm: new Date().toISOString(),
-    demanda: d.id,
+    evento: d.id,
     cliente: client,
     propostaAprovada: v,
     evidencia: d.evidence,
@@ -924,15 +959,15 @@ export function Handoff({ d }: { d: Demand }) {
     <>
       <div className="section-heading">
         <div>
-          <h2>Da proposta aprovada para Operações.</h2>
+          <h2>Repasse do escopo contratado.</h2>
           <p>
-            O atendimento organiza o repasse para produção e execução. O nome
-            Operações e suas responsabilidades ainda serão confirmados com a
-            Adviser.
+            Atendimento/produção preserva a versão aceita, o contrato e os
+            fornecedores no mesmo evento. Visitas técnicas podem ocorrer antes
+            deste repasse.
           </p>
         </div>
         <Badge tone={d.handoff ? "green" : "blue"}>
-          {d.handoff ? "Repasse preparado" : "Fim do MVP"}
+          {d.handoff ? "Repasse preparado" : "Conferir contrato"}
         </Badge>
       </div>
       {d.decision !== "accepted" || !v ? (
@@ -940,7 +975,7 @@ export function Handoff({ d }: { d: Demand }) {
           title="Aguardando aprovação"
           text="Registre o aceite de uma versão para liberar o pacote de repasse."
           action={
-            <Button onClick={() => go(`/demandas/${d.id}/approval`)}>
+            <Button onClick={() => go(`/eventos/${d.id}/approval`)}>
               Ver aprovação
             </Button>
           }
@@ -990,8 +1025,9 @@ export function Handoff({ d }: { d: Demand }) {
                 </Button>
                 <Button
                   variant="primary"
-                  disabled={d.handoff}
+                  disabled={d.handoff || !contractReady(state, d)}
                   onClick={() => {
+                    if (!contractReady(state, d)) return;
                     updateDemand(
                       d.id,
                       { handoff: true, stage: "handoff" },
@@ -1002,7 +1038,9 @@ export function Handoff({ d }: { d: Demand }) {
                     );
                   }}
                 >
-                  {d.handoff ? "Repasse preparado" : "Concluir atendimento"}
+                  {d.handoff
+                    ? "Repasse preparado"
+                    : "Preparar repasse contratado"}
                 </Button>
               </div>
             </section>
@@ -1026,18 +1064,30 @@ export function Handoff({ d }: { d: Demand }) {
               </Note>
             </section>
           </div>
+          {!contractReady(state, d) && (
+            <Note tone="warning">
+              Conclua a revisão e registre a assinatura da versão atual do
+              contrato para liberar o repasse.{" "}
+              <Button onClick={() => go(`/eventos/${d.id}/contracts`)}>
+                Conferir contratos
+              </Button>
+            </Note>
+          )}
           <section className="future-banner">
             <div>
               <Badge tone="amber">Próximas etapas</Badge>
-              <h3>A partir daqui, nasce o projeto.</h3>
+              <h3>O mesmo evento segue para a execução.</h3>
               <p>
                 Operações coordena fornecedores, produção e execução, com apoio
                 da criação. O financeiro acompanha recebimentos e pagamentos
                 durante o projeto e faz o fechamento após o evento.
               </p>
             </div>
-            <Button icon={ArrowRight} onClick={() => go("/operacoes")}>
-              Explorar Operações · etapa 2
+            <Button
+              icon={ArrowRight}
+              onClick={() => go(`/eventos/${d.id}/production`)}
+            >
+              Planejar produção deste evento
             </Button>
           </section>
         </>

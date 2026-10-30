@@ -63,6 +63,13 @@ export function Directory({
       const item: Client = {
         ...(editing as Client),
         ...base,
+        cnpj: String(f.get("cnpj") || "").trim(),
+        address: String(f.get("address") || "").trim(),
+        segment: String(f.get("segment") || "").trim(),
+        origin: String(f.get("origin") || "").trim(),
+        billingSystem: String(f.get("billingSystem") || "").trim(),
+        extraContacts: String(f.get("extraContacts") || "").trim(),
+        relationshipStatus: String(f.get("relationshipStatus") || "active"),
         nucleusId,
         nucleus: state.nuclei?.find((n) => n.id === nucleusId)?.name || "",
         accountOwnerId: String(f.get("accountOwner") || ""),
@@ -178,6 +185,55 @@ export function Directory({
               </>
             ) : (
               <>
+                <Label label="CNPJ">
+                  <input
+                    name="cnpj"
+                    defaultValue={(editing as Client).cnpj || ""}
+                  />
+                </Label>
+                <Label label="Endereço">
+                  <input
+                    name="address"
+                    defaultValue={(editing as Client).address || ""}
+                  />
+                </Label>
+                <Label label="Segmento / ramo de atuação">
+                  <input
+                    name="segment"
+                    defaultValue={(editing as Client).segment || ""}
+                  />
+                </Label>
+                <Label label="Origem do relacionamento">
+                  <input
+                    name="origin"
+                    defaultValue={(editing as Client).origin || ""}
+                  />
+                </Label>
+                <Label label="Sistema utilizado para faturamento">
+                  <input
+                    name="billingSystem"
+                    defaultValue={(editing as Client).billingSystem || ""}
+                  />
+                </Label>
+                <Label label="Outros contatos e cargos">
+                  <textarea
+                    name="extraContacts"
+                    defaultValue={(editing as Client).extraContacts || ""}
+                    placeholder="Nome, cargo, e-mail e telefone dos demais contatos."
+                  />
+                </Label>
+                <Label label="Situação do relacionamento">
+                  <select
+                    name="relationshipStatus"
+                    defaultValue={
+                      (editing as Client).relationshipStatus || "active"
+                    }
+                  >
+                    <option value="active">Ativo</option>
+                    <option value="prospect">Prospect</option>
+                    <option value="inactive">Inativo</option>
+                  </select>
+                </Label>
                 <Label label="Núcleo responsável">
                   <select
                     name="nucleus"
@@ -193,7 +249,7 @@ export function Directory({
                 </Label>
                 <Label
                   label="Responsável pela conta"
-                  hint="Sugestão inicial para novas demandas. Cada evento pode ter outro responsável."
+                  hint="Sugestão inicial para novos eventos. Cada evento pode ter outro responsável."
                 >
                   <select
                     name="accountOwner"
@@ -218,9 +274,18 @@ export function Directory({
             )}
           </div>
           {!isSupplier && (
+            <div className="field-hint">
+              <strong>Histórico de eventos:</strong>{" "}
+              {state.demands
+                .filter((d) => d.clientId === editing.id)
+                .map((d) => d.title)
+                .join(" · ") || "Nenhum evento registrado."}
+            </div>
+          )}
+          {!isSupplier && (
             <p className="field-hint">
-              Alterar a carteira não troca os responsáveis das demandas já
-              abertas. A colaboração entre núcleos continua disponível.
+              Alterar a carteira não troca os responsáveis dos eventos já
+              abertos. A colaboração entre núcleos continua disponível.
             </p>
           )}
           <Button type="submit" variant="primary" icon={Save}>

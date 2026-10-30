@@ -1,3 +1,4 @@
+import { approvalPolicy, suggestedReviewers } from "../event-lifecycle";
 import { useState } from "react";
 import { Bell, ArrowRight } from "lucide-react";
 import { useStore, go } from "../store";
@@ -18,7 +19,9 @@ export const approvalLabels = {
 export function ApprovalRequestPanel({ target }: { target: ApprovalTarget }) {
   const { state, setState, notify } = useStore(),
     person = demoPerson(state);
-  const [selected, setSelected] = useState<string[]>([]);
+  const [selected, setSelected] = useState<string[]>(() =>
+    suggestedReviewers(state, target, person?.id || ""),
+  );
   const record = latestApproval(state, target),
     status = record ? approvalStatus(state, record) : undefined;
   const canRequest = !status || status === "changes" || status === "outdated";
@@ -29,7 +32,9 @@ export function ApprovalRequestPanel({ target }: { target: ApprovalTarget }) {
         <h3>
           {target.kind === "proposal"
             ? "Aprovação interna da proposta"
-            : "Aprovação do pagamento"}
+            : target.kind === "payment"
+              ? "Aprovação do pagamento"
+              : "Revisão interna desta entrega"}
         </h3>
         {status && (
           <Badge tone={status === "approved" ? "green" : "amber"}>
@@ -50,8 +55,9 @@ export function ApprovalRequestPanel({ target }: { target: ApprovalTarget }) {
       {canRequest ? (
         <>
           <p>
-            Selecione quem deve aprovar. Todos precisam revisar esta versão;
-            cada pessoa recebe um aviso na central.
+            {approvalPolicy(state, target).note} Selecione os responsáveis pela
+            revisão. Todos os selecionados precisam revisar esta versão; cada
+            pessoa recebe um aviso na central.
           </p>
           <fieldset className="reviewer-options">
             <legend>Responsáveis pela aprovação</legend>
@@ -98,7 +104,8 @@ export function ApprovalRequestPanel({ target }: { target: ApprovalTarget }) {
       )}
       <p className="field-hint">
         Avisos locais neste protótipo. E-mail e WhatsApp não são enviados. A
-        pessoa simulada não é uma autenticação.
+        pessoa simulada não é uma autenticação. Os papéis orientam a seleção; as
+        alçadas definitivas ainda precisam de validação.
       </p>
     </section>
   );

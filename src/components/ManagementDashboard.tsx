@@ -1,3 +1,4 @@
+import { LifecycleManagement } from "../pages/EventLifecycle";
 import { CrossAreaSummary } from "./CrossAreaSummary";
 import { useState, type ReactNode } from "react";
 import { ArrowRight, Bell, SlidersHorizontal, Clock3 } from "lucide-react";
@@ -57,7 +58,7 @@ const bases: Record<Basis, string> = {
   cycle: "Ciclo até o aceite",
   conversion: "Conversão",
   margin: "Margem prevista",
-  risk: "Demandas em atenção",
+  risk: "Eventos em atenção",
   response: "Primeira resposta",
   punctuality: "Primeiro envio no prazo",
   all: "Todos os registros da carteira",
@@ -201,6 +202,7 @@ export function ManagementDashboard() {
         }
       />
       <CrossAreaSummary />
+      <LifecycleManagement />
       <IntelligenceEntry ids={["management"]} />
       <div className="management-filters insight-filters">
         <Label label="Período dos resultados">
@@ -343,7 +345,7 @@ export function ManagementDashboard() {
           }
         />
         <Metric
-          label="Demandas em atenção"
+          label="Eventos em atenção"
           value={String(risks.length)}
           context={
             <>
@@ -490,7 +492,7 @@ export function ManagementDashboard() {
               )}
               {risks.length > 3 && (
                 <Button variant="ghost" onClick={() => showBase("risk")}>
-                  Ver as {risks.length} demandas em atenção
+                  Ver as {risks.length} eventos em atenção
                 </Button>
               )}
               <p className="field-hint">
@@ -503,7 +505,7 @@ export function ManagementDashboard() {
               <span>Primeira resposta da equipe</span>
               <strong>{number(data.replyHours, " h")}</strong>
               <small>
-                {data.replies.length} demandas iniciadas no período ·
+                {data.replies.length} eventos iniciadas no período ·
                 confirmações automáticas excluídas
               </small>
             </button>
@@ -526,7 +528,7 @@ export function ManagementDashboard() {
                 )}
               </strong>
               <small>
-                {negotiating.length} propostas enviadas · {open.length} demandas
+                {negotiating.length} propostas enviadas · {open.length} eventos
                 comerciais abertas · não é receita
               </small>
             </button>
@@ -550,7 +552,7 @@ export function ManagementDashboard() {
               <h2>O que gera novas revisões?</h2>
               <p>
                 {data.revisions.length} rodadas em{" "}
-                {new Set(data.revisions.map((r) => r.d.id)).size} demandas no
+                {new Set(data.revisions.map((r) => r.d.id)).size} eventos no
                 período. Nem toda revisão é retrabalho evitável.
               </p>
               <ReasonList
@@ -756,7 +758,7 @@ export function ManagementDashboard() {
                         <Button
                           onClick={() =>
                             go(
-                              `/demandas/${(r.pending[0] || r.received[0]).d.id}/quotes`,
+                              `/eventos/${(r.pending[0] || r.received[0]).d.id}/quotes`,
                             )
                           }
                         >
@@ -792,7 +794,7 @@ export function ManagementDashboard() {
                   {basis === "all" || basis === "risk"
                     ? "Carteira atual, independentemente do período."
                     : basis === "response"
-                      ? "Demandas iniciadas no período, com primeira resposta registrada."
+                      ? "Eventos iniciadas no período, com primeira resposta registrada."
                       : basis === "punctuality"
                         ? "Primeiros envios no período, com prazo preservado."
                         : "Decisões registradas no período escolhido."}{" "}
@@ -838,7 +840,7 @@ export function ManagementDashboard() {
               <table className="management-table insight-evidence-table">
                 <thead>
                   <tr>
-                    <th>Demanda</th>
+                    <th>Evento</th>
                     <th>Marcos do atendimento</th>
                     <th>
                       {basis === "margin"
@@ -961,9 +963,9 @@ export function ManagementDashboard() {
                             </Button>
                             <Button
                               variant="ghost"
-                              onClick={() => go(`/demandas/${d.id}/${d.stage}`)}
+                              onClick={() => go(`/eventos/${d.id}/${d.stage}`)}
                             >
-                              Abrir demanda
+                              Abrir evento
                             </Button>
                           </td>
                         </tr>

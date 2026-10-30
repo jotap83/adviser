@@ -1,3 +1,5 @@
+> Registro anterior: as regras de ciclo e navegação foram revistas em 30/10/2026. Consulte [Revisão do ciclo completo](REVISAO-CICLO-COMPLETO.md) e PRODUCT.md para o comportamento vigente.
+
 # Fluxo conectado entre áreas
 
 Registro de 30/10/2026. A extensão trabalha no aplicativo React do repositório Adviser e conecta a primeira solicitação, atendimento, aprovações, operações, financeiro e gestão. Preserva os módulos existentes, incluindo comparação de cotações e Inteligência, e a identidade definida em [DESIGN.md](../DESIGN.md).

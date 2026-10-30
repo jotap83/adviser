@@ -94,7 +94,7 @@ export function Approvals({
     <>
       <Title
         title="Central de aprovações"
-        sub="Propostas e pagamentos com responsável, versão revisada e histórico da decisão."
+        sub="Briefing, propostas, criativos, contratos, cronogramas, extras, pagamentos e pós-evento."
       />
       {requestId && (
         <Button onClick={() => go("/aprovacoes/todas")}>
@@ -137,10 +137,8 @@ export function Approvals({
       {!rows.length && (
         <Empty
           title="Nenhuma aprovação nesta visão"
-          text="Solicite a revisão na etapa Aprovação da proposta ou em uma conta a pagar. Troque a pessoa simulada para acompanhar os avisos de cada responsável."
-          action={
-            <Button onClick={() => go("/demandas")}>Abrir demandas</Button>
-          }
+          text="Solicite a revisão no briefing, proposta, criativo, documentos do evento ou em uma conta a pagar. Troque a pessoa simulada para acompanhar os avisos de cada responsável."
+          action={<Button onClick={() => go("/eventos")}>Abrir eventos</Button>}
         />
       )}
     </>
@@ -173,16 +171,66 @@ function ApprovalRow({ record: r }: { record: ApprovalRequest }) {
       <p>
         {r.kind === "proposal"
           ? `Proposta v${snapshot.number} · investimento ${Number(snapshot.total).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}`
-          : `Conta a pagar · ${Number(snapshot[3]).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })} · vencimento ${snapshot[4]}`}
+          : r.kind === "payment"
+            ? `Conta a pagar · ${Number(snapshot[3]).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })} · vencimento ${snapshot[4]}`
+            : `Entrega: ${snapshot.title || r.kind}`}
       </p>
       {r.kind === "proposal" ? (
         <ProposalSnapshot version={snapshot as Version} />
-      ) : (
+      ) : r.kind === "payment" ? (
         <p>
           Evento:{" "}
           {state.productionProjects?.find((p) => p.id === snapshot[0])?.title ||
             "Evento não localizado"}
         </p>
+      ) : (
+        <details className="approval-snapshot" open>
+          <summary>Conteúdo preservado para revisão</summary>
+          {Object.entries(snapshot)
+            .filter(
+              ([key]) =>
+                ![
+                  "eventId",
+                  "clientId",
+                  "proposalVersionId",
+                  "contractVersion",
+                ].includes(key),
+            )
+            .map(([key, value]) => (
+              <div className="review-field" key={key}>
+                <strong>
+                  {(
+                    {
+                      title: "Título",
+                      content: "Conteúdo",
+                      url: "Documento",
+                      date: "Data",
+                      guests: "Público",
+                      budget: "Orçamento",
+                      location: "Local",
+                      objective: "Objetivo",
+                      questions: "Pendências",
+                      scope: "Escopo",
+                      details: "Detalhes",
+                      concept: "Conceito",
+                      changes: "Mudanças",
+                      number: "Versão",
+                      revision: "Versão",
+                      createdAt: "Registrado em",
+                      at: "Registrado em",
+                      fileName: "Arquivo",
+                      source: "Origem",
+                      operationalPlan: "Plano operacional desta revisão",
+                      accounts: "Lançamentos desta revisão",
+                    } as Record<string, string>
+                  )[key] || key}
+                </strong>
+                <p>
+                  <SnapshotValue value={value} />
+                </p>
+              </div>
+            ))}
+        </details>
       )}
       <Button icon={ArrowRight} onClick={() => go(approvalRoute(state, r))}>
         Abrir registro de origem
@@ -301,4 +349,50 @@ function ProposalSnapshot({ version: v }: { version: Version }) {
       </p>
     </details>
   );
+}
+
+function SnapshotValue({ value }: { value: unknown }): React.ReactNode {
+  if (value === null || value === undefined) return "Não informado";
+  if (Array.isArray(value))
+    return (
+      <>
+        {value.map((v, i) => (
+          <span className="snapshot-value" key={i}>
+            <SnapshotValue value={v} />
+          </span>
+        ))}
+      </>
+    );
+  if (typeof value === "object")
+    return (
+      <>
+        {Object.entries(value)
+          .filter(([key]) => !["id", "eventId", "clientId"].includes(key))
+          .map(([key, v]) => (
+            <span className="snapshot-value" key={key}>
+              <strong>
+                {(
+                  {
+                    title: "Título",
+                    description: "Descrição",
+                    due: "Prazo",
+                    owner: "Responsável",
+                    phase: "Fase",
+                    amount: "Valor",
+                    direction: "Pagar / receber",
+                    settled: "Baixado",
+                    documentRef: "Documento",
+                    included: "Incluído",
+                    answers: "Respostas",
+                  } as Record<string, string>
+                )[key] || key}
+                :{" "}
+              </strong>
+              <SnapshotValue value={v} />
+            </span>
+          ))}
+      </>
+    );
+  if (typeof value === "boolean") return value ? "Sim" : "Não";
+  return String(value);
 }

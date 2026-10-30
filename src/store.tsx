@@ -7,6 +7,7 @@ import {
   type ReactNode,
 } from "react";
 import type { AppState, Demand } from "./types";
+import { withEventLifecycle } from "./event-lifecycle";
 import { seed, timestamp } from "./data";
 import { withReferences } from "./mail-reference";
 import { trackManagementChange } from "./management-model";
@@ -85,16 +86,18 @@ export function Store({ children }: { children: ReactNode }) {
       const update = (prev: AppState) => {
         const next = f(prev);
         const now = new Date().toISOString();
-        return withReferences({
-          ...next,
-          demands: next.demands.map((d) =>
-            trackManagementChange(
-              prev.demands.find((old) => old.id === d.id),
-              d,
-              now,
+        return withEventLifecycle(
+          withReferences({
+            ...next,
+            demands: next.demands.map((d) =>
+              trackManagementChange(
+                prev.demands.find((old) => old.id === d.id),
+                d,
+                now,
+              ),
             ),
-          ),
-        });
+          }),
+        );
       };
       if (presentation)
         setPresentationState((prev) => (prev ? update(prev) : prev));

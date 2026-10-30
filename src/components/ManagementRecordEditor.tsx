@@ -197,7 +197,7 @@ export function ManagementRecordEditor({
           </Label>
           <Label
             label="Aceite ou recusa registrados"
-            hint="Disponível após registrar a decisão na demanda."
+            hint="Disponível após registrar a decisão no evento."
           >
             <input
               name="decision"

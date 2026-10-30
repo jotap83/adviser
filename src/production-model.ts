@@ -1,3 +1,4 @@
+import { contractReady, eventProject } from "./event-lifecycle";
 import type {
   AppState,
   Demand,
@@ -13,6 +14,7 @@ export const taskStatuses: { id: TaskStatus; label: string }[] = [
   { id: "done", label: "Concluído" },
 ];
 export const productionPhases = [
+  "Visita técnica / viabilidade",
   "Pré-produção",
   "Montagem",
   "Evento",
@@ -278,9 +280,10 @@ export function projectFromHandoff(
   state: AppState,
 ): ProductionProject | null {
   const version = d.versions.find((v) => v.id === d.acceptedVersion);
-  if (!d.handoff || d.decision !== "accepted" || !version) return null;
+  if (!d.handoff || d.decision !== "accepted" || !version || !contractReady(state,d)) return null;
   return {
-    id: `project-${d.id}`,
+    id: eventProject(state,d.id)?.id || `project-${d.id}`,
+    eventId: d.id,
     title: version.title,
     client: version.client,
     date: version.date,

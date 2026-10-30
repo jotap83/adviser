@@ -3,7 +3,15 @@ export function ScopeBanner({ path }: { path: string }) {
   const section = path.split("/")[1];
   const planning = ["fluxo", "escopo", "roadmap"].includes(section);
   const intelligence = path.startsWith("/escopo/ia");
-  const phase = section === "operacoes" ? 2 : section === "financeiro" ? 3 : 1;
+  const eventTab = ["eventos", "demandas"].includes(section)
+    ? path.split("/")[3]
+    : "";
+  const phase =
+    section === "operacoes" || ["production", "post"].includes(eventTab)
+      ? 2
+      : section === "financeiro" || eventTab === "finance"
+        ? 3
+        : 1;
   const messages = ["emails", "mensagens"].includes(section);
   if (intelligence) return null;
   if (section === "aprovacoes")
@@ -11,8 +19,8 @@ export function ScopeBanner({ path }: { path: string }) {
       <div className="scope-banner">
         <Badge tone="blue">Aprovações por etapa</Badge>
         <span>
-          Propostas no Atendimento · pagamentos na etapa 3. Revisores e avisos
-          simulados.
+          Briefing, proposta, contratos, produção, pós-evento e pagamentos.
+          Revisores e avisos simulados em cada etapa.
         </span>
         <a href="#/escopo">Ver escopo</a>
       </div>

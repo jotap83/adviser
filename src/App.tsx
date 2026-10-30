@@ -1,3 +1,15 @@
+import "./event-lifecycle.css";
+import {
+  EventOverview,
+  EventContracts,
+  EventProduction,
+  EventPost,
+  EventFinanceStart,
+} from "./pages/EventLifecycle";
+import { EventRequests } from "./pages/EventRequests";
+import { EventDocuments } from "./pages/EventDocuments";
+import { CreativePresentations } from "./components/CreativePresentations";
+import { eventProject } from "./event-lifecycle";
 import { Approvals } from "./pages/Approvals";
 import { approvalNotifications } from "./approval-model";
 import { useEffect, useState } from "react";
@@ -58,7 +70,8 @@ import {
 } from "./organization";
 const nav = [
   { path: "/", label: "Visão geral", icon: LayoutDashboard },
-  { path: "/demandas", label: "Demandas", icon: Layers },
+  { path: "/eventos", label: "Eventos", icon: Layers },
+  { path: "/solicitacoes", label: "Solicitações", icon: Mail },
   { path: "/fornecedores", label: "Fornecedores", icon: Building2 },
   { path: "/clientes", label: "Clientes", icon: UsersRound },
   { path: "/modelos", label: "Modelos de cotação", icon: SlidersHorizontal },
@@ -156,27 +169,20 @@ export default function App() {
         <Toast toast={toast} close={clearToast} />
       </>
     );
-  if (parts[0] === "demandas" && parts[1])
+  if (["demandas", "eventos"].includes(parts[0]) && parts[1])
     page = d ? (
-      <Workspace
-        d={d}
-        versionId={parts[3]}
-        tab={
-          (stages.some((s) => s.id === parts[2])
-            ? parts[2]
-            : "briefing") as Stage
-        }
-      />
+      <Workspace d={d} versionId={parts[3]} tab={parts[2] || "overview"} />
     ) : (
       <Empty
-        title="Demanda não encontrada"
-        text="O endereço pode pertencer a outro navegador. Volte à lista de demandas."
-        action={<Button onClick={() => go("/demandas")}>Ver demandas</Button>}
+        title="Evento não encontrado"
+        text="O endereço pode pertencer a outro navegador. Volte à lista de eventos."
+        action={<Button onClick={() => go("/eventos")}>Ver eventos</Button>}
       />
     );
-  else if (parts[0] === "demandas") page = <Home all />;
-  else if (parts[0] === "nova-demanda")
+  else if (["demandas", "eventos"].includes(parts[0])) page = <Home all />;
+  else if (["nova-demanda", "novo-evento"].includes(parts[0]))
     page = <Home key="new-demand" newDemand />;
+  else if (parts[0] === "solicitacoes") page = <EventRequests />;
   else if (parts[0] === "emails" || parts[0] === "mensagens")
     page = <Inbox key={parts[1] || "inbox"} emailId={parts[1]} />;
   else if (parts[0] === "aprovacoes")
@@ -244,7 +250,7 @@ export default function App() {
       >
         <Icon size={19} />
         <span>{item.label}</span>
-        {item.path === "/demandas" && <small>{state.demands.length}</small>}
+        {item.path === "/eventos" && <small>{state.demands.length}</small>}
         {["/operacoes", "/financeiro"].includes(item.path) && (
           <small>{item.path === "/operacoes" ? "2" : "3"}</small>
         )}
@@ -373,8 +379,8 @@ export default function App() {
             </a>
             <ChevronRight size={14} />
             <strong>
-              {parts[0] === "demandas" && parts[1]
-                ? "Demanda"
+              {parts[0] === "eventos" && parts[1]
+                ? "Evento"
                 : parts[0] === "gestao"
                   ? "Painel Gerencial"
                   : parts[0] === "aprovacoes"
@@ -471,7 +477,7 @@ function Workspace({
   versionId,
 }: {
   d: Demand;
-  tab: Stage;
+  tab: string;
   versionId?: string;
 }) {
   const { state, notify, updateDemand } = useStore();
@@ -481,8 +487,8 @@ function Workspace({
   return (
     <>
       <div className="demand-breadcrumb">
-        <button onClick={() => go("/demandas")}>
-          <ArrowLeft size={15} /> Demandas
+        <button onClick={() => go("/eventos")}>
+          <ArrowLeft size={15} /> Eventos
         </button>
         <ChevronRight size={13} />
         <span>{client?.name}</span>
@@ -520,7 +526,7 @@ function Workspace({
         <div className="event-owner">
           <div>
             <label className="event-owner-label" htmlFor="demand-owner">
-              Responsável pela demanda
+              Responsável pelo evento
             </label>
             <select
               id="demand-owner"
@@ -529,7 +535,7 @@ function Workspace({
                 updateDemand(
                   d.id,
                   { owner: e.target.value },
-                  `Responsável pela demanda: ${e.target.value || UNASSIGNED}.`,
+                  `Responsável pelo evento: ${e.target.value || UNASSIGNED}.`,
                 )
               }
             >
@@ -562,23 +568,10 @@ function Workspace({
           </Button>
         </div>
       </div>
-      {state.productionProjects
-        ?.filter((p) => p.source?.demandId === d.id)
-        .map((p) => (
-          <div className="cross-area-links" key={p.id}>
-            <span>Continuidade deste evento</span>
-            <Button onClick={() => go(`/operacoes/${p.id}`)}>
-              Abrir operação
-            </Button>
-            <Button onClick={() => go(`/financeiro/${p.id}`)}>
-              Abrir financeiro
-            </Button>
-          </div>
-        ))}
       {history && (
         <section className="panel history-panel">
           <div className="section-heading">
-            <h2>Histórico desta demanda</h2>
+            <h2>Histórico deste evento</h2>
             <Button onClick={() => setHistory(false)}>Fechar</Button>
           </div>
           {d.history.map((h, i) => (
@@ -589,21 +582,67 @@ function Workspace({
           ))}
         </section>
       )}
-      <nav className="workflow-tabs" aria-label="Etapas da demanda">
-        {stages.map((s, i) => (
+      <nav className="event-groupnav" aria-label="Áreas deste evento">
+        {[
+          ["overview", "Panorama", ["overview"]],
+          ["briefing", "Entrada e briefing", ["briefing", "requests"]],
+          [
+            "proposal",
+            "Elaboração da proposta",
+            ["quotes", "compare", "creative", "proposal", "approval"],
+          ],
+          ["contracts", "Contratos", ["contracts", "handoff"]],
+          ["production", "Produção", ["production"]],
+          ["post", "Pós-evento", ["post"]],
+          ["finance", "Financeiro", ["finance"]],
+          ["documents", "Documentos", ["documents"]],
+        ].map(([id, label, tabs]) => (
           <button
-            key={s.id}
-            className={`${tab === s.id ? "active" : ""} ${i < index ? "complete" : ""}`}
-            aria-current={tab === s.id ? "step" : undefined}
-            onClick={() => go(`/demandas/${d.id}/${s.id}`)}
+            key={id as string}
+            aria-current={(tabs as string[]).includes(tab) ? "page" : undefined}
+            onClick={() => go(`/eventos/${d.id}/${id}`)}
           >
-            <span className="step-number">
-              {i < index ? <Check size={14} /> : i + 1}
-            </span>
-            {s.label}
+            {label as string}
           </button>
         ))}
       </nav>
+      {["quotes", "compare", "creative", "proposal", "approval"].includes(
+        tab,
+      ) && (
+        <nav className="event-subnav" aria-label="Elaboração e negociação">
+          {[
+            ["quotes", "Cotações"],
+            ["compare", "Comparativo"],
+            ["creative", "Apresentação criativa"],
+            ["proposal", "Orçamento / proposta"],
+            ["approval", "Revisão, envio e negociação"],
+          ].map(([id, label]) => (
+            <button
+              key={id}
+              aria-current={tab === id ? "page" : undefined}
+              onClick={() => go(`/eventos/${d.id}/${id}`)}
+            >
+              {label}
+            </button>
+          ))}
+        </nav>
+      )}
+      {["briefing", "requests"].includes(tab) && (
+        <nav className="event-subnav" aria-label="Entrada do evento">
+          {[
+            ["requests", "Solicitações e alterações"],
+            ["briefing", "Briefing e fontes"],
+          ].map(([id, label]) => (
+            <button
+              key={id}
+              aria-current={tab === id ? "page" : undefined}
+              onClick={() => go(`/eventos/${d.id}/${id}`)}
+            >
+              {label}
+            </button>
+          ))}
+        </nav>
+      )}
       <div className="workspace-content">
         <IntelligenceEntry
           contextId={d.id}
@@ -619,7 +658,35 @@ function Workspace({
                     : ["summary"]
           }
         />
-        {tab === "briefing" ? (
+        {tab === "overview" ? (
+          <EventOverview d={d} />
+        ) : tab === "requests" ? (
+          <EventRequests d={d} />
+        ) : tab === "creative" ? (
+          <CreativePresentations
+            key={`${d.id}-${versionId || ""}`}
+            d={d}
+            initialVersionId={versionId}
+          />
+        ) : tab === "contracts" ? (
+          <EventContracts d={d} />
+        ) : tab === "production" ? (
+          <EventProduction d={d} />
+        ) : tab === "post" ? (
+          <EventPost d={d} />
+        ) : tab === "documents" ? (
+          <EventDocuments
+            key={`${d.id}-${versionId || ""}`}
+            d={d}
+            documentId={versionId}
+          />
+        ) : tab === "finance" ? (
+          eventProject(state, d.id) ? (
+            <Finance key={d.id} projectId={eventProject(state, d.id)!.id} />
+          ) : (
+            <EventFinanceStart d={d} />
+          )
+        ) : tab === "briefing" ? (
           <Briefing key={d.id} d={d} />
         ) : tab === "quotes" ? (
           <Quotes d={d} />

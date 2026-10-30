@@ -1,3 +1,5 @@
+import { contractReady, receivablesFromContract } from "../event-lifecycle";
+import { totals } from "../domain.mjs";
 import { useState } from "react";
 import { ArrowLeft, ArrowRight, Plus } from "lucide-react";
 import { Badge, Button, Empty, Label, Note, Title } from "../components/UI";
@@ -13,7 +15,20 @@ export function Finance({ projectId }: { projectId?: string }) {
     [status, setStatus] = useState(""),
     [adding, setAdding] = useState(false),
     [reviewing, setReviewing] = useState("");
-  const projects = state.productionProjects || [],
+  const projects = [
+      ...(state.productionProjects || []),
+      {
+        id: "administrativo",
+        title: "Despesas administrativas",
+        client: "Adviser · demonstração",
+        date: "",
+        location: "",
+        owner: "",
+        tasks: [],
+        eventId: undefined,
+        source: undefined,
+      },
+    ],
     project = projects.find((p) => p.id === projectId);
   const entries = (state.financeEntries || []).filter(
     (e) => !projectId || e.projectId === projectId,
@@ -28,6 +43,19 @@ export function Finance({ projectId }: { projectId?: string }) {
       .filter((e) => e.direction === direction && e.settled === settled)
       .reduce((n, e) => n + e.amount, 0);
   const approvalEntry = entries.find((e) => e.id === reviewing);
+  const event = state.demands.find(
+    (d) => d.id === (project?.eventId || project?.source?.demandId),
+  );
+  const accepted = event?.versions.find((v) => v.id === event.acceptedVersion);
+  const budget = accepted
+    ? totals(accepted.lines, accepted.fee, accepted.tax)
+    : undefined;
+  const canGenerate =
+    event &&
+    accepted &&
+    contractReady(state, event) &&
+    !entries.some((e) => e.sourceKey?.startsWith(`contract:${event.id}:`));
+
   if (projectId && !project)
     return (
       <Empty
@@ -48,11 +76,14 @@ export function Finance({ projectId }: { projectId?: string }) {
           <Button onClick={() => go(`/operacoes/${project.id}`)}>
             Operação deste evento
           </Button>
+          {project.eventId && (
+            <Button onClick={() => go(`/eventos/${project.eventId}/overview`)}>
+              Ciclo completo do evento
+            </Button>
+          )}
           {project.source && (
             <Button
-              onClick={() =>
-                go(`/demandas/${project.source!.demandId}/handoff`)
-              }
+              onClick={() => go(`/eventos/${project.source!.demandId}/handoff`)}
             >
               Proposta de origem
             </Button>
@@ -82,6 +113,95 @@ export function Finance({ projectId }: { projectId?: string }) {
         Neste protótipo, não há sincronização nem movimentação de dinheiro.
       </Note>
       <IntelligenceEntry ids={["finance"]} contextId={project?.id} />
+      {event && (
+        <section className="panel lifecycle-section">
+          <h2>Orçamento, compromissos e realizado</h2>
+          <div className="global-summary">
+            <span>
+              Orçamento via Adviser:{" "}
+              <strong>
+                {budget ? money(budget.invoice) : "Sem proposta aceita"}
+              </strong>
+            </span>
+            <span>
+              Custo orçado via Adviser:{" "}
+              <strong>
+                {budget ? money(budget.agency) : "Não disponível"}
+              </strong>
+            </span>
+            <span>
+              Compromissos a pagar:{" "}
+              <strong>{money(sum("pay", false) + sum("pay", true))}</strong>
+            </span>
+            <span>
+              Custo pago: <strong>{money(sum("pay", true))}</strong>
+            </span>
+          </div>
+          <p className="field-hint">
+            Valores de caixa não representam lucro líquido. Pagamentos diretos
+            do cliente aos fornecedores ficam fora das parcelas a receber pela
+            Adviser.
+          </p>
+          {canGenerate ? (
+            <form
+              className="lifecycle-form"
+              onSubmit={(e) => {
+                e.preventDefault();
+                const f = new FormData(e.currentTarget);
+                setState((s) =>
+                  receivablesFromContract(
+                    s,
+                    event.id,
+                    Number(f.get("deposit")),
+                    String(f.get("firstDue")),
+                    String(f.get("balanceDue")),
+                  ),
+                );
+                notify(
+                  "Parcelas criadas a partir da versão aceita. Confira datas e condições antes de usar.",
+                );
+              }}
+            >
+              <h3>Preparar recebimentos do contrato</h3>
+              <p>
+                Confirme a divisão e os vencimentos conforme o contrato. Os 50%
+                são apenas um exemplo editável.
+              </p>
+              <div className="form-grid">
+                <Label label="Percentual do sinal">
+                  <input
+                    name="deposit"
+                    type="number"
+                    min="0"
+                    max="100"
+                    step="0.01"
+                    defaultValue="50"
+                    required
+                  />
+                </Label>
+                <Label label="Vencimento do sinal">
+                  <input name="firstDue" type="date" required />
+                </Label>
+                <Label label="Vencimento do saldo">
+                  <input name="balanceDue" type="date" required />
+                </Label>
+              </div>
+              <Button variant="primary" type="submit">
+                Gerar parcelas deste contrato
+              </Button>
+            </form>
+          ) : (
+            <p className="field-hint">
+              {entries.some((e) =>
+                e.sourceKey?.startsWith(`contract:${event.id}:`),
+              )
+                ? "Este evento já tem parcelas de contrato. Se o preço foi revisado, confira os recebimentos e ajuste os lançamentos em aberto manualmente; o valor integral não será gerado novamente."
+                : "Para gerar parcelas, conclua o aceite comercial, a revisão do contrato e o registro da assinatura do cliente."}
+            </p>
+          )}
+        </section>
+      )}
+
       <div className="workspace-filter-row">
         <Label label="Evento no financeiro">
           <select
@@ -168,6 +288,9 @@ export function Finance({ projectId }: { projectId?: string }) {
                   amount: Math.round(amount * 100) / 100,
                   due: String(f.get("due")),
                   settled: false,
+                  category: String(f.get("category") || "event") as
+                    "event" | "extra" | "fixed" | "payroll" | "reimbursement",
+                  documentRef: String(f.get("documentRef") || "").trim(),
                 },
               ],
             }));
@@ -177,7 +300,7 @@ export function Finance({ projectId }: { projectId?: string }) {
             );
           }}
         >
-          <h2>Novo lançamento do evento</h2>
+          <h2>Novo lançamento financeiro</h2>
           <div className="workspace-filter-row">
             <Label label="Evento do lançamento">
               <select name="project" required defaultValue={projectId || ""}>
@@ -205,6 +328,21 @@ export function Finance({ projectId }: { projectId?: string }) {
                 min="0.01"
                 step="0.01"
                 required
+              />
+            </Label>
+            <Label label="Natureza / alçada">
+              <select name="category">
+                <option value="event">Fornecedor dentro do orçamento</option>
+                <option value="extra">Extra / estouro de orçamento</option>
+                <option value="fixed">Despesa fixa administrativa</option>
+                <option value="payroll">Salários / pró-labore</option>
+                <option value="reimbursement">Reembolso com comprovante</option>
+              </select>
+            </Label>
+            <Label label="Documento / origem">
+              <input
+                name="documentRef"
+                placeholder="Contrato, pedido de compra, NF ou comprovante"
               />
             </Label>
             <Label label="Vencimento">
@@ -264,6 +402,12 @@ export function Finance({ projectId }: { projectId?: string }) {
                     <tr key={entry.id}>
                       <td className="finance-entry-description">
                         {entry.description}
+                        {entry.documentRef && (
+                          <small className="snapshot-category">
+                            Origem: {entry.documentRef}
+                          </small>
+                        )}
+
                         {!project && (
                           <button
                             className="portfolio-link"
@@ -288,7 +432,9 @@ export function Finance({ projectId }: { projectId?: string }) {
                           }
                         >
                           {entry.settled
-                            ? "Baixado · demo"
+                            ? entry.reconciled
+                              ? "Baixado e conciliado · manual"
+                              : "Baixado · demo"
                             : allowed
                               ? "Em aberto"
                               : "Requer aprovação"}
@@ -302,40 +448,68 @@ export function Finance({ projectId }: { projectId?: string }) {
                             Revisar pagamento
                           </Button>
                         ) : (
-                          <Button
-                            onClick={() => {
-                              setState((s) => {
-                                const current = s.financeEntries?.find(
-                                  (x) => x.id === entry.id,
+                          <div className="actions">
+                            <Button
+                              onClick={() => {
+                                setState((s) => {
+                                  const current = s.financeEntries?.find(
+                                    (x) => x.id === entry.id,
+                                  );
+                                  if (
+                                    !current ||
+                                    (!current.settled &&
+                                      current.direction === "pay" &&
+                                      !isApproved(s, {
+                                        kind: "payment",
+                                        targetId: current.id,
+                                      }))
+                                  )
+                                    return s;
+                                  return {
+                                    ...s,
+                                    financeEntries: s.financeEntries?.map(
+                                      (x) =>
+                                        x.id === current.id
+                                          ? {
+                                              ...x,
+                                              settled: !x.settled,
+                                              reconciled: false,
+                                            }
+                                          : x,
+                                    ),
+                                  };
+                                });
+                                notify(
+                                  entry.settled
+                                    ? "Baixa desfeita na demonstração."
+                                    : "Baixa simulada. Nenhum dinheiro foi movimentado.",
                                 );
-                                if (
-                                  !current ||
-                                  (!current.settled &&
-                                    current.direction === "pay" &&
-                                    !isApproved(s, {
-                                      kind: "payment",
-                                      targetId: current.id,
-                                    }))
-                                )
-                                  return s;
-                                return {
-                                  ...s,
-                                  financeEntries: s.financeEntries?.map((x) =>
-                                    x.id === current.id
-                                      ? { ...x, settled: !x.settled }
-                                      : x,
-                                  ),
-                                };
-                              });
-                              notify(
-                                entry.settled
-                                  ? "Baixa desfeita na demonstração."
-                                  : "Baixa simulada. Nenhum dinheiro foi movimentado.",
-                              );
-                            }}
-                          >
-                            {entry.settled ? "Desfazer baixa" : "Simular baixa"}
-                          </Button>
+                              }}
+                            >
+                              {entry.settled
+                                ? "Desfazer baixa"
+                                : "Simular baixa"}
+                            </Button>
+                            {entry.settled && (
+                              <Button
+                                onClick={() =>
+                                  setState((s) => ({
+                                    ...s,
+                                    financeEntries: s.financeEntries?.map(
+                                      (x) =>
+                                        x.id === entry.id
+                                          ? { ...x, reconciled: !x.reconciled }
+                                          : x,
+                                    ),
+                                  }))
+                                }
+                              >
+                                {entry.reconciled
+                                  ? "Desfazer conciliação"
+                                  : "Conferir com extrato · manual"}
+                              </Button>
+                            )}
+                          </div>
                         )}
                       </td>
                     </tr>

@@ -258,7 +258,7 @@ export function TeamManagement({
               Pessoa ativa na demonstração
             </label>
             <p className="field-hint">
-              Alterar os vínculos não redistribui clientes nem demandas
+              Alterar os vínculos não redistribui clientes nem eventos
               existentes. Ao retirar um coordenador do núcleo, a coordenação
               fica a definir.
             </p>
@@ -303,7 +303,7 @@ export function TeamManagement({
               );
               close();
               notify(
-                "Núcleo salvo. As carteiras e os responsáveis pelas demandas foram preservados.",
+                "Núcleo salvo. As carteiras e os responsáveis pelas eventos foram preservados.",
               );
             }}
           >

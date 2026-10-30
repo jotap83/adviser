@@ -27,6 +27,13 @@ export type Nucleus = {
   coordinatorId?: string;
 };
 export type Client = {
+  cnpj?: string;
+  address?: string;
+  segment?: string;
+  origin?: string;
+  billingSystem?: string;
+  extraContacts?: string;
+  relationshipStatus?: string;
   id: string;
   name: string;
   contact: string;
@@ -111,6 +118,10 @@ export type Quote = {
   adjustmentPending?: boolean;
 };
 export type Version = {
+  creative?: Pick<
+    Presentation,
+    "id" | "number" | "title" | "concept" | "url" | "fileName"
+  >;
   id: string;
   number: number;
   at: string;
@@ -125,7 +136,11 @@ export type Version = {
   guests: number;
   location: string;
 };
-export type Demand = {
+export type EventRecord = {
+  origin?: string;
+  executionPhase?:
+    "planning" | "setup" | "live" | "teardown" | "post" | "closed";
+  briefingClientApproval?: ClientDecision;
   id: string;
   reference?: string;
   title: string;
@@ -172,6 +187,53 @@ export type Demand = {
     { included: boolean; answers: Record<string, string> }
   >;
 };
+// Legacy alias keeps saved prototypes and existing modules compatible.
+export type Demand = EventRecord;
+export type ClientDecision = {
+  decision: "approved" | "changes";
+  by: string;
+  evidence: string;
+  at: string;
+  fingerprint: string;
+};
+export type RequestKind =
+  "initial" | "change" | "creative" | "technical" | "finance";
+export type EventRequest = {
+  id: string;
+  eventId: string;
+  title: string;
+  description: string;
+  kind: RequestKind;
+  owner: string;
+  due: string;
+  status: "new" | "doing" | "waiting" | "done";
+  sourceMessageId?: string;
+  createdAt: string;
+  history: { at: string; text: string }[];
+};
+export type DocumentKind =
+  | "contract"
+  | "supplier_contract"
+  | "schedule"
+  | "material"
+  | "extra"
+  | "supplier_over_budget"
+  | "report"
+  | "accountability";
+export type EventDocument = {
+  proposalVersionId?: string;
+  id: string;
+  eventId: string;
+  kind: DocumentKind;
+  title: string;
+  content: string;
+  url: string;
+  revision: number;
+  previousId?: string;
+  createdAt: string;
+  createdBy: string;
+  clientDecision?: ClientDecision;
+};
 export type ManagementEvent = {
   kind: "proposal_sent" | "accepted" | "declined" | "revision";
   at: string;
@@ -191,6 +253,9 @@ export type ManagementRecord = {
 };
 export type AppState = {
   schema: 1;
+  lifecycleVersion?: number;
+  eventRequests?: EventRequest[];
+  eventDocuments?: EventDocument[];
   demands: Demand[];
   clients: Client[];
   suppliers: Supplier[];
@@ -244,6 +309,7 @@ export type ProductionTask = {
   activity: { text: string; at: string }[];
 };
 export type ProductionProject = {
+  eventId?: string;
   id: string;
   title: string;
   client: string;
@@ -262,6 +328,10 @@ export type ProductionProject = {
   };
 };
 export type FinanceEntry = {
+  category?: "event" | "extra" | "fixed" | "payroll" | "reimbursement";
+  documentRef?: string;
+  sourceKey?: string;
+  reconciled?: boolean;
   id: string;
   projectId: string;
   description: string;
@@ -319,7 +389,7 @@ export type MessageClassification = {
 };
 export type ApprovalRequest = {
   id: string;
-  kind: "proposal" | "payment";
+  kind: "proposal" | "payment" | "briefing" | "creative" | DocumentKind;
   targetId: string;
   versionId?: string;
   fingerprint: string;

@@ -94,7 +94,7 @@ export function SupplierSuggestions({
     notify(
       "Solicitações preparadas como rascunho. Abra o e-mail de cada fornecedor para revisar e simular o envio.",
     );
-    if (fromBriefing) go(`/demandas/${d.id}/quotes`);
+    if (fromBriefing) go(`/eventos/${d.id}/quotes`);
     else
       document
         .getElementById("quote-requests")
@@ -133,7 +133,7 @@ export function SupplierSuggestions({
           aria-pressed={view === "suggested"}
           onClick={() => setView("suggested")}
         >
-          Sugeridos para a demanda <span>{suggested.length}</span>
+          Sugeridos para o evento <span>{suggested.length}</span>
         </button>
         <button
           type="button"
@@ -257,7 +257,7 @@ export function SupplierSuggestions({
                 ? "Experimente outro nome ou categoria."
                 : view === "suggested"
                   ? "Preencha o pedido ou selecione os serviços no escopo. Você também pode escolher diretamente no cadastro."
-                  : "Informe a categoria de cada fornecedor para relacioná-lo às demandas."
+                  : "Informe a categoria de cada fornecedor para relacioná-lo às eventos."
             }
             action={
               search || category !== "all" ? (
@@ -345,7 +345,7 @@ export function SupplierSuggestions({
         <div className="supplier-shortlist-actions">
           <p>
             {locked
-              ? "Demanda encerrada. Consulte as solicitações na aba Cotações."
+              ? "Composição comercial encerrada. Consulte as cotações ou reabra a negociação para ajustar o escopo."
               : !d.briefingValid
                 ? "A seleção fica salva. Valide o briefing para preparar as solicitações."
                 : "Será preparado um rascunho individual para cada fornecedor, com seu modelo de resposta e link para cotação."}

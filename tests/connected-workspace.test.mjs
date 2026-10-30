@@ -25,6 +25,9 @@ const { classifyMessage } = await compiler.ssrLoadModule(
 const { projectFromHandoff } = await compiler.ssrLoadModule(
   "/src/production-model.ts",
 );
+const { approveExampleDocument } = await compiler.ssrLoadModule(
+  "/src/lifecycle-example.ts",
+);
 function setup() {
   const s = prepareDemoState(seed()),
     d = s.demands.find((d) => d.versions.length);
@@ -170,7 +173,19 @@ test("repasse só cria operação de uma versão aceita e não cria contas por e
     decision: "accepted",
     acceptedVersion: d.versions[0].id,
   };
-  const p = projectFromHandoff(ready, s);
+  assert.equal(
+    projectFromHandoff(ready, s),
+    null,
+    "sem contrato não libera execução",
+  );
+  const withContract = approveExampleDocument(
+    s,
+    ready,
+    "contract",
+    "Contrato de teste",
+    "Condições e assinatura fictícias",
+  );
+  const p = projectFromHandoff(ready, withContract);
   assert.ok(p);
   assert.equal(p.source.version.id, ready.acceptedVersion);
   assert.deepEqual(s.financeEntries, before);

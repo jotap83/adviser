@@ -178,7 +178,7 @@ const suppliers = [
     city: "Rio de Janeiro",
   },
 ];
-export function createDemand(clientId = "c1", title = "Nova demanda"): Demand {
+export function createDemand(clientId = "c1", title = "Novo evento"): Demand {
   return {
     id: uid(),
     createdAt: new Date().toISOString(),
@@ -210,7 +210,7 @@ export function createDemand(clientId = "c1", title = "Nova demanda"): Demand {
     decision: "pending",
     evidence: "",
     handoff: false,
-    history: [{ at: timestamp(), text: "Demanda registrada." }],
+    history: [{ at: timestamp(), text: "Evento registrado." }],
   };
 }
 const line = (

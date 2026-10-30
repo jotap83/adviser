@@ -1,3 +1,4 @@
+import { withEventLifecycle } from "./event-lifecycle";
 import type { AppState } from "./types";
 import { withManagementDemo } from "./operations";
 import { withReferences } from "./mail-reference";
@@ -8,12 +9,14 @@ import { withOrganization } from "./organization";
 import { withManagementInsightsDemo } from "./management-demo";
 
 export const prepareDemoState = (s: AppState) =>
-  withReferences(
-    withManagementInsightsDemo(
-      withOrganization(
-        withChannelsDemo(
-          withProductionDemo(
-            withInboxDemo(withReferences(withManagementDemo(s))),
+  withEventLifecycle(
+    withReferences(
+      withManagementInsightsDemo(
+        withOrganization(
+          withChannelsDemo(
+            withProductionDemo(
+              withInboxDemo(withReferences(withManagementDemo(s))),
+            ),
           ),
         ),
       ),

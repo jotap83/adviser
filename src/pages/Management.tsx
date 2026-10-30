@@ -234,13 +234,13 @@ export function Alerts() {
         <section className="panel simulation-form">
           <h2>Experimente um retorno chegando</h2>
           <p className="muted">
-            Escolha uma demanda fictícia. O teste registra uma resposta e
+            Escolha umo evento fictícia. O teste registra uma resposta e
             atualiza os alertas.
           </p>
           <div className="form-grid">
-            <Label label="Demanda do retorno">
+            <Label label="Evento do retorno">
               <select
-                aria-label="Demanda do retorno"
+                aria-label="Evento do retorno"
                 value={target}
                 onChange={(e) => setTarget(e.target.value)}
               >
@@ -264,8 +264,8 @@ export function Alerts() {
           </div>
           {kind === "supplier" && !waiting && (
             <Note>
-              Esta demanda não tem uma cotação aguardando resposta. Escolha
-              outra demanda ou registre um retorno de cliente.
+              Este evento não tem uma cotação aguardando resposta. Escolha
+              outro evento ou registre um retorno de cliente.
             </Note>
           )}
           <div className="actions">

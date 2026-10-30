@@ -71,7 +71,7 @@ export function directAssociation(
     if (!target)
       return {
         warning:
-          "O código mencionado não foi encontrado. Procure o atendimento ou crie uma nova demanda.",
+          "O código mencionado não foi encontrado. Procure o atendimento ou crie um novo evento.",
       };
     if (targets[0] && targets[0] !== target.id)
       return {

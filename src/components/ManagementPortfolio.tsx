@@ -96,7 +96,7 @@ export function ManagementPortfolio({
                             .length === 2
                             ? "sinal"
                             : "sinais"}{" "}
-                          nesta demanda
+                          neste evento
                         </small>
                       )}
                     </div>
@@ -122,7 +122,7 @@ export function ManagementPortfolio({
         <section className="panel pipeline-panel">
           <div className="section-heading">
             <div>
-              <h2>Onde estão as demandas</h2>
+              <h2>Onde estão as eventos</h2>
               <p>Distribuição atual por etapa.</p>
             </div>
           </div>
@@ -246,7 +246,7 @@ export function ManagementPortfolio({
           <div>
             <h2>Prazos e responsáveis</h2>
             <p>
-              Ajuste o compromisso de cada demanda e acompanhe a etapa atual.
+              Ajuste o compromisso de cada evento e acompanhe a etapa atual.
             </p>
           </div>
           <select
@@ -266,7 +266,7 @@ export function ManagementPortfolio({
           <table className="management-table">
             <thead>
               <tr>
-                <th>Demanda / cliente</th>
+                <th>Evento / cliente</th>
                 <th>Responsável</th>
                 <th>Etapa</th>
                 <th>Tempo na etapa</th>
@@ -339,7 +339,7 @@ export function ManagementPortfolio({
                   <td>
                     <Button
                       icon={ArrowRight}
-                      onClick={() => go(`/demandas/${d.id}/${d.stage}`)}
+                      onClick={() => go(`/eventos/${d.id}/${d.stage}`)}
                     >
                       Abrir
                     </Button>
@@ -351,7 +351,7 @@ export function ManagementPortfolio({
         </div>
         {!list.length && (
           <Empty
-            title="Nenhuma demanda neste filtro"
+            title="Nenhumo evento neste filtro"
             text="Escolha outra etapa, núcleo ou responsável."
           />
         )}

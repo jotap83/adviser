@@ -50,7 +50,7 @@ const methodNames = {
   thread: "Conversa já vinculada",
   suggestion: "Sugestão confirmada",
   manual: "Escolha do atendimento",
-  new: "Nova demanda criada",
+  new: "Novo evento criado",
 };
 const dateTime = (at: string) =>
   new Date(at).toLocaleString("pt-BR", {
@@ -105,15 +105,15 @@ export function Inbox({ emailId }: { emailId?: string }) {
       </div>
       <Title
         title="Central de atendimento"
-        sub="Gmail, WhatsApp e cadastro direto. Um só histórico para cada demanda."
+        sub="Gmail, WhatsApp e cadastro direto. Um só histórico para cada evento."
         actions={
           <>
             <Button
               icon={Plus}
               variant="primary"
-              onClick={() => go("/nova-demanda")}
+              onClick={() => go("/novo-evento")}
             >
-              Cadastrar demanda
+              Cadastrar evento
             </Button>
             <Button icon={Mail} onClick={() => setReceiving("email")}>
               Simular Gmail
@@ -143,7 +143,7 @@ export function Inbox({ emailId }: { emailId?: string }) {
             notify(
               received.status === "linked"
                 ? "Mensagem e anexos associados. Revise o conteúdo antes de atualizar o briefing."
-                : "Mensagem recebida. Confirme a qual demanda ela pertence.",
+                : "Mensagem recebida. Confirme a qual evento ela pertence.",
             );
           }}
         />
@@ -496,7 +496,7 @@ function MailReview({
                   variant="primary"
                   icon={ArrowRight}
                   disabled={!linkedDemand}
-                  onClick={() => go(`/demandas/${linkedDemand!.id}/briefing`)}
+                  onClick={() => go(`/eventos/${linkedDemand!.id}/briefing`)}
                 >
                   Abrir briefing
                 </Button>
@@ -644,7 +644,7 @@ function MailReview({
                         <h4>Sem indícios suficientes</h4>
                         <p>
                           Procure um atendimento existente ou registre este
-                          pedido como uma nova demanda.
+                          pedido como uma novo evento.
                         </p>
                       </div>
                     )}
@@ -779,9 +779,9 @@ function MailReview({
                       });
                       return linkMail(next, email.id, d.id, "new");
                     });
-                    go(`/demandas/${d.id}/briefing`);
+                    go(`/eventos/${d.id}/briefing`);
                     notify(
-                      "Demanda criada com a mensagem no histórico. Revise o briefing para organizar as informações.",
+                      "Evento criada com a mensagem no histórico. Revise o briefing para organizar as informações.",
                     );
                   }}
                 >
@@ -793,7 +793,7 @@ function MailReview({
                       defaultValue={email.subject.replace(/^Re:\s*/i, "")}
                     />
                   </Label>
-                  <Label label="Cliente da nova demanda">
+                  <Label label="Cliente da novo evento">
                     <select
                       required
                       value={clientId}
@@ -825,7 +825,7 @@ function MailReview({
                     </>
                   )}
                   <Label
-                    label="Responsável pela nova demanda"
+                    label="Responsável pela novo evento"
                     hint={
                       clientId === "new"
                         ? "O novo cliente ficará A distribuir na carteira."

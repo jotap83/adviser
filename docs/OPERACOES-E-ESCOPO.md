@@ -1,3 +1,5 @@
+> Registro anterior: as regras de ciclo e navegação foram revistas em 30/10/2026. Consulte [Revisão do ciclo completo](REVISAO-CICLO-COMPLETO.md) e PRODUCT.md para o comportamento vigente.
+
 # Entregas e prévia de Operações
 
 ## Escopo proposto

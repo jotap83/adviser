@@ -35,7 +35,7 @@ export function CrossAreaSummary() {
             }{" "}
             aprovações pendentes
           </strong>
-          <span>Propostas e pagamentos · abrir central</span>
+          <span>Todas as entregas e pagamentos · abrir central</span>
         </button>
         <button onClick={() => go("/financeiro")}>
           <strong>

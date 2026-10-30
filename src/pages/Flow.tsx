@@ -1,204 +1,138 @@
-import {
-  ArrowDown,
-  Phone,
-  ClipboardList,
-  Sparkles,
-  Mail,
-  FileCheck,
-  Palette,
-  Check,
-  Download,
-} from "lucide-react";
-import { AIBadge, Title, Button, Badge } from "../components/UI";
+import { ArrowRight, Bell } from "lucide-react";
+import { AIBadge, Title, Button, Badge, Note } from "../components/UI";
+import { useStore, go } from "../store";
+import { withLifecycleExample, LIFECYCLE_EVENT } from "../lifecycle-example";
 const flow = [
-  {
-    n: 1,
-    title: "Pedido chega ou é cadastrado diretamente",
-    desc: "A equipe cadastra o pedido na plataforma ou recebe por Gmail e WhatsApp. Ligações e reuniões também podem ser registradas.",
-    owner: "Cliente → Atendimento",
-    icon: Phone,
-  },
-  {
-    n: 2,
-    title: "Tudo se reúne no atendimento",
-    desc: "Cadastro direto cria a demanda. Mensagens e anexos são vinculados a uma demanda existente ou a uma nova. A equipe confirma os casos ambíguos sugeridos pela IA.",
-    owner: "Atendimento",
-    icon: ClipboardList,
-  },
-  {
-    n: 3,
-    title: "Equipe preenche o briefing, com apoio opcional da IA",
-    desc: "Todos os campos podem ser cadastrados diretamente. A IA sugere informações a partir das fontes e a equipe decide o que aplicar.",
-    owner: "Atendimento + IA",
-    icon: Sparkles,
-  },
-  {
-    n: 4,
-    title: "Cliente e atendimento alinham o entendimento",
-    desc: "A IA prepara a resposta e a equipe revisa antes de enviar pelo Gmail ou WhatsApp. O cliente responde no seu canal habitual.",
-    owner: "Atendimento ↔ Cliente",
-    icon: Mail,
-    branch:
-      "Se faltarem informações, repete-se o alinhamento. Só avança com o briefing validado.",
-  },
-  {
-    n: 5,
-    title: "Atendimento solicita cotações",
-    desc: "Seleciona serviços e fornecedores. Prepara e-mails individuais com links de preenchimento.",
-    owner: "Atendimento → Fornecedores",
-    icon: Mail,
-  },
-  {
-    n: 6,
-    title: "Fornecedores preenchem suas propostas",
-    desc: "Formulário por categoria, com opções, itens, preços, condições e anexos. O atendimento pode pedir ajustes e confirmar a composição escolhida.",
-    owner: "Fornecedores → Atendimento",
-    icon: ClipboardList,
-  },
-  {
-    n: 7,
-    title: "Atendimento compara e monta a proposta",
-    desc: "Com apoio da comparação por IA, seleciona cotações e ajusta valores e condições. Salva uma versão e solicita revisão interna; os responsáveis recebem avisos e todos precisam aprovar antes do envio.",
-    owner: "Atendimento",
-    icon: FileCheck,
-    creative: true,
-  },
-  {
-    n: 8,
-    title: "Cliente recebe e decide",
-    desc: "Após a aprovação interna da mesma versão, a proposta segue pelo canal habitual. O atendimento registra a resposta do cliente e a evidência.",
-    owner: "Atendimento ↔ Cliente",
-    icon: Check,
-    branch:
-      "Pediu ajustes? Retorna à etapa 7 e gera uma nova versão. Recusou? Encerra a demanda sem repasse. Aprovou? Segue abaixo.",
-  },
-  {
-    n: 9,
-    title: "Atendimento prepara o repasse para Operações",
-    desc: "Reúne briefing, versão aprovada, aceite, fornecedores selecionados, condições e pendências.",
-    owner: "Atendimento → Operações",
-    icon: FileCheck,
-  },
+  [
+    "Entrada e oportunidade",
+    "Prospecção, indicação, cliente recorrente, contrato em andamento ou pedido espontâneo. A mensagem é classificada, o cliente é identificado e a equipe cria um evento ou confirma o vínculo com um existente.",
+    "Atendimento / comercial",
+    "overview",
+    "Classificação e associação sugeridas pela IA, com confirmação humana.",
+  ],
+  [
+    "Briefing e validação",
+    "Mensagens e anexos viram informações estruturadas. Pendências retornam ao cliente. Cliente, gerente e diretoria de atendimento validam o entendimento antes de orçar.",
+    "Atendimento e cliente",
+    "briefing",
+    "Extração com fontes, perguntas pendentes, resumo e rascunho de resposta.",
+  ],
+  [
+    "Elaboração da proposta",
+    "Cotações, comparação, negociação com fornecedores, orçamento e apresentação criativa compõem a proposta. Conceito e apresentação ficam separados do levantamento inicial do briefing.",
+    "Atendimento, fornecedores e criação",
+    "proposal",
+    "Comparação de alternativas, leitura das condições e revisão de conteúdo.",
+  ],
+  [
+    "Revisão, apresentação e negociação",
+    "Gerência, diretoria e/ou sócios revisam conteúdo e margem. O cliente recebe a planilha e a apresentação, pede ajustes ou aceita uma versão. Alterações preservam o histórico.",
+    "Aprovadores internos e cliente",
+    "approval",
+    "Análise do impacto das mudanças, sem modificar valores ou aceite automaticamente.",
+  ],
+  [
+    "Contratos e fechamento",
+    "Analisar os contratos de cliente e fornecedores, revisar condições e registrar evidências de assinatura. Proposta aceita e contrato liberam o repasse para execução no mesmo evento.",
+    "Sócios, atendimento e contratantes",
+    "contracts",
+    "A aprovação de uma cotação não confirma contratação.",
+  ],
+  [
+    "Produção e execução",
+    "Visitas técnicas podem ocorrer antes do fechamento. Depois: cronograma, contratação, materiais, logística, montagem, execução e desmontagem. Cada tarefa tem responsável e prazo.",
+    "Atendimento / produção, criação e fornecedores",
+    "production",
+    "Sugestões de tarefas e checklists, aplicadas somente após revisão.",
+  ],
+  [
+    "Pós-evento e continuidade",
+    "Relatório de resultados, feedbacks, pesquisa de satisfação, prestação de contas e próximo contato comercial. Encerramento depende da conferência das pendências.",
+    "Atendimento, financeiro e cliente",
+    "post",
+    "Resumo do histórico e apoio à consolidação de informações.",
+  ],
 ];
 export function Flow() {
+  const { setState } = useStore();
+  const open = (tab: string) => {
+    setState((s) => withLifecycleExample(s));
+    go(`/eventos/${LIFECYCLE_EVENT}/${tab}`);
+  };
   return (
     <>
       <Title
-        title="Do primeiro contato ao fechamento"
-        sub="Atendimento → Operações → fechamento financeiro. Leia de cima para baixo; o financeiro acompanha os pagamentos durante o projeto."
+        title="Ciclo completo do evento"
+        sub="Uma referência desde o nascimento do pedido até a entrega e a prestação de contas. O financeiro acompanha o evento ao longo do ciclo."
         actions={
-          <Button
-            icon={Download}
-            onClick={() =>
-              window.open(
-                (window as Window & { adviserDiagramUrl?: string })
-                  .adviserDiagramUrl || "/fluxo.svg",
-                "_blank",
-                "noopener,noreferrer",
-              )
-            }
-          >
-            Abrir diagrama
+          <Button variant="primary" onClick={() => open("overview")}>
+            Navegar pelo exemplo completo
           </Button>
         }
       />
+      <Note>
+        Evento é o projeto completo. Solicitações são os pedidos e alterações
+        vinculados a ele. Operações é a visão transversal das tarefas de todos
+        os eventos.
+      </Note>
+      <div className="flow-diagram">
+        {flow.map(([title, desc, owner, tab, ai], i) => (
+          <section className="flow-node" key={title}>
+            <span className="flow-number">{i + 1}</span>
+            <div>
+              <h2>{title}</h2>
+              <p>{desc}</p>
+              <p>
+                <strong>Responsáveis:</strong> {owner}
+              </p>
+              <p className="ai-feature-note">
+                {i !== 4 && <AIBadge />} {ai}
+              </p>
+              <Button icon={ArrowRight} onClick={() => open(tab)}>
+                Abrir esta fase no exemplo
+              </Button>
+            </div>
+          </section>
+        ))}
+      </div>
+      <section className="panel lifecycle-section">
+        <h2>Financeiro durante todo o ciclo</h2>
+        <p>
+          Orçamento previsto, compromissos de contratos e fornecedores, parcelas
+          a receber, notas e comprovantes, aprovação dos pagamentos, conciliação
+          manual e fechamento. Recebido menos pago é saldo de caixa, não lucro.
+        </p>
+        <p>
+          O Conta Azul pode ser mantido e integrado. A decisão sobre integração
+          ou substituição continua aberta.
+        </p>
+        <Button onClick={() => open("finance")}>
+          Abrir financeiro do evento
+        </Button>
+      </section>
+      <section className="panel">
+        <h2>Aprovações com aviso e evidência</h2>
+        <p>
+          Briefing, proposta, apresentação, contrato, cronograma, materiais,
+          extras, fornecedor acima do orçamento, pagamentos, relatório e
+          prestação de contas têm revisão própria. Cada responsável recebe um
+          aviso interno; o solicitante acompanha o resultado. Cliente e
+          fornecedor permanecem nos canais habituais.
+        </p>
+        <Button icon={Bell} onClick={() => go("/aprovacoes/todas")}>
+          Abrir central de aprovações
+        </Button>
+      </section>
       <div className="flow-legend">
-        <Badge tone="blue">Atendimento · MVP</Badge>
-        <Badge tone="amber">Criação · apoio à proposta</Badge>
-        <Badge tone="blue">Operações · etapa 2</Badge>
+        <Badge tone="blue">Atendimento · etapa 1</Badge>
+        <Badge tone="amber">Operações · etapa 2</Badge>
         <Badge tone="green">Financeiro · etapa 3</Badge>
       </div>
-      <p className="ai-legend">
-        <AIBadge /> Apoio previsto com revisão humana. As sugestões do protótipo
-        são simuladas.
+      <p className="field-hint">
+        A navegação demonstra o ciclo completo. As etapas comerciais continuam
+        separadas. IA, comunicação e decisões deste protótipo usam dados
+        fictícios e estado local.
       </p>
-      <div className="flow-diagram">
-        <div className="flow-terminal start">INÍCIO</div>
-        {flow.map((s) => (
-          <div className="flow-unit" key={s.n}>
-            <ArrowDown className="flow-arrow" size={22} />
-            <div className="flow-node">
-              <span className="flow-number">{s.n}</span>
-              <div>
-                <span className="flow-owner">{s.owner}</span>
-                <h3 className="ai-feature-label">
-                  {s.title}
-                  {[2, 3, 4, 5, 7].includes(s.n) && <AIBadge />}
-                </h3>
-                <p>{s.desc}</p>
-                {s.branch && <div className="flow-branch">{s.branch}</div>}
-                {s.creative && (
-                  <div className="flow-creative">
-                    <Palette size={18} />
-                    <div>
-                      <strong className="ai-feature-label">
-                        Criação contribui aqui <AIBadge />
-                      </strong>
-                      <p>
-                        Conceito e apresentação podem ser desenvolvidos durante
-                        o briefing e antes da proposta. No MVP, referências,
-                        apresentações e registro de feedback. A gestão completa
-                        da criação fica na etapa 2.
-                      </p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        ))}
-        <ArrowDown className="flow-arrow" size={22} />
-        <div className="flow-terminal end">
-          FIM DO MVP · aceite e repasse organizados
-        </div>
-        <div className="flow-future">
-          <ArrowDown className="flow-arrow" size={22} />
-          <h2>Evolução após o MVP</h2>
-          <div className="future-flow-row">
-            <span className="flow-number">10</span>
-            <div>
-              <Badge tone="blue">Operações · etapa 2</Badge>
-              <h3>Proposta aceita vira projeto: produzir e executar</h3>
-              <p>
-                Receber o escopo aprovado, confirmar contratações, coordenar
-                fornecedores e cronograma, produzir e executar o evento. A
-                criação apoia os desdobramentos necessários.
-              </p>
-              <p className="ai-feature-note">
-                <AIBadge /> Sugestão de tarefas e checklists para revisão da
-                equipe.
-              </p>
-              <div className="flow-branch">
-                Operações: nome da área e responsabilidades a confirmar com a
-                Adviser.
-              </div>
-            </div>
-          </div>
-          <ArrowDown className="flow-arrow" size={22} />
-          <div className="future-flow-row">
-            <span className="flow-number">11</span>
-            <div>
-              <Badge tone="green">Financeiro · etapa 3</Badge>
-              <h3>Controlar e fechar o financeiro</h3>
-              <p>
-                Recebimentos e pagamentos ocorrem ao longo do projeto. Depois do
-                evento: conciliação, previsto × realizado e fechamento, com
-                visão global e por evento. Contas a pagar passam por revisão com
-                avisos aos responsáveis. A Adviser pode manter o Conta Azul
-                integrado; substituição e migração continuam a validar.
-              </p>
-              <p className="ai-feature-note">
-                <AIBadge /> Leitura de cobranças antes da comparação com os
-                valores previstos.
-              </p>
-            </div>
-          </div>
-          <ArrowDown className="flow-arrow" size={22} />
-          <div className="flow-terminal final">
-            FIM DO PROCESSO COMPLETO · evento e financeiro encerrados
-          </div>
-        </div>
-      </div>
     </>
   );
 }

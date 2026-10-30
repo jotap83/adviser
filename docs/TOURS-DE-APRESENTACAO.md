@@ -1,3 +1,5 @@
+> Registro anterior: as regras de ciclo e navegação foram revistas em 30/10/2026. Consulte [Revisão do ciclo completo](REVISAO-CICLO-COMPLETO.md) e PRODUCT.md para o comportamento vigente.
+
 # Tours de apresentação aos sócios
 
 Abra **Tours** no cabeçalho e escolha **Da primeira mensagem ao aceite** para apresentar o atendimento completo. O guia destaca uma área por vez, explica o que experimentar e oferece uma fala opcional em **O que destacar aos sócios**. O botão Tours também está disponível na visão do fornecedor.

@@ -234,7 +234,7 @@ export function IntelligenceWorkspace({
                   ? "proposal"
                   : "briefing",
             )
-          : "/demandas";
+          : "/eventos";
   return (
     <div className="intelligence-workspace">
       <Title title={item.title} sub={item.benefit} />
@@ -299,7 +299,7 @@ export function IntelligenceWorkspace({
                   label={
                     isProject
                       ? "Projeto de referência"
-                      : "Demanda de referência"
+                      : "Evento de referência"
                   }
                 >
                   <select

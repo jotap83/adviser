@@ -1,3 +1,8 @@
+import {
+  contractReady,
+  eventProject,
+  ensureEventProject,
+} from "../event-lifecycle";
 import { OperationsPortfolio } from "./OperationsPortfolio";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -67,7 +72,7 @@ function OperationsProject({ projectId }: { projectId: string }) {
         title="Nenhum projeto"
         text="Prepare um repasse no atendimento para iniciar a demonstração de Operações."
         action={
-          <Button onClick={() => go("/demandas")}>Abrir atendimento</Button>
+          <Button onClick={() => go("/eventos")}>Abrir atendimento</Button>
         }
       />
     );
@@ -128,17 +133,26 @@ function OperationsProject({ projectId }: { projectId: string }) {
       productionProjects: (s.productionProjects || []).some(
         (p) => p.id === newProject.id,
       )
-        ? s.productionProjects
+        ? s.productionProjects?.map((p) =>
+            p.id === newProject.id
+              ? {
+                  ...p,
+                  source: newProject.source,
+                  tasks: p.tasks.length ? p.tasks : newProject.tasks,
+                }
+              : p,
+          )
         : [...(s.productionProjects || []), newProject],
     }));
     setReceiving(false);
     go(`/operacoes/${newProject.id}`);
     notify(
-      "Projeto criado na demonstração a partir da versão aprovada. Revise o repasse.",
+      "Repasse vinculado à operação deste evento. Revise o pacote recebido.",
     );
   }
   const ready = state.demands.filter(
     (d) =>
+      contractReady(state, d) &&
       d.handoff &&
       d.decision === "accepted" &&
       d.versions.some((v) => v.id === d.acceptedVersion) &&
@@ -175,9 +189,14 @@ function OperationsProject({ projectId }: { projectId: string }) {
         <Button onClick={() => go(`/financeiro/${project.id}`)}>
           Financeiro deste evento
         </Button>
+        {project.eventId && (
+          <Button onClick={() => go(`/eventos/${project.eventId}/overview`)}>
+            Ciclo completo do evento
+          </Button>
+        )}
         {project.source && (
           <Button
-            onClick={() => go(`/demandas/${project.source!.demandId}/handoff`)}
+            onClick={() => go(`/eventos/${project.source!.demandId}/handoff`)}
           >
             Atendimento de origem
           </Button>
@@ -185,7 +204,7 @@ function OperationsProject({ projectId }: { projectId: string }) {
       </div>
       <Title
         title="Operações"
-        sub="Do repasse à entrega do evento. Organize o trabalho da equipe em um quadro compartilhado na versão futura."
+        sub="Da visita técnica ao pós-evento. Atividades de viabilidade podem começar antes do fechamento; execução depende do contrato."
         actions={
           <Button
             icon={Plus}
@@ -221,8 +240,8 @@ function OperationsProject({ projectId }: { projectId: string }) {
         <section className="panel production-receive">
           <h2>Repasses prontos para Operações</h2>
           <p>
-            O projeto nasce somente após aceite e repasse preparado. Criar o
-            projeto não contrata fornecedores.
+            O evento já existe. O repasse preserva a versão aceita e o contrato;
+            não contrata fornecedores automaticamente.
           </p>
           {ready.length ? (
             ready.map((d) => (
@@ -234,16 +253,16 @@ function OperationsProject({ projectId }: { projectId: string }) {
                   </small>
                 </div>
                 <Button onClick={() => receive(d.id)}>
-                  Criar projeto de demonstração
+                  Confirmar repasse no evento
                 </Button>
               </div>
             ))
           ) : (
             <Empty
               title="Nenhum novo repasse preparado"
-              text="No atendimento, abra uma proposta aprovada, prepare o pacote na aba Repasse e volte aqui."
+              text="No evento, registre o contrato da proposta aceita e prepare o repasse na área Produção. Visitas técnicas podem ser planejadas antes disso."
               action={
-                <Button onClick={() => go("/demandas")}>Ver demandas</Button>
+                <Button onClick={() => go("/eventos")}>Ver eventos</Button>
               }
             />
           )}
@@ -343,7 +362,7 @@ function OperationsProject({ projectId }: { projectId: string }) {
               </details>
               <Button
                 onClick={() =>
-                  go(`/demandas/${project.source!.demandId}/handoff`)
+                  go(`/eventos/${project.source!.demandId}/handoff`)
                 }
               >
                 Abrir atendimento de origem

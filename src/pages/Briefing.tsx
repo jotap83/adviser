@@ -1,3 +1,7 @@
+import { ApprovalRequestPanel } from "../components/ApprovalRequest";
+import { ClientDecisionPanel } from "../components/ClientDecision";
+import { approvalFingerprint, isApproved } from "../approval-model";
+import { canValidateBriefing } from "../event-lifecycle";
 import { useState } from "react";
 import { Sparkles, Check, ArrowRight, AlertCircle } from "lucide-react";
 import type { Demand, AIResult, ClientMessage } from "../types";
@@ -7,7 +11,6 @@ import { AIBadge, Button, Label, Badge, SaveMark } from "../components/UI";
 import { BriefingScope } from "../components/BriefingScope";
 import { BriefingAttachments } from "../components/BriefingAttachments";
 import { ClientConversation } from "../components/ClientConversation";
-import { CreativePresentations } from "../components/CreativePresentations";
 import { SupplierSuggestions } from "../components/SupplierSuggestions";
 import { completeBriefingExample } from "../briefing-example";
 import {
@@ -113,7 +116,6 @@ export function Briefing({ d }: { d: Demand }) {
           ["escopo", "Escopo do evento"],
           ["fornecedores", "Fornecedores sugeridos"],
           ["conversa", "Conversa com o cliente"],
-          ["criacao", "Apresentação criativa"],
         ].map(([id, label]) => (
           <button
             key={id}
@@ -416,9 +418,29 @@ export function Briefing({ d }: { d: Demand }) {
         }}
         analyzeReply={organize}
       />
-      <CreativePresentations d={d} />
+      <ApprovalRequestPanel target={{ kind: "briefing", targetId: d.id }} />
+      <ClientDecisionPanel
+        value={d.briefingClientApproval}
+        fingerprint={approvalFingerprint(state, {
+          kind: "briefing",
+          targetId: d.id,
+        })}
+        onChange={(v) =>
+          updateDemand(
+            d.id,
+            { briefingClientApproval: v, briefingValid: false },
+            "Retorno do cliente sobre o briefing registrado com evidência.",
+          )
+        }
+      />
+
       <section className="panel alignment-confirmation">
-        <h3>Concluir o alinhamento com o cliente</h3>
+        <h3>Liberar briefing para cotação</h3>
+        <p className="field-hint">
+          A liberação exige revisão interna, decisão do cliente com evidência e
+          campos necessários preenchidos. Briefings já validados na versão
+          anterior são preservados até nova alteração.
+        </p>
         <p className="muted">
           Confirme que as dúvidas necessárias para cotar foram resolvidas. O
           alinhamento pode ter ocorrido por e-mail, WhatsApp, reunião ou
@@ -439,8 +461,14 @@ export function Briefing({ d }: { d: Demand }) {
         <Button
           variant="primary"
           icon={Check}
-          disabled={!valid || !aligned || d.briefingValid}
+          disabled={
+            !valid ||
+            !aligned ||
+            d.briefingValid ||
+            !canValidateBriefing(state, d)
+          }
           onClick={() => {
+            if (!canValidateBriefing(state, d)) return;
             updateDemand(
               d.id,
               { briefingValid: true, stage: "quotes" },
@@ -462,7 +490,7 @@ export function Briefing({ d }: { d: Demand }) {
           variant="primary"
           icon={ArrowRight}
           disabled={!d.briefingValid}
-          onClick={() => go(`/demandas/${d.id}/quotes`)}
+          onClick={() => go(`/eventos/${d.id}/quotes`)}
         >
           Ir para cotações
         </Button>

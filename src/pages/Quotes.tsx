@@ -119,7 +119,7 @@ export function Quotes({ d }: { d: Demand }) {
                       <div className="actions">
                         {q.status === "received" && (
                           <Button
-                            onClick={() => go(`/demandas/${d.id}/compare`)}
+                            onClick={() => go(`/eventos/${d.id}/compare`)}
                           >
                             Analisar e negociar
                           </Button>
@@ -256,7 +256,7 @@ export function Quotes({ d }: { d: Demand }) {
         <Button
           variant="primary"
           icon={ArrowRight}
-          onClick={() => go(`/demandas/${d.id}/compare`)}
+          onClick={() => go(`/eventos/${d.id}/compare`)}
         >
           Comparar respostas
         </Button>

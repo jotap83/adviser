@@ -30,7 +30,7 @@ export function Compare({ d }: { d: Demand }) {
     notify(
       "Somente os itens escolhidos foram importados. Revise as condições na proposta.",
     );
-    go(`/demandas/${d.id}/proposal`);
+    go(`/eventos/${d.id}/proposal`);
   }
   return (
     <>
@@ -49,7 +49,7 @@ export function Compare({ d }: { d: Demand }) {
           title="Aguardando a primeira resposta"
           text="Abra o link de um fornecedor e preencha uma cotação para continuar."
           action={
-            <Button onClick={() => go(`/demandas/${d.id}/quotes`)}>
+            <Button onClick={() => go(`/eventos/${d.id}/quotes`)}>
               Ver fornecedores
             </Button>
           }

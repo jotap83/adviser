@@ -227,7 +227,7 @@ export function SupplierPortal({ d, q }: { d: Demand; q: Quote }) {
         <TourMenuButton />
         <Button
           icon={ArrowLeft}
-          onClick={() => go(`/demandas/${d.id}/compare`)}
+          onClick={() => go(`/eventos/${d.id}/compare`)}
         >
           Voltar ao atendimento
         </Button>
@@ -264,7 +264,7 @@ export function SupplierPortal({ d, q }: { d: Demand; q: Quote }) {
         </div>
         {locked && (
           <Note>
-            Esta demanda já foi aprovada pelo cliente. O histórico está
+            Este evento já foi aprovada pelo cliente. O histórico está
             preservado e a edição da cotação foi encerrada nesta demonstração.
           </Note>
         )}
@@ -277,7 +277,7 @@ export function SupplierPortal({ d, q }: { d: Demand; q: Quote }) {
                 O atendimento já pode revisar a versão {quoteRevision(q)} e
                 escolher sua composição.
               </p>
-              <Button onClick={() => go(`/demandas/${d.id}/compare`)}>
+              <Button onClick={() => go(`/eventos/${d.id}/compare`)}>
                 Ver como o atendimento recebe
               </Button>
             </div>

@@ -42,7 +42,7 @@ export const opportunities = [
     title: "Consultar a gestão",
     area: "Painel Gerencial",
     benefit:
-      "Entender os indicadores e localizar demandas que merecem intervenção.",
+      "Entender os indicadores e localizar eventos que merecem intervenção.",
     action: "Consultar registros",
     measure: "Tempo até agir nos alertas e evolução do ciclo até o aceite.",
   },
@@ -191,7 +191,7 @@ export function financeDocument(text: string) {
 }
 const missing: IntelligenceResult = {
   title: "Selecione um contexto",
-  summary: "Abra uma demanda ou um projeto para usar seus registros.",
+  summary: "Abra um evento para usar seus registros.",
   findings: [],
   draft: "",
   limitation: "A análise precisa de informações de origem.",
@@ -233,7 +233,7 @@ export function simulateIntelligence(
       );
       return base(
         "Onde agir hoje",
-        `${risks.length} demanda(s) sinalizada(s) pelas regras do painel. ${risks.length > 5 ? "Exibindo as cinco primeiras." : "As evidências abaixo explicam cada sinal."}`,
+        `${risks.length} evento(s) sinalizado(s) pelas regras do painel. ${risks.length > 5 ? "Exibindo as cinco primeiras." : "As evidências abaixo explicam cada sinal."}`,
         facts.map((f) => `${f.title}: ${f.detail}`).join("\n\n"),
         "Sinais atuais por prazo, inatividade e meta de margem; não são previsão de perda nem prova da causa do atraso. Carteira completa, sem os filtros do painel.",
       );
@@ -603,7 +603,7 @@ export function simulateIntelligence(
       facts.push({
         title: "Escopo ainda sem categorias",
         detail: "Detalhe os serviços para localizar os fornecedores afetados.",
-        source: "Demanda atual",
+        source: "Evento atual",
         path: demandPath(d),
       });
     return base(

@@ -295,7 +295,7 @@ export function ClientConversation({
               <h3>Registrar contato diretamente</h3>
               <p className="muted">
                 A resposta pode vir de outro contato. Registre quem respondeu e
-                mantenha tudo nesta demanda.
+                mantenha tudo neste evento.
               </p>
               <div className="form-grid">
                 <Label label="Quem respondeu">

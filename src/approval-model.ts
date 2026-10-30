@@ -10,9 +10,121 @@ export function approvalFingerprint(s: AppState, target: ApprovalTarget) {
       v = d?.versions.find((v) => v.id === target.versionId);
     return v ? JSON.stringify(v) : "";
   }
+  if (target.kind === "briefing") {
+    const d = s.demands.find((d) => d.id === target.targetId);
+    return d
+      ? JSON.stringify({
+          title: d.title,
+          clientId: d.clientId,
+          date: d.date,
+          guests: d.guests,
+          budget: d.budget,
+          location: d.location,
+          objective: d.objective,
+          questions: d.questions,
+          scope: d.scope,
+          details: Object.fromEntries(
+            Object.entries(d.briefingDetails || {}).filter(
+              ([key]) => !key.startsWith("post"),
+            ),
+          ),
+        })
+      : "";
+  }
+  if (target.kind === "creative") {
+    const p = s.demands
+      .find((d) => d.id === target.targetId)
+      ?.presentations?.find((p) => p.id === target.versionId);
+    return p
+      ? JSON.stringify({
+          title: p.title,
+          number: p.number,
+          concept: p.concept,
+          changes: p.changes,
+          source: p.source,
+          url: p.url,
+          fileName: p.fileName,
+          at: p.at,
+        })
+      : "";
+  }
+  if (target.kind !== "payment") {
+    const doc = s.eventDocuments?.find(
+      (d) =>
+        d.eventId === target.targetId &&
+        d.id === target.versionId &&
+        d.kind === target.kind,
+    );
+    return doc
+      ? JSON.stringify({
+          title: doc.title,
+          content: doc.content,
+          url: doc.url,
+          revision: doc.revision,
+          kind: doc.kind,
+          eventId: doc.eventId,
+          createdAt: doc.createdAt,
+          proposalVersionId: doc.proposalVersionId,
+          contractVersion:
+            doc.kind === "contract"
+              ? s.demands.find((d) => d.id === doc.eventId)?.acceptedVersion
+              : undefined,
+          operationalPlan:
+            doc.kind === "schedule"
+              ? s.productionProjects
+                  ?.find(
+                    (p) => (p.eventId || p.source?.demandId) === doc.eventId,
+                  )
+                  ?.tasks.map((t) => ({
+                    id: t.id,
+                    title: t.title,
+                    description: t.description,
+                    supplier: t.supplier,
+                    due: t.due,
+                    owner: t.owner,
+                    phase: t.phase,
+                    priority: t.priority,
+                    checklist: t.checklist.map(({ id, text }) => ({
+                      id,
+                      text,
+                    })),
+                  }))
+              : undefined,
+          accounts:
+            doc.kind === "accountability"
+              ? s.financeEntries
+                  ?.filter(
+                    (e) =>
+                      e.projectId ===
+                      s.productionProjects?.find(
+                        (p) =>
+                          (p.eventId || p.source?.demandId) === doc.eventId,
+                      )?.id,
+                  )
+                  .map((e) => ({
+                    id: e.id,
+                    description: e.description,
+                    direction: e.direction,
+                    amount: e.amount,
+                    due: e.due,
+                    settled: e.settled,
+                    documentRef: e.documentRef,
+                  }))
+              : undefined,
+        })
+      : "";
+  }
   const e = s.financeEntries?.find((e) => e.id === target.targetId);
   return e
-    ? JSON.stringify([e.projectId, e.description, e.direction, e.amount, e.due])
+    ? JSON.stringify([
+        e.projectId,
+        e.description,
+        e.direction,
+        e.amount,
+        e.due,
+        e.category || "event",
+        e.documentRef || "",
+      ])
     : "";
 }
 export const approvalStatus = (s: AppState, r: ApprovalRequest) =>
@@ -20,7 +132,8 @@ export const approvalStatus = (s: AppState, r: ApprovalRequest) =>
     ? "outdated"
     : r.reviewers.some((x) => x.decision === "changes")
       ? "changes"
-      : r.reviewers.every((x) => x.decision === "approved")
+      : r.reviewers.length > 0 &&
+          r.reviewers.every((x) => x.decision === "approved")
         ? "approved"
         : "pending";
 export const latestApproval = (s: AppState, t: ApprovalTarget) =>
@@ -65,7 +178,9 @@ export function requestApproval(
     title:
       t.kind === "proposal"
         ? `${d?.title} · proposta v${v?.number}`
-        : e!.description,
+        : t.kind === "payment"
+          ? e!.description
+          : `${d?.title || "Evento"} · ${JSON.parse(fingerprint).title || t.kind}`,
     requestedBy,
     createdAt: now,
     reviewers: reviewers.map((userId) => ({
@@ -138,9 +253,14 @@ export function approvalNotifications(s: AppState, userId: string) {
   });
 }
 export function approvalRoute(s: AppState, r: ApprovalRequest) {
-  return r.kind === "proposal"
-    ? `/demandas/${r.targetId}/approval/${r.versionId || ""}`
-    : `/financeiro/${s.financeEntries?.find((e) => e.id === r.targetId)?.projectId || ""}`;
+  if (r.kind === "proposal")
+    return `/demandas/${r.targetId}/approval/${r.versionId || ""}`;
+  if (r.kind === "payment")
+    return `/financeiro/${s.financeEntries?.find((e) => e.id === r.targetId)?.projectId || ""}`;
+  if (r.kind === "briefing") return `/eventos/${r.targetId}/briefing`;
+  if (r.kind === "creative")
+    return `/eventos/${r.targetId}/creative/${r.versionId || ""}`;
+  return `/eventos/${r.targetId}/documents/${r.versionId || ""}`;
 }
 
 export const approvalNoticeRoute = (r: ApprovalRequest) =>

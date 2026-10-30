@@ -1,3 +1,8 @@
+import {
+  contractReady,
+  eventProject,
+  ensureEventProject,
+} from "../event-lifecycle";
 import { projectMatchesSearch, taskMatchesSearch } from "../portfolio-search";
 import { useState } from "react";
 import { ArrowRight, Plus } from "lucide-react";
@@ -17,6 +22,7 @@ export function OperationsPortfolio() {
   const projects = state.productionProjects || [];
   const ready = state.demands.filter(
     (d) =>
+      contractReady(state, d) &&
       d.handoff &&
       d.decision === "accepted" &&
       d.versions.some((v) => v.id === d.acceptedVersion) &&
@@ -46,7 +52,20 @@ export function OperationsPortfolio() {
     setState((s) =>
       s.productionProjects?.some((x) => x.source?.demandId === id)
         ? s
-        : { ...s, productionProjects: [...(s.productionProjects || []), p] },
+        : {
+            ...s,
+            productionProjects: eventProject(s, id)
+              ? s.productionProjects?.map((x) =>
+                  x.id === eventProject(s, id)?.id
+                    ? {
+                        ...x,
+                        source: p.source,
+                        tasks: x.tasks.length ? x.tasks : p.tasks,
+                      }
+                    : x,
+                )
+              : [...(s.productionProjects || []), p],
+          },
     );
     go(`/operacoes/${p.id}`);
     notify("Evento recebido da proposta aprovada. Revise o plano operacional.");
@@ -57,7 +76,12 @@ export function OperationsPortfolio() {
         title="Operações"
         sub="Uma visão de todos os eventos: equipe, execução, prazos e pendências. Abra um evento para trabalhar no seu quadro."
         actions={
-          <Button onClick={() => go("/gestao")}>Painel Gerencial</Button>
+          <div className="actions">
+            <Button onClick={() => go("/eventos")}>
+              Planejar visita em um evento
+            </Button>
+            <Button onClick={() => go("/gestao")}>Painel Gerencial</Button>
+          </div>
         }
       />
       <div className="global-summary">
@@ -150,6 +174,13 @@ export function OperationsPortfolio() {
                     </p>
                   </div>
                   <div className="actions">
+                    {p.eventId && (
+                      <Button
+                        onClick={() => go(`/eventos/${p.eventId}/overview`)}
+                      >
+                        Ciclo do evento
+                      </Button>
+                    )}
                     <Button onClick={() => go(`/financeiro/${p.id}`)}>
                       Financeiro do evento
                     </Button>
@@ -201,8 +232,8 @@ export function OperationsPortfolio() {
           <div>
             <h2>Receber do atendimento</h2>
             <p>
-              Somente propostas aceitas com repasse preparado. A versão aprovada
-              fica preservada.
+              Propostas aceitas, contrato aprovado e repasse preparado. A versão
+              aprovada fica preservada.
             </p>
           </div>
           <Badge>{ready.length} disponíveis</Badge>
@@ -216,7 +247,7 @@ export function OperationsPortfolio() {
               </p>
             </div>
             <div className="actions">
-              <Button onClick={() => go(`/demandas/${d.id}/handoff`)}>
+              <Button onClick={() => go(`/eventos/${d.id}/handoff`)}>
                 Conferir repasse
               </Button>
               <Button icon={Plus} onClick={() => receive(d.id)}>

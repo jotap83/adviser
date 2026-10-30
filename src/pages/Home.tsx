@@ -1,3 +1,5 @@
+import { withLifecycleExample, LIFECYCLE_EVENT } from "../lifecycle-example";
+import { eventPhaseLabel } from "../event-lifecycle";
 import { useState } from "react";
 import {
   ArrowUpRight,
@@ -105,21 +107,29 @@ export function Home({
         : s.clients,
     }));
     notify(
-      "Demanda cadastrada. Preencha o briefing e adicione os arquivos diretamente, com ou sem IA.",
+      "Evento cadastrado. Preencha o briefing e adicione os arquivos diretamente, com ou sem IA.",
     );
-    go(`/demandas/${d.id}/briefing`);
+    go(`/eventos/${d.id}/briefing`);
   }
   return (
     <>
       <Title
-        title={all ? "Demandas" : "Atendimento"}
+        title={all ? "Eventos" : "Atendimento"}
         sub={
           all
-            ? "Do primeiro contato ao aceite, com todo o histórico reunido."
+            ? "Do primeiro pedido ao pós-evento e financeiro, com uma referência única e todo o histórico reunido."
             : "Cadastre diretamente ou receba por Gmail e WhatsApp. Tudo segue no mesmo atendimento."
         }
         actions={
           <>
+            <Button
+              onClick={() => {
+                setState((s) => withLifecycleExample(s));
+                go(`/eventos/${LIFECYCLE_EVENT}/overview`);
+              }}
+            >
+              Explorar ciclo completo
+            </Button>
             {!all && (
               <Button onClick={() => go("/gestao")}>Painel Gerencial</Button>
             )}
@@ -128,7 +138,7 @@ export function Home({
               icon={Plus}
               onClick={() => setAdding((v) => !v)}
             >
-              Nova demanda
+              Novo evento
             </Button>
           </>
         }
@@ -136,7 +146,7 @@ export function Home({
       {adding && (
         <form className="panel new-form" data-tour="new-demand" onSubmit={add}>
           <div className="section-heading">
-            <h2>Cadastrar demanda diretamente</h2>
+            <h2>Cadastrar evento diretamente</h2>
             <Button variant="ghost" onClick={() => setAdding(false)}>
               Cancelar
             </Button>
@@ -146,7 +156,7 @@ export function Home({
             demais cadastros podem ser preenchidos manualmente.
           </p>
           <div className="form-grid three">
-            <Label label="Nome da demanda">
+            <Label label="Nome do evento">
               <input
                 name="title"
                 required
@@ -202,11 +212,11 @@ export function Home({
             label="Responsável pelo atendimento"
             hint={
               newClient
-                ? "O novo cliente ficará com a carteira A distribuir. Você já pode definir quem cuida desta demanda."
+                ? "O novo cliente ficará com a carteira A distribuir. Você já pode definir quem cuida deste evento."
                 : `Carteira: ${nucleusLabel(
                     state,
                     state.clients.find((c) => c.id === selectedClient),
-                  )}. O responsável pela conta é sugerido e pode ser trocado para esta demanda.`
+                  )}. O responsável pela conta é sugerido e pode ser trocado para este evento.`
             }
           >
             <select
@@ -234,7 +244,7 @@ export function Home({
             evento. Gmail, WhatsApp e IA são opcionais para este cadastro.
           </p>
           <Button type="submit" variant="primary">
-            Criar demanda
+            Criar evento
           </Button>
         </form>
       )}
@@ -315,7 +325,7 @@ export function Home({
               ))}
             </select>
           </Label>
-          <Label label="Responsável pela demanda">
+          <Label label="Responsável pelo evento">
             <select
               value={ownerFilter}
               onChange={(e) => setOwnerFilter(e.target.value)}
@@ -344,9 +354,8 @@ export function Home({
         )}
         {scope === "unassigned" && (
           <p className="field-hint">
-            Demandas sem núcleo, sem responsável ativo pela conta ou sem
-            responsável ativo pelo atendimento. Abra uma demanda para
-            distribuir.
+            Eventos sem núcleo, sem responsável ativo pela conta ou sem
+            responsável ativo pelo atendimento. Abra umo evento para distribuir.
           </p>
         )}
       </section>
@@ -375,7 +384,7 @@ export function Home({
         <section className="panel demand-panel">
           <div className="section-heading">
             <h2>
-              {all ? "Todas as demandas" : "Sua fila de trabalho"}{" "}
+              {all ? "Todos os eventos" : "Sua fila de trabalho"}{" "}
               <span className="count">{rows.length}</span>
             </h2>
             <Badge>Dados fictícios</Badge>
@@ -384,7 +393,7 @@ export function Home({
             <div className="search">
               <Search size={17} />
               <input
-                aria-label="Buscar demandas"
+                aria-label="Buscar eventos"
                 placeholder="Buscar código, evento ou cliente"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
@@ -411,7 +420,7 @@ export function Home({
                   <button
                     key={d.id}
                     className="demand-row"
-                    onClick={() => go(`/demandas/${d.id}/${d.stage}`)}
+                    onClick={() => go(`/eventos/${d.id}/overview`)}
                   >
                     <span className="client-monogram">
                       {c?.name.slice(0, 1)}
@@ -444,7 +453,7 @@ export function Home({
                       <small>{d.owner || UNASSIGNED}</small>
                     </span>
                     <span className="row-next">
-                      <span>{nextAction[d.stage]}</span>
+                      <span>{eventPhaseLabel(state, d)}</span>
                       <ArrowUpRight size={18} />
                     </span>
                   </button>
@@ -452,13 +461,13 @@ export function Home({
               })
             ) : (
               <Empty
-                title="Nenhuma demanda por aqui"
-                text="Ajuste a busca ou crie uma nova demanda."
+                title="Nenhumo evento por aqui"
+                text="Ajuste a busca ou crie uma novo evento."
               />
             )}
           </div>
           <div className="panel-foot">
-            {rows.length} de {state.demands.length} demandas na demonstração{" "}
+            {rows.length} de {state.demands.length} eventos na demonstração{" "}
             <span>Carteira conforme filtros acima</span>
           </div>
         </section>
@@ -470,7 +479,7 @@ export function Home({
             </div>
             <button
               className="activity-item"
-              onClick={() => go("/demandas/d1/briefing")}
+              onClick={() => go("/eventos/d1/briefing")}
             >
               <span className="activity-circle blue">
                 <FileText size={16} />
@@ -479,13 +488,13 @@ export function Home({
                 <strong>Entender o briefing</strong>
                 <small>Horizonte · organizar com IA e revisar</small>
                 <span className="text-link">
-                  Abrir demanda <ArrowRight size={13} />
+                  Abrir evento <ArrowRight size={13} />
                 </span>
               </span>
             </button>
             <button
               className="activity-item"
-              onClick={() => go("/demandas/d1/quotes")}
+              onClick={() => go("/eventos/d1/quotes")}
             >
               <span className="activity-circle amber">
                 <Clock3 size={16} />

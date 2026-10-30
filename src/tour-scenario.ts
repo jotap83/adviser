@@ -1,7 +1,9 @@
+import { approveExampleDocument } from "./lifecycle-example";
 import {
   requestApproval,
   decideApproval,
   latestApproval,
+  approvalFingerprint,
 } from "./approval-model";
 import { seed, createDemand } from "./data";
 import { prepareDemoState } from "./demo-state";
@@ -366,7 +368,37 @@ export function buildTourScenario(phase: TourPhase): AppState {
     ...(s.inbox || []).filter((m) => m.demandId !== "d1"),
   ];
   if (!after("created")) s.demands = s.demands.filter((x) => x.id !== d.id);
+  if (after("aligned")) {
+    const target = { kind: "briefing" as const, targetId: d.id };
+    s = requestApproval(s, target, "u1", ["demo-manager", "demo-director"]);
+    const record = latestApproval(s, target);
+    if (record)
+      for (const reviewer of record.reviewers)
+        s = decideApproval(
+          s,
+          record.id,
+          reviewer.userId,
+          "approved",
+          "Revisão fictícia do briefing para esta cena.",
+        );
+    d.briefingClientApproval = {
+      decision: "approved",
+      by: "Contato fictício",
+      evidence: "Entendimento confirmado na cena de alinhamento.",
+      at,
+      fingerprint: approvalFingerprint(s, target),
+    };
+    s.demands = s.demands.map((x) => (x.id === d.id ? d : x));
+  }
+
   if (after("handoff")) {
+    s = approveExampleDocument(
+      s,
+      d,
+      "contract",
+      "Contrato do evento · roteiro",
+      "Condições da proposta aceita e assinatura fictícia para demonstrar o repasse.",
+    );
     const p = projectFromHandoff(d, s)!;
     const example = s.productionProjects![0];
     p.tasks = [

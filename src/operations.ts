@@ -73,10 +73,10 @@ export function collectAlerts(state: AppState, now = new Date()): AlertItem[] {
               : days === 0
                 ? "Entrega prevista para hoje"
                 : "Prazo do atendimento próximo",
-          detail: `Próxima entrega: ${shortDate(d.dueAt)}. ${d.owner ? `${d.owner} acompanha a demanda.` : "Responsável a distribuir."}`,
+          detail: `Próxima entrega: ${shortDate(d.dueAt)}. ${d.owner ? `${d.owner} acompanha o evento.` : "Responsável a distribuir."}`,
           kind: "deadline",
           severity: days < 0 ? "high" : "medium",
-          action: "Acompanhar demanda",
+          action: "Acompanhar evento",
           path: path(),
         });
     }
