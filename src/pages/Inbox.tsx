@@ -41,9 +41,9 @@ import { ReceiveMessage } from "../components/ReceiveMessage";
 import { ReplyComposer } from "../components/ReplyComposer";
 
 const statusNames = {
-  pending: "Para identificar",
-  linked: "Associados",
-  ignored: "Ignorados",
+  pending: "Para atender",
+  linked: "Vinculadas",
+  ignored: "Ignoradas",
 };
 const methodNames = {
   reference: "Código reconhecido",
@@ -68,6 +68,8 @@ export function Inbox({ emailId }: { emailId?: string }) {
   const [channelFilter, setChannelFilter] = useState("all");
   const [receiving, setReceiving] = useState<"email" | "whatsapp" | null>(null);
   const detail = useRef<HTMLDivElement>(null);
+  const messageList = useRef<HTMLElement>(null);
+  const [mobileDetail, setMobileDetail] = useState(Boolean(emailId));
   const rows = inbox
     .filter(
       (m) =>
@@ -83,6 +85,7 @@ export function Inbox({ emailId }: { emailId?: string }) {
   const selected = rows.find((m) => m.id === selectedId) || rows[0];
   const choose = (id: string) => {
     setSelectedId(id);
+    setMobileDetail(true);
     if (window.matchMedia("(max-width: 760px)").matches) {
       requestAnimationFrame(() => {
         detail.current?.focus();
@@ -93,67 +96,54 @@ export function Inbox({ emailId }: { emailId?: string }) {
   const next = () => {
     setFilter("pending");
     setSelectedId("");
+    setMobileDetail(true);
   };
   return (
     <>
-      <div className="demand-breadcrumb">
-        <button onClick={() => go("/")}>
-          <ArrowLeft size={15} /> Atendimento
-        </button>
-        <ChevronRight size={13} />
-        <span>Central de atendimento</span>
-      </div>
       <Title
-        title="Central de atendimento"
-        sub="Gmail, WhatsApp e cadastro direto. Um só histórico para cada evento."
+        title="Mensagens"
+        sub="Uma mensagem por vez: revise o pedido e escolha o evento."
         actions={
-          <>
-            <Button
-              icon={Plus}
-              variant="primary"
-              onClick={() => go("/novo-evento")}
-            >
-              Cadastrar evento
-            </Button>
-            <Button icon={Mail} onClick={() => setReceiving("email")}>
-              Simular Gmail
-            </Button>
-            <Button
-              icon={MessageCircle}
-              onClick={() => setReceiving("whatsapp")}
-            >
-              Simular WhatsApp
-            </Button>
-          </>
+          <Button icon={Plus} onClick={() => go("/novo-evento")}>
+            Novo evento sem mensagem
+          </Button>
         }
       />
-      {receiving && (
-        <ReceiveMessage
-          key={receiving}
-          channel={receiving}
-          onCancel={() => setReceiving(null)}
-          onReceive={(message) => {
-            const nextState = receiveMail(state, [message]);
-            const received = nextState.inbox!.find((m) => m.id === message.id)!;
-            setState(() => nextState);
-            setFilter(received.status);
-            setSelectedId(message.id);
-            setChannelFilter("all");
-            setReceiving(null);
-            notify(
-              received.status === "linked"
-                ? "Mensagem e anexos associados. Revise o conteúdo antes de atualizar o briefing."
-                : "Mensagem recebida. Confirme a qual evento ela pertence.",
-            );
-          }}
-        />
-      )}
-      <div className="inbox-mode">
-        <Badge>Simulação</Badge>
-        <span>
-          Gmail e WhatsApp não conectados · nenhuma mensagem real é enviada
-        </span>
-        <label>
+      <details className="service-disclosure inbox-demo-tools">
+        <summary>Simular recebimento de mensagens</summary>
+        <p>Gmail e WhatsApp não conectados. Nenhuma mensagem real é enviada.</p>
+        <div className="actions">
+          <Button icon={Mail} onClick={() => setReceiving("email")}>
+            Simular Gmail
+          </Button>
+          <Button icon={MessageCircle} onClick={() => setReceiving("whatsapp")}>
+            Simular WhatsApp
+          </Button>
+          <Button
+            icon={Mail}
+            disabled={!inbox.some((m) => m.status === "linked")}
+            onClick={() => {
+              const message = demoFollowUp(state);
+              if (!message) return;
+              const nextState = receiveMail(state, [message]);
+              const received = nextState.inbox?.find(
+                (m) => m.id === message.id,
+              );
+              if (!received) return;
+              setState(() => nextState);
+              setFilter(received.status);
+              setSelectedId(message.id);
+              setMobileDetail(true);
+              setChannelFilter("all");
+              notify(
+                "Resposta fictícia recebida. Revise a mensagem antes de atualizar o briefing.",
+              );
+            }}
+          >
+            Simular nova resposta
+          </Button>
+        </div>
+        <label className="check-line">
           <input
             type="checkbox"
             checked={state.aiMode === "offline"}
@@ -166,82 +156,74 @@ export function Inbox({ emailId }: { emailId?: string }) {
           />
           Simular IA indisponível
         </label>
-      </div>
-      <div className="channel-toolbar">
+      </details>
+      {receiving && (
+        <ReceiveMessage
+          key={receiving}
+          channel={receiving}
+          onCancel={() => setReceiving(null)}
+          onReceive={(message) => {
+            const nextState = receiveMail(state, [message]);
+            const received = nextState.inbox!.find((m) => m.id === message.id)!;
+            setState(() => nextState);
+            setFilter(received.status);
+            setSelectedId(message.id);
+            setMobileDetail(true);
+            setChannelFilter("all");
+            setReceiving(null);
+            notify(
+              received.status === "linked"
+                ? "Mensagem e anexos associados. Revise o conteúdo antes de atualizar o briefing."
+                : "Mensagem recebida. Confirme a qual evento ela pertence.",
+            );
+          }}
+        />
+      )}
+      <div className="service-inbox-toolbar">
+        <Label label="Canal">
+          <select
+            value={channelFilter}
+            onChange={(e) => {
+              setChannelFilter(e.target.value);
+              setSelectedId("");
+              setMobileDetail(false);
+            }}
+          >
+            <option value="all">Todos os canais</option>
+            <option value="email">Gmail</option>
+            <option value="whatsapp">WhatsApp</option>
+          </select>
+        </Label>
         <div
-          className="inbox-filters channel-filters"
+          className="inbox-filters"
           role="group"
-          aria-label="Filtrar por canal"
+          aria-label="Filtrar mensagens"
         >
-          {[
-            ["all", "Todos os canais"],
-            ["email", "Gmail"],
-            ["whatsapp", "WhatsApp"],
-          ].map(([value, label]) => (
+          {(Object.keys(statusNames) as InboxEmail["status"][]).map((key) => (
             <button
-              key={value}
-              aria-pressed={channelFilter === value}
-              className={channelFilter === value ? "active" : ""}
+              key={key}
+              aria-pressed={filter === key}
+              className={filter === key ? "active" : ""}
               onClick={() => {
-                setChannelFilter(value);
+                setFilter(key);
                 setSelectedId("");
+                setMobileDetail(false);
               }}
             >
-              {label}
+              {statusNames[key]}{" "}
+              <span className="count">
+                {
+                  inbox.filter(
+                    (m) =>
+                      m.status === key &&
+                      (channelFilter === "all" ||
+                        messageChannel(m) === channelFilter),
+                  ).length
+                }
+              </span>
             </button>
           ))}
         </div>
-        <Button
-          icon={Mail}
-          disabled={!inbox.some((m) => m.status === "linked")}
-          onClick={() => {
-            const email = demoFollowUp(state);
-            if (!email) return;
-            const nextState = receiveMail(state, [email]);
-            const received = nextState.inbox?.find((m) => m.id === email.id);
-            if (!received) return;
-            setState(() => nextState);
-            setFilter(received.status);
-            setSelectedId(email.id);
-            setChannelFilter("all");
-            notify(
-              received.status === "linked"
-                ? `Resposta fictícia recebida e associada ${received.method === "reference" ? "pelo código reconhecido" : "pela conversa conhecida"}. O briefing continua aguardando revisão do conteúdo.`
-                : "Resposta fictícia recebida e pendente de identificação. Revise os indícios e confirme o vínculo.",
-            );
-          }}
-        >
-          Simular nova resposta
-        </Button>
-      </div>
-      <div
-        className="inbox-filters"
-        role="group"
-        aria-label="Filtrar mensagens"
-      >
-        {(Object.keys(statusNames) as InboxEmail["status"][]).map((key) => (
-          <button
-            key={key}
-            aria-pressed={filter === key}
-            className={filter === key ? "active" : ""}
-            onClick={() => {
-              setFilter(key);
-              setSelectedId("");
-            }}
-          >
-            {statusNames[key]}{" "}
-            <span className="count">
-              {
-                inbox.filter(
-                  (m) =>
-                    m.status === key &&
-                    (channelFilter === "all" ||
-                      messageChannel(m) === channelFilter),
-                ).length
-              }
-            </span>
-          </button>
-        ))}
       </div>
       {rows.length === 0 ? (
         <section className="panel">
@@ -253,13 +235,13 @@ export function Inbox({ emailId }: { emailId?: string }) {
             }
             text={
               filter === "pending"
-                ? "As associações ficam no histórico. Você pode revisá-las na aba Associados."
+                ? "As associações ficam no histórico. Você pode revisá-las na aba Vinculadas."
                 : "As mensagens aparecerão aqui conforme você concluir a triagem."
             }
             action={
               filter === "pending" ? (
                 <Button onClick={() => setFilter("linked")}>
-                  Ver associados
+                  Ver vinculadas
                 </Button>
               ) : (
                 <Button onClick={next}>Voltar para identificação</Button>
@@ -268,8 +250,14 @@ export function Inbox({ emailId }: { emailId?: string }) {
           />
         </section>
       ) : (
-        <div className="inbox-layout">
-          <nav className="inbox-list" aria-label="Mensagens recebidas">
+        <div
+          className={`inbox-layout service-inbox ${mobileDetail ? "show-message" : "show-list"}`}
+        >
+          <nav
+            ref={messageList}
+            className="inbox-list"
+            aria-label="Mensagens recebidas"
+          >
             {rows.map((m) => (
               <button
                 key={m.id}
@@ -311,6 +299,23 @@ export function Inbox({ emailId }: { emailId?: string }) {
               className="inbox-detail"
               aria-label="Mensagem e associação"
             >
+              <div className="inbox-mobile-back">
+                <Button
+                  icon={ArrowLeft}
+                  onClick={() => {
+                    setMobileDetail(false);
+                    requestAnimationFrame(() => {
+                      messageList.current
+                        ?.querySelector<HTMLButtonElement>(
+                          'button[aria-current="true"]',
+                        )
+                        ?.focus();
+                    });
+                  }}
+                >
+                  Voltar às mensagens
+                </Button>
+              </div>
               <MailReview
                 key={`${selected.id}-${selected.status}`}
                 email={selected}
@@ -338,7 +343,19 @@ function MailReview({
   onNext: () => void;
 }) {
   const { state, setState, notify } = useStore();
-  const reply = useRef<HTMLElement>(null);
+  const reply = useRef<HTMLDetailsElement>(null);
+  const [triageStep, setTriageStep] = useState(
+    email.classification?.reviewed ? "destination" : "classification",
+  );
+  const [choosingLink, setChoosingLink] = useState(false);
+  const stepHeading = useRef<HTMLDivElement>(null);
+  const advance = (step: string) => {
+    setTriageStep(step);
+    requestAnimationFrame(() => {
+      stepHeading.current?.focus();
+      stepHeading.current?.scrollIntoView({ block: "nearest" });
+    });
+  };
   const candidates = suggestMailCandidates(email, state);
   const direct = directAssociation(email, state);
   const linkedDemand = state.demands.find((d) => d.id === email.demandId);
@@ -386,7 +403,7 @@ function MailReview({
         >
           {
             {
-              pending: "Para identificar",
+              pending: "Para atender",
               linked: "Associado",
               ignored: "Ignorado",
             }[email.status]
@@ -395,25 +412,41 @@ function MailReview({
       </div>
       <div className="mail-review-columns">
         <section className="mail-original" aria-label="Conteúdo da mensagem">
-          <dl className="mail-envelope">
-            <div>
-              <dt>Canal</dt>
-              <dd>{channelName(email)} · recebimento simulado</dd>
-            </div>
-            <div>
-              <dt>De</dt>
-              <dd>{email.from}</dd>
-            </div>
-            <div>
-              <dt>Para</dt>
-              <dd>{email.to.join(", ")}</dd>
-            </div>
-            <div>
-              <dt>Recebido</dt>
-              <dd>{dateTime(email.receivedAt)}</dd>
-            </div>
-          </dl>
-          <p className="mail-body">{email.text}</p>
+          <p className="service-message-from">
+            {email.from} · {channelName(email)}
+          </p>
+          <details className="service-disclosure">
+            <summary>Detalhes da mensagem</summary>
+            <dl className="mail-envelope">
+              <div>
+                <dt>Canal</dt>
+                <dd>{channelName(email)} · recebimento simulado</dd>
+              </div>
+              <div>
+                <dt>De</dt>
+                <dd>{email.from}</dd>
+              </div>
+              <div>
+                <dt>Para</dt>
+                <dd>{email.to.join(", ")}</dd>
+              </div>
+              <div>
+                <dt>Recebido</dt>
+                <dd>{dateTime(email.receivedAt)}</dd>
+              </div>
+            </dl>
+          </details>
+          <p className="mail-body">
+            {email.text.length > 420
+              ? `${email.text.slice(0, 420)}…`
+              : email.text}
+          </p>
+          {email.text.length > 420 && (
+            <details className="service-disclosure">
+              <summary>Ler mensagem completa</summary>
+              <p className="mail-body">{email.text}</p>
+            </details>
+          )}
           {email.attachments.length > 0 && (
             <div className="mail-attachments">
               <h3>Anexos da mensagem</h3>
@@ -504,6 +537,7 @@ function MailReview({
                   icon={MessageCircle}
                   disabled={!linkedDemand}
                   onClick={() => {
+                    if (reply.current) reply.current.open = true;
                     reply.current?.scrollIntoView({ block: "start" });
                     reply.current
                       ?.querySelector<HTMLSelectElement>("select")
@@ -521,6 +555,7 @@ function MailReview({
                 icon={Undo2}
                 onClick={() => {
                   setCorrecting(true);
+                  advance("destination");
                   setChoice("");
                   setManual(true);
                 }}
@@ -530,349 +565,412 @@ function MailReview({
             </>
           ) : (
             <>
-              {!correcting && !creating && (
-                <div className="intake-choice">
-                  <h3>Este pedido é de um novo evento?</h3>
-                  <p>
-                    Crie o evento mesmo sem cadastro anterior. A mensagem e os
-                    anexos seguem para o briefing.
-                  </p>
-                  <Button
-                    variant="primary"
-                    icon={Plus}
-                    onClick={() => setCreating(true)}
-                  >
-                    Criar novo evento desta solicitação
-                  </Button>
-                  <p className="muted">
-                    Já existe um evento? Escolha o vínculo abaixo.
-                  </p>
-                </div>
-              )}
-              {!correcting && !creating && (
-                <MessageClassification key={email.id} email={email} />
-              )}
-              <div className="section-heading">
-                <h3>
-                  {correcting
-                    ? "Corrigir atendimento"
-                    : creating
-                      ? "Novo pedido"
-                      : "Atendimentos sugeridos"}
-                </h3>
-                {!correcting && !creating && <AIBadge />}
+              <div
+                ref={stepHeading}
+                tabIndex={-1}
+                className="triage-progress"
+                aria-label="Etapa do atendimento"
+              >
+                <span
+                  aria-current={
+                    triageStep === "classification" ? "step" : undefined
+                  }
+                >
+                  1. Revisar pedido
+                </span>
+                <ChevronRight size={14} aria-hidden="true" />
+                <span
+                  aria-current={
+                    triageStep === "destination" ? "step" : undefined
+                  }
+                >
+                  2. Escolher evento
+                </span>
               </div>
-              {correcting && (
-                <Note>
-                  A mensagem será movida. Alterações que já foram aplicadas aos
-                  campos não são desfeitas; confira os dois briefings.
-                </Note>
+              {!correcting && triageStep === "classification" && (
+                <MessageClassification
+                  key={email.id}
+                  email={email}
+                  onContinue={() => advance("destination")}
+                />
               )}
-              {direct.warning && <Note tone="warning">{direct.warning}</Note>}
-              {state.aiMode === "offline" ? (
-                <Note tone="warning">
-                  IA indisponível nesta simulação. Escolha o atendimento
-                  manualmente para continuar.
-                </Note>
-              ) : (
-                !manual &&
+              {!correcting &&
+                triageStep === "destination" &&
+                !choosingLink &&
                 !creating && (
-                  <>
-                    <p className="muted mail-hint">
-                      Compare os indícios e escolha o atendimento. Nenhum
-                      vínculo é confirmado pela sugestão.
+                  <div className="intake-destination">
+                    <h3>Este pedido inicia um novo evento?</h3>
+                    <p>
+                      A mensagem e os anexos serão levados para o evento
+                      escolhido.
                     </p>
-                    {candidates.length ? (
-                      <div
-                        className="mail-candidates"
-                        role="radiogroup"
-                        aria-label="Sugestões de atendimento"
-                      >
-                        {candidates.map((c) => {
-                          const d = state.demands.find(
-                            (d) => d.id === c.demandId,
-                          )!;
-                          const client = state.clients.find(
-                            (cl) => cl.id === d.clientId,
-                          );
-                          return (
-                            <label
-                              key={d.id}
-                              className={`mail-candidate ${choice === d.id ? "selected" : ""}`}
-                            >
-                              <div className="candidate-choice">
-                                <input
-                                  type="radio"
-                                  name={`candidate-${email.id}`}
-                                  checked={choice === d.id}
-                                  onChange={() => setChoice(d.id)}
-                                />
-                                <div>
-                                  <span className="mail-reference">
-                                    {d.reference}
-                                  </span>
-                                  <strong>{d.title}</strong>
-                                  <small>
-                                    {client?.name} · {d.owner || UNASSIGNED}
-                                  </small>
-                                  <small>
-                                    {d.date
-                                      ? d.date.split("-").reverse().join("/")
-                                      : "Data a confirmar"}
-                                    {d.guests > 0
-                                      ? ` · ${d.guests} pessoas`
-                                      : ""}
-                                  </small>
-                                </div>
-                              </div>
-                              <ul>
-                                {c.reasons.map((r) => (
-                                  <li key={r}>{r}</li>
-                                ))}
-                              </ul>
-                              {c.cautions.map((caution) => (
-                                <p className="candidate-caution" key={caution}>
-                                  {caution}
-                                </p>
-                              ))}
-                            </label>
-                          );
-                        })}
-                      </div>
-                    ) : (
-                      <div className="mail-no-match">
-                        <h4>Sem indícios suficientes</h4>
-                        <p>
-                          Procure um atendimento existente ou registre este
-                          pedido como uma novo evento.
-                        </p>
-                      </div>
-                    )}
-                  </>
-                )
-              )}
-              {(manual || state.aiMode === "offline") && !creating && (
-                <div className="mail-manual">
-                  <Label label="Buscar atendimento">
-                    <input
-                      value={search}
-                      onChange={(e) => setSearch(e.target.value)}
-                      placeholder="Código, evento ou cliente"
-                    />
-                  </Label>
-                  <Label label="Atendimento para associar">
-                    <select
-                      value={choice}
-                      onChange={(e) => setChoice(e.target.value)}
-                    >
-                      <option value="">Selecione um atendimento</option>
-                      {choices.map((d) => (
-                        <option key={d.id} value={d.id}>
-                          {d.reference} · {d.title}
-                        </option>
-                      ))}
-                    </select>
-                  </Label>
-                  {choices.length === 0 && (
-                    <p role="status">
-                      Nenhum atendimento encontrado. Ajuste a busca.
-                    </p>
-                  )}
-                </div>
-              )}
-              {!creating && (
-                <>
-                  {selectedDemand && (
-                    <p className="mail-confirm-context">
-                      Vincular a{" "}
-                      <strong>
-                        {selectedDemand.reference} · {selectedDemand.title}
-                      </strong>
-                    </p>
-                  )}
-                  <Button
-                    variant="primary"
-                    icon={Check}
-                    disabled={
-                      !selectedDemand ||
-                      (correcting && choice === email.demandId)
-                    }
-                    onClick={confirm}
-                  >
-                    {correcting ? "Salvar correção" : "Confirmar vínculo"}
-                  </Button>
-                  <div className="mail-secondary-actions">
-                    {state.aiMode !== "offline" && (
-                      <Button
-                        variant="ghost"
-                        icon={Search}
-                        onClick={() => {
-                          setManual(!manual);
-                          setChoice("");
-                        }}
-                      >
-                        {manual
-                          ? "Voltar às sugestões"
-                          : "Escolher outro atendimento"}
-                      </Button>
-                    )}
-                    {!correcting && (
-                      <Button
-                        variant="ghost"
-                        icon={Plus}
-                        onClick={() => setCreating(true)}
-                      >
+                    <div className="intake-destination-options">
+                      <Button icon={Plus} onClick={() => setCreating(true)}>
                         Criar novo evento
                       </Button>
-                    )}
-                  </div>
-                </>
-              )}
-              {creating && (
-                <form
-                  className="mail-new-demand"
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    const form = new FormData(e.currentTarget);
-                    const title = String(form.get("title") || "").trim();
-                    const company = String(form.get("company") || "").trim();
-                    const person = String(form.get("person") || "").trim();
-                    if (
-                      !title ||
-                      !clientId ||
-                      (clientId === "new" && (!company || !person))
-                    )
-                      return;
-                    const newClientId = clientId === "new" ? uid() : clientId;
-                    const d = createDemand(newClientId, title);
-                    d.source = channelName(email);
-                    d.message = email.text;
-                    d.owner = newOwner;
-                    setState((s) => {
-                      const current = s.inbox?.find((m) => m.id === email.id);
-                      if (current?.status !== "pending") return s;
-                      const next = withReferences({
-                        ...s,
-                        clients:
-                          clientId === "new"
-                            ? [
-                                ...s.clients,
-                                {
-                                  id: newClientId,
-                                  name: company,
-                                  contact: person,
-                                  email:
-                                    messageChannel(email) === "email"
-                                      ? email.from
-                                      : "",
-                                  phone:
-                                    messageChannel(email) === "whatsapp"
-                                      ? email.from
-                                      : "",
-                                  nucleus: "",
-                                  nucleusId: "",
-                                  accountOwnerId: "",
-                                },
-                              ]
-                            : s.clients,
-                        demands: [d, ...s.demands],
-                      });
-                      return linkMail(next, email.id, d.id, "new");
-                    });
-                    go(`/eventos/${d.id}/briefing`);
-                    notify(
-                      "Evento criada com a mensagem no histórico. Revise o briefing para organizar as informações.",
-                    );
-                  }}
-                >
-                  <h3>Criar novo evento desta solicitação</h3>
-                  <Label label="Nome do novo evento">
-                    <input
-                      name="title"
-                      required
-                      defaultValue={email.subject.replace(/^Re:\s*/i, "")}
-                    />
-                  </Label>
-                  <Label label="Cliente da novo evento">
-                    <select
-                      required
-                      value={clientId}
-                      onChange={(e) => {
-                        setClientId(e.target.value);
-                        setNewOwner(suggestedOwner(state, e.target.value));
-                      }}
+                      <Button
+                        icon={Search}
+                        onClick={() => setChoosingLink(true)}
+                      >
+                        Vincular a evento existente
+                      </Button>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      onClick={() => advance("classification")}
                     >
-                      <option value="">Selecione o cliente</option>
-                      {state.clients.map((c) => (
-                        <option value={c.id} key={c.id}>
-                          {c.name}
-                        </option>
-                      ))}
-                      <option value="new">Cadastrar novo cliente</option>
-                    </select>
-                  </Label>
-                  {clientId === "new" && (
+                      Voltar à classificação
+                    </Button>
+                  </div>
+                )}
+              {(correcting || choosingLink || creating) && (
+                <>
+                  <div className="section-heading">
+                    <h3>
+                      {correcting
+                        ? "Corrigir atendimento"
+                        : creating
+                          ? "Novo pedido"
+                          : "Eventos sugeridos"}
+                    </h3>
+                    {!correcting && !creating && <AIBadge />}
+                  </div>
+                  {correcting && (
+                    <Note>
+                      A mensagem será movida. Alterações que já foram aplicadas
+                      aos campos não são desfeitas; confira os dois briefings.
+                    </Note>
+                  )}
+                  {direct.warning && (
+                    <Note tone="warning">{direct.warning}</Note>
+                  )}
+                  {state.aiMode === "offline" ? (
+                    <Note tone="warning">
+                      IA indisponível nesta simulação. Escolha o atendimento
+                      manualmente para continuar.
+                    </Note>
+                  ) : (
+                    !manual &&
+                    !creating && (
+                      <>
+                        <p className="muted mail-hint">
+                          Compare os indícios e escolha o atendimento. Nenhum
+                          vínculo é confirmado pela sugestão.
+                        </p>
+                        {candidates.length ? (
+                          <div
+                            className="mail-candidates"
+                            role="radiogroup"
+                            aria-label="Sugestões de atendimento"
+                          >
+                            {candidates.map((c) => {
+                              const d = state.demands.find(
+                                (d) => d.id === c.demandId,
+                              )!;
+                              const client = state.clients.find(
+                                (cl) => cl.id === d.clientId,
+                              );
+                              return (
+                                <label
+                                  key={d.id}
+                                  className={`mail-candidate ${choice === d.id ? "selected" : ""}`}
+                                >
+                                  <div className="candidate-choice">
+                                    <input
+                                      type="radio"
+                                      name={`candidate-${email.id}`}
+                                      checked={choice === d.id}
+                                      onChange={() => setChoice(d.id)}
+                                    />
+                                    <div>
+                                      <span className="mail-reference">
+                                        {d.reference}
+                                      </span>
+                                      <strong>{d.title}</strong>
+                                      <small>
+                                        {client?.name} · {d.owner || UNASSIGNED}
+                                      </small>
+                                      <small>
+                                        {d.date
+                                          ? d.date
+                                              .split("-")
+                                              .reverse()
+                                              .join("/")
+                                          : "Data a confirmar"}
+                                        {d.guests > 0
+                                          ? ` · ${d.guests} pessoas`
+                                          : ""}
+                                      </small>
+                                    </div>
+                                  </div>
+                                  <ul>
+                                    {c.reasons.map((r) => (
+                                      <li key={r}>{r}</li>
+                                    ))}
+                                  </ul>
+                                  {c.cautions.map((caution) => (
+                                    <p
+                                      className="candidate-caution"
+                                      key={caution}
+                                    >
+                                      {caution}
+                                    </p>
+                                  ))}
+                                </label>
+                              );
+                            })}
+                          </div>
+                        ) : (
+                          <div className="mail-no-match">
+                            <h4>Sem indícios suficientes</h4>
+                            <p>
+                              Procure um atendimento existente ou registre este
+                              pedido como um novo evento.
+                            </p>
+                          </div>
+                        )}
+                      </>
+                    )
+                  )}
+                  {(manual || state.aiMode === "offline") && !creating && (
+                    <div className="mail-manual">
+                      <Label label="Buscar evento">
+                        <input
+                          value={search}
+                          onChange={(e) => setSearch(e.target.value)}
+                          placeholder="Código, evento ou cliente"
+                        />
+                      </Label>
+                      <Label label="Evento para vincular">
+                        <select
+                          value={choice}
+                          onChange={(e) => setChoice(e.target.value)}
+                        >
+                          <option value="">Selecione um evento</option>
+                          {choices.map((d) => (
+                            <option key={d.id} value={d.id}>
+                              {d.reference} · {d.title}
+                            </option>
+                          ))}
+                        </select>
+                      </Label>
+                      {choices.length === 0 && (
+                        <p role="status">
+                          Nenhum atendimento encontrado. Ajuste a busca.
+                        </p>
+                      )}
+                    </div>
+                  )}
+                  {!creating && (
                     <>
-                      <Label label="Nome da empresa">
-                        <input required name="company" />
-                      </Label>
-                      <Label label="Nome do contato">
-                        <input required name="person" />
-                      </Label>
-                      <p className="muted">
-                        Contato por {channelName(email)}: {email.from}
-                      </p>
+                      {selectedDemand && (
+                        <p className="mail-confirm-context">
+                          Vincular a{" "}
+                          <strong>
+                            {selectedDemand.reference} · {selectedDemand.title}
+                          </strong>
+                        </p>
+                      )}
+                      <Button
+                        variant="primary"
+                        icon={Check}
+                        disabled={
+                          !selectedDemand ||
+                          (correcting && choice === email.demandId)
+                        }
+                        onClick={confirm}
+                      >
+                        {correcting ? "Salvar correção" : "Confirmar vínculo"}
+                      </Button>
+                      <div className="mail-secondary-actions">
+                        {state.aiMode !== "offline" && (
+                          <Button
+                            variant="ghost"
+                            icon={Search}
+                            onClick={() => {
+                              setManual(!manual);
+                              setChoice("");
+                            }}
+                          >
+                            {manual
+                              ? "Voltar às sugestões"
+                              : "Escolher outro atendimento"}
+                          </Button>
+                        )}
+                        {!correcting && (
+                          <Button
+                            variant="ghost"
+                            onClick={() => {
+                              setChoosingLink(false);
+                              setChoice("");
+                            }}
+                          >
+                            Voltar
+                          </Button>
+                        )}
+                      </div>
                     </>
                   )}
-                  <Label
-                    label="Responsável pela novo evento"
-                    hint={
-                      clientId === "new"
-                        ? "O novo cliente ficará A distribuir na carteira."
-                        : `Carteira: ${nucleusLabel(
-                            state,
-                            state.clients.find((c) => c.id === clientId),
-                          )}. Sugestão do responsável pela conta; revise antes de criar.`
-                    }
-                  >
-                    <select
-                      value={newOwner}
-                      onChange={(e) => setNewOwner(e.target.value)}
+                  {creating && (
+                    <form
+                      className="mail-new-demand"
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        const form = new FormData(e.currentTarget);
+                        const title = String(form.get("title") || "").trim();
+                        const company = String(
+                          form.get("company") || "",
+                        ).trim();
+                        const person = String(form.get("person") || "").trim();
+                        if (
+                          !title ||
+                          !clientId ||
+                          (clientId === "new" && (!company || !person))
+                        )
+                          return;
+                        const newClientId =
+                          clientId === "new" ? uid() : clientId;
+                        const d = createDemand(newClientId, title);
+                        d.source = channelName(email);
+                        d.message = email.text;
+                        d.owner = newOwner;
+                        setState((s) => {
+                          const current = s.inbox?.find(
+                            (m) => m.id === email.id,
+                          );
+                          if (current?.status !== "pending") return s;
+                          const next = withReferences({
+                            ...s,
+                            clients:
+                              clientId === "new"
+                                ? [
+                                    ...s.clients,
+                                    {
+                                      id: newClientId,
+                                      name: company,
+                                      contact: person,
+                                      email:
+                                        messageChannel(email) === "email"
+                                          ? email.from
+                                          : "",
+                                      phone:
+                                        messageChannel(email) === "whatsapp"
+                                          ? email.from
+                                          : "",
+                                      nucleus: "",
+                                      nucleusId: "",
+                                      accountOwnerId: "",
+                                    },
+                                  ]
+                                : s.clients,
+                            demands: [d, ...s.demands],
+                          });
+                          return linkMail(next, email.id, d.id, "new");
+                        });
+                        go(`/eventos/${d.id}/briefing`);
+                        notify(
+                          "Evento criado com a mensagem no histórico. Revise o briefing para organizar as informações.",
+                        );
+                      }}
                     >
-                      <option value="">A distribuir</option>
-                      {state.users
-                        .filter((u) => u.active)
-                        .map((u) => (
-                          <option key={u.id}>{u.name}</option>
-                        ))}
-                    </select>
-                  </Label>
-                  <div className="actions">
-                    <Button type="submit" variant="primary">
-                      Criar evento e abrir briefing
-                    </Button>
-                    <Button onClick={() => setCreating(false)}>Cancelar</Button>
-                  </div>
-                </form>
+                      <h3>Criar novo evento desta solicitação</h3>
+                      <Label label="Nome do novo evento">
+                        <input
+                          name="title"
+                          required
+                          defaultValue={email.subject.replace(/^Re:\s*/i, "")}
+                        />
+                      </Label>
+                      <Label label="Cliente do evento">
+                        <select
+                          required
+                          value={clientId}
+                          onChange={(e) => {
+                            setClientId(e.target.value);
+                            setNewOwner(suggestedOwner(state, e.target.value));
+                          }}
+                        >
+                          <option value="">Selecione o cliente</option>
+                          {state.clients.map((c) => (
+                            <option value={c.id} key={c.id}>
+                              {c.name}
+                            </option>
+                          ))}
+                          <option value="new">Cadastrar novo cliente</option>
+                        </select>
+                      </Label>
+                      {clientId === "new" && (
+                        <>
+                          <Label label="Nome da empresa">
+                            <input required name="company" />
+                          </Label>
+                          <Label label="Nome do contato">
+                            <input required name="person" />
+                          </Label>
+                          <p className="muted">
+                            Contato por {channelName(email)}: {email.from}
+                          </p>
+                        </>
+                      )}
+                      <Label
+                        label="Responsável pelo evento"
+                        hint={
+                          clientId === "new"
+                            ? "O novo cliente ficará A distribuir na carteira."
+                            : `Carteira: ${nucleusLabel(
+                                state,
+                                state.clients.find((c) => c.id === clientId),
+                              )}. Sugestão do responsável pela conta; revise antes de criar.`
+                        }
+                      >
+                        <select
+                          value={newOwner}
+                          onChange={(e) => setNewOwner(e.target.value)}
+                        >
+                          <option value="">A distribuir</option>
+                          {state.users
+                            .filter((u) => u.active)
+                            .map((u) => (
+                              <option key={u.id}>{u.name}</option>
+                            ))}
+                        </select>
+                      </Label>
+                      <div className="actions">
+                        <Button type="submit" variant="primary">
+                          Criar evento e abrir briefing
+                        </Button>
+                        <Button onClick={() => setCreating(false)}>
+                          Cancelar
+                        </Button>
+                      </div>
+                    </form>
+                  )}
+                </>
               )}
               {correcting ? (
                 <Button variant="ghost" onClick={() => setCorrecting(false)}>
                   Cancelar correção
                 </Button>
               ) : (
-                !creating && (
-                  <Button
-                    variant="ghost"
-                    onClick={() => {
-                      setState((s) => changeMailStatus(s, email.id, "ignored"));
-                      onResolved("ignored");
-                      notify(
-                        "Mensagem ignorada nesta fila. Você pode restaurá-la na aba Ignorados.",
-                      );
-                    }}
-                  >
-                    Ignorar nesta fila
-                  </Button>
+                !creating &&
+                !choosingLink && (
+                  <details className="service-disclosure">
+                    <summary>Outras ações</summary>
+                    <Button
+                      variant="ghost"
+                      onClick={() => {
+                        setState((s) =>
+                          changeMailStatus(s, email.id, "ignored"),
+                        );
+                        onResolved("ignored");
+                        notify(
+                          "Mensagem ignorada nesta fila. Você pode restaurá-la na aba Ignoradas.",
+                        );
+                      }}
+                    >
+                      Ignorar nesta fila
+                    </Button>
+                  </details>
                 )
               )}
             </>
@@ -880,11 +978,12 @@ function MailReview({
         </section>
       </div>
       {linkedDemand && email.status === "linked" && !correcting && (
-        <section
+        <details
           ref={reply}
           className="inbox-reply"
           aria-label="Resposta ao contato"
         >
+          <summary>Responder ao cliente e ver respostas</summary>
           <div className="conversation-owner">
             <span>
               <strong>Responsável:</strong> {linkedDemand.owner || UNASSIGNED}
@@ -919,7 +1018,7 @@ function MailReview({
                 <p className="mail-body">{m.text}</p>
               </article>
             ))}
-        </section>
+        </details>
       )}
     </>
   );

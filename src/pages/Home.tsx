@@ -114,40 +114,47 @@ export function Home({
   return (
     <>
       <Title
-        title={all ? "Eventos" : "Atendimento"}
+        title={adding ? "Novo evento" : all ? "Eventos" : "Atendimento"}
         sub={
-          all
-            ? "Do primeiro pedido ao pós-evento e financeiro, com uma referência única e todo o histórico reunido."
-            : "Cadastre diretamente ou receba por Gmail e WhatsApp. Tudo segue no mesmo atendimento."
+          adding
+            ? "Registre o pedido inicial. Os detalhes serão organizados no briefing."
+            : all
+              ? "Do primeiro pedido ao pós-evento e financeiro, com uma referência única e todo o histórico reunido."
+              : "Cadastre diretamente ou receba por Gmail e WhatsApp. Tudo segue no mesmo atendimento."
         }
         actions={
-          <>
-            <Button
-              onClick={() => {
-                setState((s) => withLifecycleExample(s));
-                go(`/eventos/${LIFECYCLE_EVENT}/overview`);
-              }}
-            >
-              Explorar ciclo completo
-            </Button>
-            {!all && (
-              <Button onClick={() => go("/gestao")}>Painel Gerencial</Button>
-            )}
-            <Button
-              variant="primary"
-              icon={Plus}
-              onClick={() => setAdding((v) => !v)}
-            >
-              Novo evento
-            </Button>
-          </>
+          !adding && (
+            <>
+              <Button
+                onClick={() => {
+                  setState((s) => withLifecycleExample(s));
+                  go(`/eventos/${LIFECYCLE_EVENT}/overview`);
+                }}
+              >
+                Explorar ciclo completo
+              </Button>
+              {!all && (
+                <Button onClick={() => go("/gestao")}>Painel Gerencial</Button>
+              )}
+              <Button
+                variant="primary"
+                icon={Plus}
+                onClick={() => setAdding((v) => !v)}
+              >
+                Novo evento
+              </Button>
+            </>
+          )
         }
       />
       {adding && (
         <form className="panel new-form" data-tour="new-demand" onSubmit={add}>
           <div className="section-heading">
             <h2>Cadastrar evento diretamente</h2>
-            <Button variant="ghost" onClick={() => setAdding(false)}>
+            <Button
+              variant="ghost"
+              onClick={() => (newDemand ? go("/") : setAdding(false))}
+            >
               Cancelar
             </Button>
           </div>
@@ -248,284 +255,295 @@ export function Home({
           </Button>
         </form>
       )}
-      <section
-        className="work-filters panel"
-        aria-label="Filtros da carteira de atendimento"
-      >
-        <div className="work-filter-heading">
-          <div>
-            <h2>Carteira de atendimento</h2>
-            <p>
-              Ao trocar a pessoa, a fila mostra seus atendimentos. Use Todos
-              para consultar a carteira completa.
-            </p>
-          </div>
-          <Label label="Visualizar como · demonstração">
-            <select
-              value={currentPerson?.id || ""}
-              onChange={(e) => {
-                setState((s) => ({ ...s, demoUserId: e.target.value }));
-                setScope("mine");
-                setNucleusFilter("all");
-                setOwnerFilter("all");
-                setFilter("all");
-                setSearch("");
-              }}
-            >
-              {!currentPerson && <option value="">Sem pessoa ativa</option>}
-              {state.users
-                .filter((u) => u.active)
-                .map((u) => (
-                  <option key={u.id} value={u.id}>
-                    {u.name}
-                  </option>
-                ))}
-            </select>
-          </Label>
-        </div>
-        <div
-          className="work-scope"
-          role="group"
-          aria-label="Visão do atendimento"
-        >
-          {[
-            { id: "all", label: "Todos" },
-            { id: "mine", label: "Meus atendimentos" },
-            { id: "nucleus", label: "Meu núcleo" },
-            { id: "unassigned", label: "A distribuir" },
-          ].map((item) => (
-            <button
-              key={item.id}
-              aria-pressed={scope === item.id}
-              onClick={() => {
-                setScope(item.id);
-                setNucleusFilter("all");
-                setOwnerFilter("all");
-              }}
-            >
-              {item.label}
-              <span className="count">
-                {state.demands.filter((d) => inScope(state, d, item.id)).length}
-              </span>
-            </button>
-          ))}
-        </div>
-        <div className="portfolio-filters">
-          <Label label="Núcleo da carteira">
-            <select
-              value={nucleusFilter}
-              onChange={(e) => setNucleusFilter(e.target.value)}
-            >
-              <option value="all">Todos os núcleos</option>
-              <option value="">Sem núcleo</option>
-              {(state.nuclei || []).map((n) => (
-                <option key={n.id} value={n.id}>
-                  {n.name}
-                </option>
-              ))}
-            </select>
-          </Label>
-          <Label label="Responsável pelo evento">
-            <select
-              value={ownerFilter}
-              onChange={(e) => setOwnerFilter(e.target.value)}
-            >
-              <option value="all">Toda a equipe</option>
-              <option value="">A distribuir</option>
-              {[
-                ...new Set([
-                  ...state.users.map((u) => u.name),
-                  ...state.demands.map((d) => d.owner),
-                ]),
-              ]
-                .filter(Boolean)
-                .map((name) => (
-                  <option key={name}>{name}</option>
-                ))}
-            </select>
-          </Label>
-        </div>
-        {scope === "nucleus" && (
-          <p className="field-hint">
-            {state.nuclei?.find((n) => n.id === currentPerson?.primaryNucleusId)
-              ?.name ||
-              "Esta pessoa ainda não tem núcleo principal. Defina em Equipe e IA → Pessoas."}
-          </p>
-        )}
-        {scope === "unassigned" && (
-          <p className="field-hint">
-            Eventos sem núcleo, sem responsável ativo pela conta ou sem
-            responsável ativo pelo atendimento. Abra umo evento para distribuir.
-          </p>
-        )}
-      </section>
-      <div className="stage-summary" aria-label="Funil de atendimento">
-        {counts.map((s, i) => (
-          <button
-            key={s.id}
-            onClick={() => setFilter(filter === s.id ? "all" : s.id)}
-            className={filter === s.id ? "active" : ""}
+      {!adding && (
+        <>
+          <section
+            className="work-filters panel"
+            aria-label="Filtros da carteira de atendimento"
           >
-            <span className="stage-summary-label">
-              <span className="stage-dot" />
-              {s.label}
-            </span>
-            <span className="stage-summary-count">
-              {String(s.n).padStart(2, "0")}
-            </span>
-            {i < counts.length - 1 && (
-              <ArrowRight className="stage-arrow" size={15} />
-            )}
-          </button>
-        ))}
-      </div>
-      {!all && <InboxSummary />}
-      <div className={`home-columns ${all ? "full" : ""}`}>
-        <section className="panel demand-panel">
-          <div className="section-heading">
-            <h2>
-              {all ? "Todos os eventos" : "Sua fila de trabalho"}{" "}
-              <span className="count">{rows.length}</span>
-            </h2>
-            <Badge>Dados fictícios</Badge>
-          </div>
-          <div className="table-toolbar">
-            <div className="search">
-              <Search size={17} />
-              <input
-                aria-label="Buscar eventos"
-                placeholder="Buscar código, evento ou cliente"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
+            <div className="work-filter-heading">
+              <div>
+                <h2>Carteira de atendimento</h2>
+                <p>
+                  Ao trocar a pessoa, a fila mostra seus atendimentos. Use Todos
+                  para consultar a carteira completa.
+                </p>
+              </div>
+              <Label label="Visualizar como · demonstração">
+                <select
+                  value={currentPerson?.id || ""}
+                  onChange={(e) => {
+                    setState((s) => ({ ...s, demoUserId: e.target.value }));
+                    setScope("mine");
+                    setNucleusFilter("all");
+                    setOwnerFilter("all");
+                    setFilter("all");
+                    setSearch("");
+                  }}
+                >
+                  {!currentPerson && <option value="">Sem pessoa ativa</option>}
+                  {state.users
+                    .filter((u) => u.active)
+                    .map((u) => (
+                      <option key={u.id} value={u.id}>
+                        {u.name}
+                      </option>
+                    ))}
+                </select>
+              </Label>
             </div>
-            <select
-              aria-label="Filtrar por etapa"
-              value={filter}
-              onChange={(e) => setFilter(e.target.value)}
+            <div
+              className="work-scope"
+              role="group"
+              aria-label="Visão do atendimento"
             >
-              <option value="all">Todas as etapas</option>
-              {stages.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.label}
-                </option>
+              {[
+                { id: "all", label: "Todos" },
+                { id: "mine", label: "Meus atendimentos" },
+                { id: "nucleus", label: "Meu núcleo" },
+                { id: "unassigned", label: "A distribuir" },
+              ].map((item) => (
+                <button
+                  key={item.id}
+                  aria-pressed={scope === item.id}
+                  onClick={() => {
+                    setScope(item.id);
+                    setNucleusFilter("all");
+                    setOwnerFilter("all");
+                  }}
+                >
+                  {item.label}
+                  <span className="count">
+                    {
+                      state.demands.filter((d) => inScope(state, d, item.id))
+                        .length
+                    }
+                  </span>
+                </button>
               ))}
-            </select>
+            </div>
+            <div className="portfolio-filters">
+              <Label label="Núcleo da carteira">
+                <select
+                  value={nucleusFilter}
+                  onChange={(e) => setNucleusFilter(e.target.value)}
+                >
+                  <option value="all">Todos os núcleos</option>
+                  <option value="">Sem núcleo</option>
+                  {(state.nuclei || []).map((n) => (
+                    <option key={n.id} value={n.id}>
+                      {n.name}
+                    </option>
+                  ))}
+                </select>
+              </Label>
+              <Label label="Responsável pelo evento">
+                <select
+                  value={ownerFilter}
+                  onChange={(e) => setOwnerFilter(e.target.value)}
+                >
+                  <option value="all">Toda a equipe</option>
+                  <option value="">A distribuir</option>
+                  {[
+                    ...new Set([
+                      ...state.users.map((u) => u.name),
+                      ...state.demands.map((d) => d.owner),
+                    ]),
+                  ]
+                    .filter(Boolean)
+                    .map((name) => (
+                      <option key={name}>{name}</option>
+                    ))}
+                </select>
+              </Label>
+            </div>
+            {scope === "nucleus" && (
+              <p className="field-hint">
+                {state.nuclei?.find(
+                  (n) => n.id === currentPerson?.primaryNucleusId,
+                )?.name ||
+                  "Esta pessoa ainda não tem núcleo principal. Defina em Equipe e IA → Pessoas."}
+              </p>
+            )}
+            {scope === "unassigned" && (
+              <p className="field-hint">
+                Eventos sem núcleo, sem responsável ativo pela conta ou sem
+                responsável ativo pelo atendimento. Abra um evento para
+                distribuir.
+              </p>
+            )}
+          </section>
+          <div className="stage-summary" aria-label="Funil de atendimento">
+            {counts.map((s, i) => (
+              <button
+                key={s.id}
+                onClick={() => setFilter(filter === s.id ? "all" : s.id)}
+                className={filter === s.id ? "active" : ""}
+              >
+                <span className="stage-summary-label">
+                  <span className="stage-dot" />
+                  {s.label}
+                </span>
+                <span className="stage-summary-count">
+                  {String(s.n).padStart(2, "0")}
+                </span>
+                {i < counts.length - 1 && (
+                  <ArrowRight className="stage-arrow" size={15} />
+                )}
+              </button>
+            ))}
           </div>
-          <div className="demand-list">
-            {rows.length ? (
-              rows.map((d) => {
-                const c = state.clients.find((c) => c.id === d.clientId);
-                return (
-                  <button
-                    key={d.id}
-                    className="demand-row"
-                    onClick={() => go(`/eventos/${d.id}/overview`)}
-                  >
-                    <span className="client-monogram">
-                      {c?.name.slice(0, 1)}
-                    </span>
-                    <span className="demand-main">
-                      <strong>{d.title}</strong>
-                      <span>
-                        {d.reference} <span className="dot-sep">·</span>{" "}
-                        {c?.name} <span className="dot-sep">·</span>{" "}
-                        {nucleusLabel(state, c)}{" "}
-                        <span className="dot-sep">·</span> {d.source}{" "}
-                        <span className="dot-sep">·</span>{" "}
-                        {d.guests ? `${d.guests} pessoas` : "Público a definir"}
-                      </span>
-                    </span>
-                    <span className="demand-status">
-                      <Badge
-                        tone={
-                          d.decision === "accepted"
-                            ? "green"
-                            : d.stage === "briefing"
-                              ? "blue"
-                              : "amber"
-                        }
+          {!all && <InboxSummary />}
+          <div className={`home-columns ${all ? "full" : ""}`}>
+            <section className="panel demand-panel">
+              <div className="section-heading">
+                <h2>
+                  {all ? "Todos os eventos" : "Sua fila de trabalho"}{" "}
+                  <span className="count">{rows.length}</span>
+                </h2>
+                <Badge>Dados fictícios</Badge>
+              </div>
+              <div className="table-toolbar">
+                <div className="search">
+                  <Search size={17} />
+                  <input
+                    aria-label="Buscar eventos"
+                    placeholder="Buscar código, evento ou cliente"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                  />
+                </div>
+                <select
+                  aria-label="Filtrar por etapa"
+                  value={filter}
+                  onChange={(e) => setFilter(e.target.value)}
+                >
+                  <option value="all">Todas as etapas</option>
+                  {stages.map((s) => (
+                    <option key={s.id} value={s.id}>
+                      {s.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="demand-list">
+                {rows.length ? (
+                  rows.map((d) => {
+                    const c = state.clients.find((c) => c.id === d.clientId);
+                    return (
+                      <button
+                        key={d.id}
+                        className="demand-row"
+                        onClick={() => go(`/eventos/${d.id}/overview`)}
                       >
-                        {d.decision === "accepted"
-                          ? "Aprovada"
-                          : stageNames[d.stage]}
-                      </Badge>
-                      <small>{d.owner || UNASSIGNED}</small>
+                        <span className="client-monogram">
+                          {c?.name.slice(0, 1)}
+                        </span>
+                        <span className="demand-main">
+                          <strong>{d.title}</strong>
+                          <span>
+                            {d.reference} <span className="dot-sep">·</span>{" "}
+                            {c?.name} <span className="dot-sep">·</span>{" "}
+                            {nucleusLabel(state, c)}{" "}
+                            <span className="dot-sep">·</span> {d.source}{" "}
+                            <span className="dot-sep">·</span>{" "}
+                            {d.guests
+                              ? `${d.guests} pessoas`
+                              : "Público a definir"}
+                          </span>
+                        </span>
+                        <span className="demand-status">
+                          <Badge
+                            tone={
+                              d.decision === "accepted"
+                                ? "green"
+                                : d.stage === "briefing"
+                                  ? "blue"
+                                  : "amber"
+                            }
+                          >
+                            {d.decision === "accepted"
+                              ? "Aprovada"
+                              : stageNames[d.stage]}
+                          </Badge>
+                          <small>{d.owner || UNASSIGNED}</small>
+                        </span>
+                        <span className="row-next">
+                          <span>{eventPhaseLabel(state, d)}</span>
+                          <ArrowUpRight size={18} />
+                        </span>
+                      </button>
+                    );
+                  })
+                ) : (
+                  <Empty
+                    title="Nenhum evento por aqui"
+                    text="Ajuste a busca ou crie um novo evento."
+                  />
+                )}
+              </div>
+              <div className="panel-foot">
+                {rows.length} de {state.demands.length} eventos na demonstração{" "}
+                <span>Carteira conforme filtros acima</span>
+              </div>
+            </section>
+            {!all && (
+              <aside className="activity">
+                <div className="section-heading">
+                  <h2>Próximos passos</h2>
+                  <Clock3 size={18} />
+                </div>
+                <button
+                  className="activity-item"
+                  onClick={() => go("/eventos/d1/briefing")}
+                >
+                  <span className="activity-circle blue">
+                    <FileText size={16} />
+                  </span>
+                  <span>
+                    <strong>Entender o briefing</strong>
+                    <small>Horizonte · organizar com IA e revisar</small>
+                    <span className="text-link">
+                      Abrir evento <ArrowRight size={13} />
                     </span>
-                    <span className="row-next">
-                      <span>{eventPhaseLabel(state, d)}</span>
-                      <ArrowUpRight size={18} />
+                  </span>
+                </button>
+                <button
+                  className="activity-item"
+                  onClick={() => go("/eventos/d1/quotes")}
+                >
+                  <span className="activity-circle amber">
+                    <Clock3 size={16} />
+                  </span>
+                  <span>
+                    <strong>Receber uma cotação</strong>
+                    <small>Experimente o link do fornecedor</small>
+                    <span className="text-link">
+                      Ver solicitações <ArrowRight size={13} />
                     </span>
-                  </button>
-                );
-              })
-            ) : (
-              <Empty
-                title="Nenhumo evento por aqui"
-                text="Ajuste a busca ou crie uma novo evento."
-              />
+                  </span>
+                </button>
+                <button className="activity-item" onClick={() => go("/fluxo")}>
+                  <span className="activity-circle green">
+                    <CheckCircle2 size={16} />
+                  </span>
+                  <span>
+                    <strong>Conhecer o processo</strong>
+                    <small>Início, fim e próximas etapas</small>
+                    <span className="text-link">
+                      Ver fluxo completo <ArrowRight size={13} />
+                    </span>
+                  </span>
+                </button>
+                <div className="quiet-note">
+                  <strong>O atendimento continua no controle.</strong>
+                  <p>A IA sugere. A equipe revisa, negocia e decide.</p>
+                </div>
+              </aside>
             )}
           </div>
-          <div className="panel-foot">
-            {rows.length} de {state.demands.length} eventos na demonstração{" "}
-            <span>Carteira conforme filtros acima</span>
-          </div>
-        </section>
-        {!all && (
-          <aside className="activity">
-            <div className="section-heading">
-              <h2>Próximos passos</h2>
-              <Clock3 size={18} />
-            </div>
-            <button
-              className="activity-item"
-              onClick={() => go("/eventos/d1/briefing")}
-            >
-              <span className="activity-circle blue">
-                <FileText size={16} />
-              </span>
-              <span>
-                <strong>Entender o briefing</strong>
-                <small>Horizonte · organizar com IA e revisar</small>
-                <span className="text-link">
-                  Abrir evento <ArrowRight size={13} />
-                </span>
-              </span>
-            </button>
-            <button
-              className="activity-item"
-              onClick={() => go("/eventos/d1/quotes")}
-            >
-              <span className="activity-circle amber">
-                <Clock3 size={16} />
-              </span>
-              <span>
-                <strong>Receber uma cotação</strong>
-                <small>Experimente o link do fornecedor</small>
-                <span className="text-link">
-                  Ver solicitações <ArrowRight size={13} />
-                </span>
-              </span>
-            </button>
-            <button className="activity-item" onClick={() => go("/fluxo")}>
-              <span className="activity-circle green">
-                <CheckCircle2 size={16} />
-              </span>
-              <span>
-                <strong>Conhecer o processo</strong>
-                <small>Início, fim e próximas etapas</small>
-                <span className="text-link">
-                  Ver fluxo completo <ArrowRight size={13} />
-                </span>
-              </span>
-            </button>
-            <div className="quiet-note">
-              <strong>O atendimento continua no controle.</strong>
-              <p>A IA sugere. A equipe revisa, negocia e decide.</p>
-            </div>
-          </aside>
-        )}
-      </div>
+        </>
+      )}
     </>
   );
 }

@@ -1,34 +1,29 @@
-import { ArrowRight, Mail } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useStore, go } from "../store";
-import { AIBadge, Badge, Button } from "./UI";
+import { Button } from "./UI";
 
 export function InboxSummary() {
   const { state } = useStore();
   const pending = (state.inbox || []).filter((m) => m.status === "pending");
-  const linked = (state.inbox || []).filter(
-    (m) => m.status === "linked",
-  ).length;
   return (
     <section className="inbox-summary" aria-label="Central de atendimento">
-      <Mail size={24} aria-hidden="true" />
       <div className="inbox-summary-content">
         <h2>
-          Mensagens para identificar{" "}
+          {pending.length ? "Mensagens para atender" : "Mensagens em dia"}{" "}
           <span className="count">{pending.length}</span>
         </h2>
         <p>
           {pending.length
-            ? "Confira os atendimentos sugeridos antes de associar cada mensagem."
-            : "Nenhuma mensagem aguardando associação. A fila está em dia."}
+            ? "Revise a sugestão da IA e escolha se o pedido inicia um evento ou pertence a um existente."
+            : "Não há mensagens aguardando identificação. Continue um evento abaixo ou consulte o histórico."}
         </p>
-        <span className="inbox-summary-meta">
-          <Badge tone="blue">MVP</Badge> <AIBadge /> {linked}{" "}
-          {linked === 1 ? "mensagem associada" : "mensagens associadas"} · Gmail
-          e WhatsApp simulados
-        </span>
       </div>
-      <Button icon={ArrowRight} onClick={() => go("/mensagens")}>
-        Abrir central
+      <Button
+        variant="primary"
+        icon={ArrowRight}
+        onClick={() => go("/mensagens")}
+      >
+        {pending.length ? "Atender mensagens" : "Ver mensagens"}
       </Button>
     </section>
   );

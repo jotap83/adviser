@@ -252,6 +252,25 @@ export function Tours({ children }: { children: ReactNode }) {
     let sized: ResizeObserver | undefined;
     const find = () => {
       const el = document.querySelector<HTMLElement>(step.target);
+      // Reveal the guided step and native disclosures before positioning the tour.
+      const guidedPanel = el?.closest<HTMLElement>(
+        "[data-briefing-step][hidden]",
+      );
+      if (guidedPanel) {
+        document
+          .querySelector<HTMLButtonElement>(
+            `[data-briefing-open="${guidedPanel.dataset.briefingStep}"]`,
+          )
+          ?.click();
+        return;
+      }
+      for (
+        let parent = el?.parentElement;
+        parent;
+        parent = parent.parentElement
+      ) {
+        if (parent instanceof HTMLDetailsElement) parent.open = true;
+      }
       if (!el || !el.getBoundingClientRect().width) {
         setFound(false);
         setRect(null);
@@ -272,6 +291,8 @@ export function Tours({ children }: { children: ReactNode }) {
     mutation.observe(document.getElementById("root")!, {
       childList: true,
       subtree: true,
+      attributes: true,
+      attributeFilter: ["hidden"],
     });
     let initial = requestAnimationFrame(() => {
       initial = requestAnimationFrame(find);

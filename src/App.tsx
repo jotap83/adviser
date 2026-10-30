@@ -1,4 +1,6 @@
 import "./event-lifecycle.css";
+import "./service-workspace.css";
+import { AtendimentoHome } from "./pages/AtendimentoHome";
 import {
   EventOverview,
   EventContracts,
@@ -69,7 +71,8 @@ import {
   UNASSIGNED,
 } from "./organization";
 const nav = [
-  { path: "/", label: "Visão geral", icon: LayoutDashboard },
+  { path: "/", label: "Atendimento", icon: LayoutDashboard },
+  { path: "/mensagens", label: "Mensagens", icon: Mail },
   { path: "/eventos", label: "Eventos", icon: Layers },
   { path: "/solicitacoes", label: "Solicitações", icon: Mail },
   { path: "/fornecedores", label: "Fornecedores", icon: Building2 },
@@ -230,7 +233,7 @@ export default function App() {
         action={<Button onClick={() => go("/")}>Visão geral</Button>}
       />
     );
-  else page = <Home />;
+  else page = <AtendimentoHome />;
   const navButton = (item: (typeof nav)[number]) => {
     const Icon = item.icon;
     const active =
@@ -278,35 +281,53 @@ export default function App() {
           <BrandLogo />
         </a>
         <nav aria-label="Navegação principal">
-          <span className="nav-label">GESTÃO · MVP</span>
-          {navButton({
-            path: "/gestao",
-            label: "Painel Gerencial",
-            icon: ChartNoAxesCombined,
-          })}
+          <span className="nav-label">ATENDIMENTO · MVP</span>
+          {nav.slice(0, 4).map(navButton)}
+          <span className="nav-label">ACOMPANHAMENTO</span>
+          {navButton({ path: "/aprovacoes", label: "Aprovações", icon: Check })}
           {navButton({
             path: "/alertas",
             label: "Central de alertas",
             icon: Bell,
           })}
-          {navButton({ path: "/aprovacoes", label: "Aprovações", icon: Check })}
-          <span className="nav-label">ATENDIMENTO · MVP</span>
-          {nav.map(navButton)}
           {navButton({
-            path: "/mensagens",
-            label: "Central de atendimento",
-            icon: Mail,
+            path: "/gestao",
+            label: "Painel Gerencial",
+            icon: ChartNoAxesCombined,
           })}
+          <details
+            className="nav-disclosure"
+            open={
+              nav.slice(4).some((item) => path.startsWith(item.path)) ||
+              undefined
+            }
+          >
+            <summary title={collapsed ? "Cadastros" : undefined}>
+              <Building2 size={19} />
+              <span>Cadastros</span>
+            </summary>
+            {nav.slice(4).map(navButton)}
+          </details>
           <span className="nav-label">EVOLUÇÃO · FORA DO MVP</span>
           {[
             { path: "/operacoes", label: "Operações", icon: Columns3 },
             { path: "/financeiro", label: "Financeiro", icon: Wallet },
           ].map(navButton)}
-          <span className="nav-label">PLANEJAMENTO</span>
-          {[
-            { path: "/fluxo", label: "Fluxo do sistema", icon: GitBranch },
-            { path: "/escopo", label: "Escopo e etapas", icon: ArrowUpRight },
-          ].map(navButton)}
+          <details
+            className="nav-disclosure"
+            open={
+              ["fluxo", "escopo", "roadmap"].includes(parts[0]) || undefined
+            }
+          >
+            <summary title={collapsed ? "Sobre o protótipo" : undefined}>
+              <GitBranch size={19} />
+              <span>Sobre o protótipo</span>
+            </summary>
+            {[
+              { path: "/fluxo", label: "Fluxo do sistema", icon: GitBranch },
+              { path: "/escopo", label: "Escopo e etapas", icon: ArrowUpRight },
+            ].map(navButton)}
+          </details>
           <div className="nav-bottom">
             {navButton({
               path: "/configuracoes",
@@ -591,11 +612,6 @@ function Workspace({
             "Elaboração da proposta",
             ["quotes", "compare", "creative", "proposal", "approval"],
           ],
-          ["contracts", "Contratos", ["contracts", "handoff"]],
-          ["production", "Produção", ["production"]],
-          ["post", "Pós-evento", ["post"]],
-          ["finance", "Financeiro", ["finance"]],
-          ["documents", "Documentos", ["documents"]],
         ].map(([id, label, tabs]) => (
           <button
             key={id as string}
@@ -605,6 +621,36 @@ function Workspace({
             {label as string}
           </button>
         ))}
+        <label className="event-more-nav">
+          Mais áreas do evento
+          <select
+            aria-label="Mais áreas do evento"
+            value={
+              [
+                "contracts",
+                "handoff",
+                "production",
+                "post",
+                "finance",
+                "documents",
+              ].includes(tab)
+                ? tab === "handoff"
+                  ? "contracts"
+                  : tab
+                : ""
+            }
+            onChange={(e) => {
+              if (e.target.value) go(`/eventos/${d.id}/${e.target.value}`);
+            }}
+          >
+            <option value="">Selecionar área</option>
+            <option value="contracts">Contratos</option>
+            <option value="production">Produção</option>
+            <option value="post">Pós-evento</option>
+            <option value="finance">Financeiro</option>
+            <option value="documents">Documentos</option>
+          </select>
+        </label>
       </nav>
       {["quotes", "compare", "creative", "proposal", "approval"].includes(
         tab,
@@ -644,20 +690,23 @@ function Workspace({
         </nav>
       )}
       <div className="workspace-content">
-        <IntelligenceEntry
-          contextId={d.id}
-          ids={
-            tab === "briefing"
-              ? ["summary", "changes", "memory"]
-              : tab === "quotes" || tab === "compare"
-                ? ["quotes"]
-                : tab === "proposal"
-                  ? ["review", "changes"]
-                  : tab === "approval"
-                    ? ["changes", "summary"]
-                    : ["summary"]
-          }
-        />
+        <details className="service-disclosure event-ai-tools">
+          <summary>Outras ferramentas de IA para este evento</summary>
+          <IntelligenceEntry
+            contextId={d.id}
+            ids={
+              tab === "briefing"
+                ? ["summary", "changes", "memory"]
+                : tab === "quotes" || tab === "compare"
+                  ? ["quotes"]
+                  : tab === "proposal"
+                    ? ["review", "changes"]
+                    : tab === "approval"
+                      ? ["changes", "summary"]
+                      : ["summary"]
+            }
+          />
+        </details>
         {tab === "overview" ? (
           <EventOverview d={d} />
         ) : tab === "requests" ? (

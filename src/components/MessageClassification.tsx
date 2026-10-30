@@ -8,15 +8,24 @@ import type {
 import { classifyMessage, messageKinds } from "../message-classification";
 import { useStore } from "../store";
 import { Badge, Button, Label } from "./UI";
-export function MessageClassification({ email }: { email: InboxEmail }) {
+export function MessageClassification({
+  email,
+  onContinue,
+}: {
+  email: InboxEmail;
+  onContinue?: () => void;
+}) {
   const { state, setState, notify } = useStore();
   const [draft, setDraft] = useState<Classification>(
-    email.classification || {
-      kind: "other",
-      urgent: false,
-      reason: "Classifique manualmente ou peça uma sugestão.",
-      reviewed: false,
-    },
+    email.classification ||
+      (state.aiMode !== "offline"
+        ? classifyMessage(email)
+        : {
+            kind: "other",
+            urgent: false,
+            reason: "Classifique manualmente ou peça uma sugestão.",
+            reviewed: false,
+          }),
   );
   return (
     <section
@@ -24,20 +33,15 @@ export function MessageClassification({ email }: { email: InboxEmail }) {
       aria-label="Classificação da mensagem"
     >
       <div className="section-heading">
-        <h3>Classificação da mensagem</h3>
+        <h3>Que tipo de pedido chegou?</h3>
         <Badge tone={email.classification?.reviewed ? "green" : "blue"}>
           {email.classification?.reviewed ? "Revisada" : "IA · demonstração"}
         </Badge>
       </div>
-      <Button
-        icon={Sparkles}
-        disabled={state.aiMode === "offline"}
-        onClick={() => setDraft(classifyMessage(email))}
-      >
-        Classificar com IA
-      </Button>
       <p className="field-hint">
-        Sugestão simulada por regras, sujeita à sua revisão.
+        {state.aiMode === "offline"
+          ? ""
+          : "A IA sugeriu a classificação abaixo. Revise antes de continuar. Sugestão simulada."}
         {state.aiMode === "offline"
           ? " IA indisponível. A classificação manual continua disponível."
           : ""}
@@ -72,6 +76,7 @@ export function MessageClassification({ email }: { email: InboxEmail }) {
         Priorizar na triagem
       </label>
       <Button
+        variant="primary"
         icon={Check}
         onClick={() => {
           setState((s) => ({
@@ -85,10 +90,21 @@ export function MessageClassification({ email }: { email: InboxEmail }) {
           notify(
             "Classificação revisada. Escolha criar um evento ou vincular a um existente.",
           );
+          onContinue?.();
         }}
       >
-        Confirmar classificação
+        Confirmar e continuar
       </Button>
+      <details className="service-disclosure">
+        <summary>Revisar sugestão da IA</summary>
+        <Button
+          icon={Sparkles}
+          disabled={state.aiMode === "offline"}
+          onClick={() => setDraft(classifyMessage(email))}
+        >
+          Gerar sugestão novamente
+        </Button>
+      </details>
     </section>
   );
 }

@@ -231,13 +231,13 @@ test("seleção persistida reaparece mesmo com IA offline e escopo alterado", ()
   assert.match(html, /Remover Trio Primavera da seleção/);
 });
 
-test("briefing e cotações exibem o mesmo seletor e mantêm a revisão individual", () => {
+test("fornecedores ficam na etapa de cotações e mantêm seleção e revisão individual", () => {
   const d = { ...fixture(), supplierShortlist: ["s3"] };
-  assert.match(render(Briefing, d), /id="briefing-fornecedores"/);
-  assert.match(render(Briefing, d), /Fornecedores sugeridos/);
+  assert.doesNotMatch(render(Briefing, d), /supplier-suggestions/);
   const state = seed();
   const next = prepareSupplierRequests(d, state.suppliers, state.templates);
   const html = render(Quotes, next);
+  assert.match(html, /Fornecedores sugeridos/);
   assert.match(html, /Solicitação preparada/);
   assert.match(html, /Solicitações de cotação/);
   assert.match(html, /E-mail/);
