@@ -28,6 +28,7 @@ const {
   approvalFingerprint,
   approvalStatus,
   approvalNotifications,
+  pendingEventApprovals,
 } = await c.ssrLoadModule("/src/approval-model.ts");
 const { withLifecycleExample, LIFECYCLE_EVENT, approveExampleDocument } =
   await c.ssrLoadModule("/src/lifecycle-example.ts");
@@ -385,5 +386,42 @@ test("encerramento considera documentos vigentes e reabre uma única vez diante 
   assert.deepEqual(
     withEventLifecycle(reopened).demands.find((x) => x.id === d.id).history,
     event.history,
+  );
+});
+
+test("pendências do evento incluem pagamentos vinculados e excluem outros eventos e fontes alteradas", () => {
+  let s = example();
+  const before = pendingEventApprovals(s, LIFECYCLE_EVENT).length;
+  s = requestApproval(s, { kind: "payment", targetId: "example-pay" }, "u1", [
+    "demo-finance",
+  ]);
+  assert.equal(pendingEventApprovals(s, LIFECYCLE_EVENT).length, before + 1);
+  assert.ok(
+    pendingEventApprovals(s, LIFECYCLE_EVENT).some(
+      (r) => r.targetId === "example-pay",
+    ),
+  );
+  assert.ok(
+    !pendingEventApprovals(s, "outro-evento").some(
+      (r) => r.targetId === "example-pay",
+    ),
+  );
+  s = {
+    ...s,
+    financeEntries: s.financeEntries.map((e) =>
+      e.id === "example-pay" ? { ...e, amount: e.amount + 100 } : e,
+    ),
+  };
+  assert.ok(
+    !pendingEventApprovals(s, LIFECYCLE_EVENT).some(
+      (r) => r.targetId === "example-pay",
+    ),
+  );
+  assert.equal(
+    approvalStatus(
+      s,
+      latestApproval(s, { kind: "payment", targetId: "example-pay" }),
+    ),
+    "outdated",
   );
 });

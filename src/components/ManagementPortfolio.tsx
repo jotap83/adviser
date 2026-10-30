@@ -122,7 +122,7 @@ export function ManagementPortfolio({
         <section className="panel pipeline-panel">
           <div className="section-heading">
             <div>
-              <h2>Onde estão as eventos</h2>
+              <h2>Onde estão os eventos</h2>
               <p>Distribuição atual por etapa.</p>
             </div>
           </div>
@@ -351,7 +351,7 @@ export function ManagementPortfolio({
         </div>
         {!list.length && (
           <Empty
-            title="Nenhumo evento neste filtro"
+            title="Nenhum evento neste filtro"
             text="Escolha outra etapa, núcleo ou responsável."
           />
         )}

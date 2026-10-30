@@ -5,7 +5,11 @@ import { useStore, go } from "../store";
 import { uid } from "../data";
 import { money, totals } from "../domain.mjs";
 import { Badge, Button, Label, Note, Empty } from "../components/UI";
-import { approvalStatus } from "../approval-model";
+import {
+  approvalStatus,
+  approvalNoticeRoute,
+  pendingEventApprovals,
+} from "../approval-model";
 import {
   phaseSteps,
   eventPhase,
@@ -587,60 +591,210 @@ export function EventFinanceStart({ d }: { d: Demand }) {
     />
   );
 }
-export function LifecycleManagement() {
+export function LifecycleManagement({ rows }: { rows: Demand[] }) {
   const { state } = useStore();
+  const [query, setQuery] = useState("");
+  const [phase, setPhase] = useState("all");
+  const [page, setPage] = useState(0);
+  const pageSize = 6;
+  const search = query.trim().toLocaleLowerCase("pt-BR");
+  const filtered = rows.filter((d) => {
+    const client = state.clients.find((c) => c.id === d.clientId);
+    return (
+      (phase === "all" || eventPhase(state, d) === phase) &&
+      `${d.title} ${client?.name || ""} ${d.reference || ""} ${d.owner}`
+        .toLocaleLowerCase("pt-BR")
+        .includes(search)
+    );
+  });
+  const pages = Math.max(1, Math.ceil(filtered.length / pageSize));
+  const currentPage = Math.min(page, pages - 1);
+  const visible = filtered.slice(
+    currentPage * pageSize,
+    (currentPage + 1) * pageSize,
+  );
   return (
-    <section className="panel lifecycle-management">
+    <section
+      className="panel lifecycle-management"
+      aria-labelledby="lifecycle-heading"
+    >
       <div className="section-heading">
         <div>
-          <h2>Carteira por ciclo do evento</h2>
-          <p>
-            Da oportunidade ao pós-evento, com a mesma referência entre áreas.
-          </p>
+          <h2 id="lifecycle-heading">Ciclo dos eventos</h2>
+          <p>Fase atual, responsável e pendências de cada evento.</p>
         </div>
         <Button onClick={() => go("/eventos")}>Abrir eventos</Button>
       </div>
-      <div className="table-scroll">
-        <table>
-          <thead>
-            <tr>
-              <th>Evento</th>
-              <th>Fase</th>
-              <th>Responsável</th>
-              <th>Solicitações</th>
-              <th>Aprovações pendentes</th>
-            </tr>
-          </thead>
-          <tbody>
-            {state.demands.map((d) => (
-              <tr key={d.id}>
-                <td>
-                  <button
-                    className="portfolio-link"
-                    onClick={() => go(`/eventos/${d.id}/overview`)}
-                  >
-                    {d.title}
-                  </button>
-                  <small>{d.reference}</small>
-                </td>
-                <td>{eventPhaseLabel(state, d)}</td>
-                <td>{d.owner || "A distribuir"}</td>
-                <td>
-                  {state.eventRequests?.filter(
-                    (r) => r.eventId === d.id && r.status !== "done",
-                  ).length || 0}
-                </td>
-                <td>
-                  {state.approvals?.filter(
-                    (r) =>
-                      r.targetId === d.id &&
-                      approvalStatus(state, r) === "pending",
-                  ).length || 0}
-                </td>
-              </tr>
+      <div className="lifecycle-filters">
+        <Label label="Buscar evento, cliente ou código">
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setPage(0);
+            }}
+            placeholder="Nome, cliente ou ADV-2026…"
+          />
+        </Label>
+        <Label label="Fase do evento">
+          <select
+            value={phase}
+            onChange={(e) => {
+              setPhase(e.target.value);
+              setPage(0);
+            }}
+          >
+            <option value="all">Todas as fases</option>
+            {phaseSteps.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.label}
+              </option>
             ))}
-          </tbody>
-        </table>
+            <option value="closed">Encerrado</option>
+            <option value="declined">Não aprovado</option>
+          </select>
+        </Label>
+      </div>
+      <p className="lifecycle-filter-context">
+        Respeita o núcleo e o responsável selecionados acima. Mostra a situação
+        atual; o período dos resultados se aplica aos indicadores.
+      </p>
+      {visible.length ? (
+        <div className="table-scroll">
+          <table className="lifecycle-table">
+            <caption className="sr-only">
+              Eventos por fase, com solicitações abertas e aprovações pendentes
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">Evento / cliente</th>
+                <th scope="col">Fase atual</th>
+                <th scope="col">Responsável</th>
+                <th scope="col">Solicitações abertas</th>
+                <th scope="col">Aprovações pendentes</th>
+              </tr>
+            </thead>
+            <tbody>
+              {visible.map((d) => {
+                const client = state.clients.find((c) => c.id === d.clientId);
+                const currentPhase = eventPhase(state, d);
+                const requests =
+                  state.eventRequests?.filter(
+                    (r) => r.eventId === d.id && r.status !== "done",
+                  ).length || 0;
+                const approvals = pendingEventApprovals(state, d.id);
+                return (
+                  <tr key={d.id}>
+                    <td className="lifecycle-identity">
+                      <a
+                        className="lifecycle-event-link"
+                        href={`#/eventos/${d.id}/overview`}
+                      >
+                        {d.title}
+                        <ArrowRight size={15} aria-hidden="true" />
+                      </a>
+                      <span className="lifecycle-event-meta">
+                        {client?.name || "Cliente não informado"} ·{" "}
+                        {d.reference || "Sem código"}
+                      </span>
+                    </td>
+                    <td data-label="Fase atual">
+                      <Badge
+                        tone={
+                          currentPhase === "closed"
+                            ? "green"
+                            : currentPhase === "declined"
+                              ? "gray"
+                              : "blue"
+                        }
+                      >
+                        {eventPhaseLabel(state, d)}
+                      </Badge>
+                    </td>
+                    <td data-label="Responsável">
+                      {d.owner || "A distribuir"}
+                    </td>
+                    <td data-label="Solicitações abertas">
+                      {requests ? (
+                        <a
+                          className="lifecycle-pending-link"
+                          href={`#/eventos/${d.id}/requests`}
+                          aria-label={`${requests} solicitações abertas de ${d.title}`}
+                        >
+                          {requests}{" "}
+                          {requests === 1 ? "solicitação" : "solicitações"}
+                          <ArrowRight size={14} aria-hidden="true" />
+                        </a>
+                      ) : (
+                        <span className="lifecycle-zero">Nenhuma</span>
+                      )}
+                    </td>
+                    <td data-label="Aprovações pendentes">
+                      {approvals.length ? (
+                        <a
+                          className="lifecycle-pending-link"
+                          href={`#${approvalNoticeRoute(approvals[0])}`}
+                          aria-label={`Abrir a próxima aprovação pendente de ${d.title}, ${approvals.length} no total`}
+                        >
+                          {approvals.length}{" "}
+                          {approvals.length === 1 ? "aprovação" : "aprovações"}
+                          <ArrowRight size={14} aria-hidden="true" />
+                        </a>
+                      ) : (
+                        <span className="lifecycle-zero">Nenhuma</span>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <Empty
+          title="Nenhum evento encontrado"
+          text="Ajuste a busca ou os filtros de fase, núcleo e responsável."
+          action={
+            query || phase !== "all" ? (
+              <Button
+                onClick={() => {
+                  setQuery("");
+                  setPhase("all");
+                  setPage(0);
+                }}
+              >
+                Limpar busca e fase
+              </Button>
+            ) : undefined
+          }
+        />
+      )}
+      <div className="lifecycle-pagination">
+        <p role="status">
+          {filtered.length
+            ? `${currentPage * pageSize + 1}–${Math.min((currentPage + 1) * pageSize, filtered.length)} de ${filtered.length} eventos`
+            : "0 eventos"}
+        </p>
+        {pages > 1 && (
+          <nav aria-label="Paginação dos eventos">
+            <Button
+              disabled={!currentPage}
+              onClick={() => setPage(currentPage - 1)}
+            >
+              Anterior
+            </Button>
+            <span>
+              Página {currentPage + 1} de {pages}
+            </span>
+            <Button
+              disabled={currentPage === pages - 1}
+              onClick={() => setPage(currentPage + 1)}
+            >
+              Próxima
+            </Button>
+          </nav>
+        )}
       </div>
     </section>
   );

@@ -207,13 +207,6 @@
 .review-field p {
   margin: 6px 0;
 }
-.lifecycle-management td small {
-  display: block;
-  color: #596d89;
-}
-.lifecycle-management {
-  margin: 24px 0;
-}
 .event-overview-grid aside h3:not(:first-child) {
   margin-top: 24px;
 }
@@ -270,4 +263,206 @@
   display: block;
   margin: 5px 0;
   overflow-wrap: anywhere;
+}
+
+/* Current event portfolio: scoped, bounded and separate from KPI overview. */
+.lifecycle-management {
+  margin-top: 20px;
+  min-width: 0;
+}
+.lifecycle-filters {
+  display: grid;
+  grid-template-columns: minmax(180px, 1.5fr) minmax(180px, 1fr);
+  gap: 16px;
+  max-width: 760px;
+}
+.lifecycle-filter-context {
+  color: #596d89;
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 12px 0 20px;
+  max-width: 75ch;
+}
+.lifecycle-table {
+  font-size: 14px;
+}
+.lifecycle-table caption {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.lifecycle-table th {
+  font-size: 12px;
+  text-transform: none;
+  letter-spacing: 0;
+  padding: 12px;
+}
+.lifecycle-table td {
+  padding: 12px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.lifecycle-table th:first-child {
+  width: 30%;
+}
+.lifecycle-table th:nth-child(2) {
+  width: 23%;
+}
+.lifecycle-table th:nth-child(3) {
+  width: 19%;
+}
+.lifecycle-table .badge {
+  font-size: 12px;
+  white-space: normal;
+}
+.lifecycle-event-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 32px;
+  color: #293e91;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  line-height: 1.5;
+}
+.lifecycle-event-link svg,
+.lifecycle-pending-link svg {
+  flex: none;
+}
+.lifecycle-event-link:hover,
+.lifecycle-pending-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.lifecycle-event-meta {
+  display: block;
+  color: #596d89;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.lifecycle-pending-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  color: #293e91;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.lifecycle-event-link:focus-visible,
+.lifecycle-pending-link:focus-visible {
+  outline: 2px solid #e94e1d;
+  outline-offset: 3px;
+  border-radius: 5px;
+}
+.lifecycle-zero {
+  color: #596d89;
+  font-size: 13px;
+}
+.lifecycle-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 16px;
+  margin-top: 8px;
+  border-top: 1px solid #e2e7ef;
+  font-size: 12px;
+  color: #596d89;
+}
+.lifecycle-pagination p {
+  margin: 0;
+}
+.lifecycle-pagination nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.lifecycle-pagination .btn {
+  min-height: 44px;
+}
+@media (min-width: 761px) and (max-width: 1100px) {
+  .lifecycle-table {
+    min-width: 780px;
+  }
+}
+@media (max-width: 760px) {
+  .lifecycle-filters {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .lifecycle-management > .section-heading {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .lifecycle-table,
+  .lifecycle-table tbody {
+    display: block;
+    width: 100%;
+  }
+  .lifecycle-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .lifecycle-table tr {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px 16px;
+    padding: 16px 0;
+    border-top: 1px solid #e2e7ef;
+  }
+  .lifecycle-table td {
+    padding: 0;
+    border: 0;
+    min-width: 0;
+  }
+  .lifecycle-table td:first-child,
+  .lifecycle-table td:nth-child(2),
+  .lifecycle-table td:nth-child(3) {
+    grid-column: 1 / -1;
+  }
+  .lifecycle-table td:nth-child(2),
+  .lifecycle-table td:nth-child(3) {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .lifecycle-table td[data-label]::before {
+    content: attr(data-label);
+    display: block;
+    color: #596d89;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+  .lifecycle-table td:nth-child(2)::before,
+  .lifecycle-table td:nth-child(3)::before {
+    min-width: 82px;
+  }
+  .lifecycle-event-link {
+    min-height: 44px;
+  }
+  .lifecycle-table td .lifecycle-zero {
+    display: inline-block;
+    padding-top: 8px;
+  }
+  .lifecycle-pagination {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .lifecycle-pagination nav {
+    width: 100%;
+    justify-content: space-between;
+    gap: 8px;
+  }
 }

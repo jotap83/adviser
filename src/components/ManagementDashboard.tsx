@@ -27,7 +27,8 @@ import {
   type Period,
 } from "../management-model";
 
-type View = "overview" | "portfolio" | "relationships" | "evidence";
+type View =
+  "overview" | "portfolio" | "lifecycle" | "relationships" | "evidence";
 type Basis =
   | "cycle"
   | "conversion"
@@ -202,7 +203,6 @@ export function ManagementDashboard() {
         }
       />
       <CrossAreaSummary />
-      <LifecycleManagement />
       <IntelligenceEntry ids={["management"]} />
       <div className="management-filters insight-filters">
         <Label label="Período dos resultados">
@@ -364,6 +364,7 @@ export function ManagementDashboard() {
           [
             ["overview", "Visão geral"],
             ["portfolio", "Carteira e prazos"],
+            ["lifecycle", "Ciclo dos eventos"],
             ["relationships", "Clientes e fornecedores"],
             ["evidence", "Base dos indicadores"],
           ] as const
@@ -505,7 +506,7 @@ export function ManagementDashboard() {
               <span>Primeira resposta da equipe</span>
               <strong>{number(data.replyHours, " h")}</strong>
               <small>
-                {data.replies.length} eventos iniciadas no período ·
+                {data.replies.length} eventos iniciados no período ·
                 confirmações automáticas excluídas
               </small>
             </button>
@@ -529,7 +530,7 @@ export function ManagementDashboard() {
               </strong>
               <small>
                 {negotiating.length} propostas enviadas · {open.length} eventos
-                comerciais abertas · não é receita
+                comerciais abertos · não é receita
               </small>
             </button>
           </div>
@@ -602,6 +603,9 @@ export function ManagementDashboard() {
           nucleus={nucleus}
           setNucleus={setNucleus}
         />
+      )}
+      {view === "lifecycle" && (
+        <LifecycleManagement key={`${nucleus}-${owner}`} rows={rows} />
       )}
       {view === "relationships" && (
         <>

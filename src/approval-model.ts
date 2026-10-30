@@ -136,6 +136,25 @@ export const approvalStatus = (s: AppState, r: ApprovalRequest) =>
           r.reviewers.every((x) => x.decision === "approved")
         ? "approved"
         : "pending";
+
+export function pendingEventApprovals(s: AppState, eventId: string) {
+  const projects = new Set(
+    (s.productionProjects || [])
+      .filter((p) => (p.eventId || p.source?.demandId) === eventId)
+      .map((p) => p.id),
+  );
+  const entries = new Set(
+    (s.financeEntries || [])
+      .filter((e) => projects.has(e.projectId))
+      .map((e) => e.id),
+  );
+  return (s.approvals || []).filter(
+    (r) =>
+      (r.kind === "payment"
+        ? entries.has(r.targetId)
+        : r.targetId === eventId) && approvalStatus(s, r) === "pending",
+  );
+}
 export const latestApproval = (s: AppState, t: ApprovalTarget) =>
   s.approvals?.find(
     (r) =>

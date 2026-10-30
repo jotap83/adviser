@@ -262,6 +262,7 @@ test("painel renderiza indicadores auditáveis, decisões e fases futuras sem IA
   );
   for (const text of [
     "Painel Gerencial",
+    "Ciclo dos eventos",
     "Decisões de hoje",
     "Ver base: Contato até o aceite",
     "Clientes e fornecedores",
@@ -272,6 +273,38 @@ test("painel renderiza indicadores auditáveis, decisões e fases futuras sem IA
   ])
     assert.ok(html.includes(text), text);
   assert.doesNotMatch(html, /NaN|Infinity/);
+  assert.doesNotMatch(
+    html,
+    /class="lifecycle-table"/,
+    "a carteira detalhada não deve preceder os filtros e indicadores da visão geral",
+  );
+});
+
+test("consulta de ciclo respeita os eventos recebidos e limita a primeira página", async () => {
+  const { Store } = await compiler.ssrLoadModule("/src/store.tsx");
+  const { LifecycleManagement } = await compiler.ssrLoadModule(
+    "/src/pages/EventLifecycle.tsx",
+  );
+  const state = withManagementInsightsDemo(seed());
+  globalThis.localStorage = { getItem: () => JSON.stringify(state) };
+  const selected = Array.from({ length: 8 }, (_, i) => ({
+    ...state.demands[0],
+    id: `scoped-${i}`,
+    title: `Evento filtrado ${i + 1}`,
+  }));
+  const html = renderToStaticMarkup(
+    createElement(
+      Store,
+      null,
+      createElement(LifecycleManagement, { rows: selected }),
+    ),
+  );
+  assert.match(html, /Evento filtrado 1/);
+  assert.match(html, /Evento filtrado 6/);
+  assert.doesNotMatch(html, /Evento filtrado 7/);
+  assert.doesNotMatch(html, new RegExp(state.demands[1].title));
+  assert.match(html, /1–6 de 8 eventos/);
+  assert.match(html, /Solicitações abertas/);
 });
 
 test("corrigir motivo atual recalcula os indicadores e preserva decisões e revisões anteriores", () => {
