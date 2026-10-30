@@ -1,3 +1,5 @@
+import { Approvals } from "./pages/Approvals";
+import { approvalNotifications } from "./approval-model";
 import { useEffect, useState } from "react";
 import {
   LayoutDashboard,
@@ -138,9 +140,12 @@ export default function App() {
     }
   }, [toast]);
   const parts = path.split("/").filter(Boolean);
-  const unread = collectAlerts(state).filter(
-    (a) => a.kind === "response" && !a.read,
-  ).length;
+  const unread =
+    collectAlerts(state).filter((a) => a.kind === "response" && !a.read)
+      .length +
+    approvalNotifications(state, currentPerson?.id || "").filter(
+      (n) => !state.readApprovalNotifications?.includes(n.id),
+    ).length;
   const d = state.demands.find((x) => x.id === parts[1]);
   const q = d?.quotes.find((x) => x.id === parts[2]);
   let page: React.ReactNode;
@@ -155,6 +160,7 @@ export default function App() {
     page = d ? (
       <Workspace
         d={d}
+        versionId={parts[3]}
         tab={
           (stages.some((s) => s.id === parts[2])
             ? parts[2]
@@ -173,6 +179,14 @@ export default function App() {
     page = <Home key="new-demand" newDemand />;
   else if (parts[0] === "emails" || parts[0] === "mensagens")
     page = <Inbox key={parts[1] || "inbox"} emailId={parts[1]} />;
+  else if (parts[0] === "aprovacoes")
+    page = (
+      <Approvals
+        key={path}
+        initialView={parts[1] === "todas" ? "all" : "mine"}
+        requestId={parts[1] === "solicitacao" ? parts[2] : undefined}
+      />
+    );
   else if (parts[0] === "gestao") page = <Management />;
   else if (parts[0] === "alertas") page = <Alerts />;
   else if (parts[0] === "fornecedores")
@@ -269,6 +283,7 @@ export default function App() {
             label: "Central de alertas",
             icon: Bell,
           })}
+          {navButton({ path: "/aprovacoes", label: "Aprovações", icon: Check })}
           <span className="nav-label">ATENDIMENTO · MVP</span>
           {nav.map(navButton)}
           {navButton({
@@ -329,7 +344,26 @@ export default function App() {
                 <PanelLeftClose size={20} />
               )}
             </button>
-            <span className="workspace-label">Workspace</span>
+            <label className="area-switch">
+              Área
+              <select
+                aria-label="Área de trabalho"
+                value={
+                  ["operacoes", "financeiro", "gestao", "aprovacoes"].includes(
+                    parts[0],
+                  )
+                    ? `/${parts[0]}`
+                    : "/"
+                }
+                onChange={(e) => go(e.target.value)}
+              >
+                <option value="/">Atendimento</option>
+                <option value="/operacoes">Operações</option>
+                <option value="/financeiro">Financeiro</option>
+                <option value="/gestao">Visão gerencial</option>
+                <option value="/aprovacoes">Aprovações</option>
+              </select>
+            </label>
             <a
               className="mobile-brand"
               href="#/"
@@ -341,21 +375,27 @@ export default function App() {
             <strong>
               {parts[0] === "demandas" && parts[1]
                 ? "Demanda"
-                : parts[0] === "configuracoes"
-                  ? "Configurações"
-                  : ["roadmap", "escopo"].includes(parts[0])
-                    ? "Escopo e etapas"
-                    : parts[0] === "operacoes"
-                      ? "Operações"
-                      : parts[0] === "financeiro"
-                        ? "Financeiro"
-                        : ["emails", "mensagens"].includes(parts[0])
-                          ? "Central de atendimento"
-                          : parts[0] === "fluxo"
-                            ? "Processo"
-                            : parts[0] === "clientes"
-                              ? "Clientes"
-                              : "Atendimento"}
+                : parts[0] === "gestao"
+                  ? "Painel Gerencial"
+                  : parts[0] === "aprovacoes"
+                    ? "Aprovações"
+                    : parts[0] === "alertas"
+                      ? "Alertas"
+                      : parts[0] === "configuracoes"
+                        ? "Configurações"
+                        : ["roadmap", "escopo"].includes(parts[0])
+                          ? "Escopo e etapas"
+                          : parts[0] === "operacoes"
+                            ? "Operações"
+                            : parts[0] === "financeiro"
+                              ? "Financeiro"
+                              : ["emails", "mensagens"].includes(parts[0])
+                                ? "Central de atendimento"
+                                : parts[0] === "fluxo"
+                                  ? "Processo"
+                                  : parts[0] === "clientes"
+                                    ? "Clientes"
+                                    : "Atendimento"}
             </strong>
           </div>
           <div className="topbar-right">
@@ -371,7 +411,7 @@ export default function App() {
             </div>
             <button
               className="notification-bell"
-              aria-label={`Abrir central de alertas, ${unread} novos retornos`}
+              aria-label={`Abrir central de alertas, ${unread} avisos não lidos`}
               onClick={() => go("/alertas")}
             >
               <Bell size={19} />
@@ -425,7 +465,15 @@ function Toast({ toast, close }: { toast: string; close: () => void }) {
     </div>
   ) : null;
 }
-function Workspace({ d, tab }: { d: Demand; tab: Stage }) {
+function Workspace({
+  d,
+  tab,
+  versionId,
+}: {
+  d: Demand;
+  tab: Stage;
+  versionId?: string;
+}) {
   const { state, notify, updateDemand } = useStore();
   const [history, setHistory] = useState(false);
   const client = state.clients.find((c) => c.id === d.clientId);
@@ -514,6 +562,19 @@ function Workspace({ d, tab }: { d: Demand; tab: Stage }) {
           </Button>
         </div>
       </div>
+      {state.productionProjects
+        ?.filter((p) => p.source?.demandId === d.id)
+        .map((p) => (
+          <div className="cross-area-links" key={p.id}>
+            <span>Continuidade deste evento</span>
+            <Button onClick={() => go(`/operacoes/${p.id}`)}>
+              Abrir operação
+            </Button>
+            <Button onClick={() => go(`/financeiro/${p.id}`)}>
+              Abrir financeiro
+            </Button>
+          </div>
+        ))}
       {history && (
         <section className="panel history-panel">
           <div className="section-heading">
@@ -567,7 +628,11 @@ function Workspace({ d, tab }: { d: Demand; tab: Stage }) {
         ) : tab === "proposal" ? (
           <Proposal d={d} />
         ) : tab === "approval" ? (
-          <Approval d={d} />
+          <Approval
+            key={versionId || d.id}
+            d={d}
+            initialVersionId={versionId}
+          />
         ) : (
           <Handoff d={d} />
         )}

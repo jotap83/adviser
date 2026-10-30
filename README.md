@@ -30,9 +30,9 @@ node tests/browser.mjs
 
 ## Apresentação aos sócios
 
-Use **Tours** no cabeçalho e comece por **Da primeira mensagem ao aceite**: são 25 paradas em seis capítulos, do contato inicial à aprovação da proposta v2. O guia destaca a área da tela, orienta a navegação e inclui **O que destacar aos sócios** para apoiar a fala.
+Use **Tours** no cabeçalho e comece por **Da primeira mensagem ao aceite**: são 26 paradas em seis capítulos, do contato inicial à aprovação da proposta v2. O guia destaca a área da tela, orienta a navegação e inclui **O que destacar aos sócios** para apoiar a fala.
 
-O menu reúne oito roteiros e 63 paradas, incluindo gestão, canais, cadastros, IA, Operações e Financeiro. Cada parada prepara um exemplo fictício temporário; avançar, voltar ou pular descarta as alterações da cena anterior. Ao encerrar, os registros salvos voltam. O progresso fica neste navegador, mas as alterações das cenas não sobrevivem à recarga da página.
+O menu reúne oito roteiros e 64 paradas, incluindo gestão, canais, cadastros, IA, Operações e Financeiro. Cada parada prepara um exemplo fictício temporário; avançar, voltar ou pular descarta as alterações da cena anterior. Ao encerrar, os registros salvos voltam. O progresso fica neste navegador, mas as alterações das cenas não sobrevivem à recarga da página.
 
 Consulte o [guia dos tours de apresentação](docs/TOURS-DE-APRESENTACAO.md) para a ordem sugerida, os controles e os limites da demonstração.
 
@@ -43,7 +43,7 @@ Consulte o [guia dos tours de apresentação](docs/TOURS-DE-APRESENTACAO.md) par
 3. Em **Cotações**, abra o link de **Mesa & Afeto**. Preencha o exemplo e envie a cotação simulada.
 4. No **Comparativo**, escolha a alternativa e os adicionais de cada fornecedor, confirme a composição e leve somente os itens escolhidos para a proposta. A conversa permite dúvidas, pedido de ajustes e novas versões.
 5. Ajuste itens, fee e pagamentos diretos. Salve uma versão e exporte Excel ou imprima em PDF.
-6. Em **Aprovação**, simule o registro do envio, escreva uma evidência fictícia e registre o aceite.
+6. Em **Aprovação**, escolha os revisores e solicite a aprovação interna. Na **Central de aprovações**, troque a pessoa simulada e revise a versão; todos os revisores precisam aprovar. Volte à proposta, simule o registro do envio, escreva uma evidência fictícia e registre o aceite.
 7. Em **Repasse**, exporte o pacote e conclua o atendimento.
 8. Em **Equipe e IA**, simule a IA indisponível e confirme que o preenchimento manual permanece disponível.
 
@@ -63,7 +63,7 @@ Em **Conferir cobrança do fornecedor**, comece por **Anexar ou colar**, **Simul
 
 A navegação e as páginas identificam **MVP**, **etapa 2**, **etapa 3** e **evolução opcional**. Em **Operações**, selecione um evento, crie uma tarefa, abra os detalhes, marque o checklist, registre um comentário e mova a tarefa por arraste ou pelo seletor. Tarefas bloqueadas ou com checklist pendente não podem ser concluídas. No celular, escolha a coluna pelos botões acima do quadro.
 
-Para testar a continuidade do atendimento, prepare o repasse de uma demanda aprovada. Em Operações, use **Receber do atendimento** para criar o projeto. A versão recebida fica preservada. Criar o projeto não contrata fornecedores nem gera contas automaticamente. Em **Financeiro**, simule e desfaça baixas de lançamentos fictícios. Veja [funcionamento e escopo](docs/OPERACOES-E-ESCOPO.md).
+Para testar a continuidade do atendimento, prepare o repasse de uma demanda aprovada. Em Operações, use **Receber do atendimento** para criar o projeto. A versão recebida fica preservada. Criar o projeto não contrata fornecedores nem gera contas automaticamente. Em **Financeiro**, veja todos os eventos ou abra um evento; cadastre lançamentos e solicite aprovação de contas a pagar. Após a revisão, simule e desfaça baixas fictícias. Veja [funcionamento e escopo](docs/OPERACOES-E-ESCOPO.md).
 
 Teste do fluxo: `node tests/operations-browser.mjs`, com servidor em 4173. O teste usa `CHROMIUM_PATH` quando informado.
 
@@ -127,3 +127,15 @@ Com o servidor de desenvolvimento na porta 4173, execute `node tests/inbox-brows
 Entrada manual, Gmail e WhatsApp compartilham demanda, anexos e histórico. A central permite simular recebimento, confirmar vínculo e responder pelo canal escolhido. O cadastro direto permite criar cliente sem e-mail e preencher o briefing sem IA. Todos os envios e integrações continuam simulados. Consulte `docs/ATENDIMENTO-CENTRALIZADO.md`.
 
 Validação dos três canais: `CHROMIUM_PATH=/caminho/do/chromium node tests/channels-browser.mjs`. O teste inicia o servidor local automaticamente; `DEMO_URL` permite usar uma prévia já servida.
+
+## Fluxo conectado — revisão de 30/10/2026
+
+- **Área de trabalho** no cabeçalho navega entre Atendimento, Operações, Financeiro, Gestão e Aprovações. **Visualizar como** na carteira seleciona a pessoa e ativa Meus atendimentos, limpando os filtros anteriores.
+- Na mensagem pendente, **Criar novo evento desta solicitação** aparece antes das sugestões. Permite novo cliente, conserva o pedido original e anexos e abre o briefing. A classificação por IA é uma simulação por regras, editável; prioridade confirmada ordena a fila e aparece na mensagem.
+- Operações abre uma carteira global e uma fila de tarefas entre eventos; mantém quadros, checklist, bloqueios e comentários por evento. Repasse pode ser recebido mesmo com a carteira vazia.
+- Financeiro reúne todos os eventos, filtros, lançamentos novos e comparativo previsto/realizado. Baixa integral simulada; não há pagamento parcial, banco, emissão fiscal nem Conta Azul conectado.
+- Aprovações internas de propostas e contas a pagar guardam a versão revisada, destinatários e decisões. O solicitante não revisa o próprio pedido neste exemplo. Todos os revisores designados precisam aprovar. Motivo obrigatório para ajustes; nova rodada preserva a anterior. Mudanças nos dados invalidam a revisão. Regras de alçada de produção continuam a validar.
+- Avisos aparecem na Central de alertas e no sino para a pessoa simulada; o solicitante recebe o resultado. Ler um aviso não aprova nada. Não há notificações externas ou autenticação.
+- Painel Gerencial preserva métricas, filtros e análises e acrescenta panorama de Operações, Financeiro e aprovações de toda a carteira, separado dos filtros do Atendimento.
+
+Dados locais existentes permanecem preservados. Propostas anteriormente enviadas/aceitas não são reprovadas retroativamente; novos envios exigem revisão interna. Conferência por IA não libera pagamento. Tours incluem a aprovação interna e cenas posteriores identificam a revisão fictícia preparada.

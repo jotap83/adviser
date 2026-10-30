@@ -48,11 +48,12 @@ export function TourMenuButton() {
     <Button
       icon={Route}
       className="btn tour-menu-trigger"
+      aria-label="Tours"
       aria-expanded={c.open}
       aria-controls="presentation-tour-menu"
       onClick={c.toggle}
     >
-      Tours
+      <span className="tour-trigger-label">Tours</span>
       <ChevronDown size={13} />
     </Button>
   );

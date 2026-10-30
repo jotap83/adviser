@@ -12,6 +12,7 @@ import "./production-workspace.css";
 import "./organization.css";
 import "./intelligence.css";
 import "./tours.css";
+import "./connected-workspace.css";
 import App from "./App";
 import { Store } from "./store";
 import { Tours } from "./components/Tours";

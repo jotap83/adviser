@@ -1,3 +1,8 @@
+import {
+  requestApproval,
+  decideApproval,
+  latestApproval,
+} from "./approval-model";
 import { seed, createDemand } from "./data";
 import { prepareDemoState } from "./demo-state";
 import { completeBriefingExample } from "./briefing-example";
@@ -148,7 +153,7 @@ function returnedQuotes(s: AppState): Quote[] {
 
 /** A fresh demonstration on the real screens, never derived from personal browser records. */
 export function buildTourScenario(phase: TourPhase): AppState {
-  const s = prepareDemoState(seed());
+  let s = prepareDemoState(seed());
   const n = tourPhases.indexOf(phase);
   const after = (p: TourPhase) => n >= tourPhases.indexOf(p);
   let d: Demand = {
@@ -392,6 +397,27 @@ export function buildTourScenario(phase: TourPhase): AppState {
       })),
       ...(s.financeEntries || []),
     ];
+  }
+  // Later tour scenes contain explicit fictional internal approvals for each sent version.
+  if (after("sent")) {
+    for (const v of d.versions) {
+      const target = {
+        kind: "proposal" as const,
+        targetId: d.id,
+        versionId: v.id,
+      };
+      s = requestApproval(s, target, "u1", ["u3"], at);
+      const approval = latestApproval(s, target);
+      if (approval)
+        s = decideApproval(
+          s,
+          approval.id,
+          "u3",
+          "approved",
+          "Aprovação fictícia preparada para a cena do tour.",
+          at,
+        );
+    }
   }
   return s;
 }

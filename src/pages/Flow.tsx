@@ -58,7 +58,7 @@ const flow = [
   {
     n: 7,
     title: "Atendimento compara e monta a proposta",
-    desc: "Seleciona cotações, ajusta valores e condições. Salva uma versão e prepara PDF ou Excel.",
+    desc: "Com apoio da comparação por IA, seleciona cotações e ajusta valores e condições. Salva uma versão e solicita revisão interna; os responsáveis recebem avisos e todos precisam aprovar antes do envio.",
     owner: "Atendimento",
     icon: FileCheck,
     creative: true,
@@ -66,7 +66,7 @@ const flow = [
   {
     n: 8,
     title: "Cliente recebe e decide",
-    desc: "A proposta segue pelo canal habitual. O atendimento registra a resposta e a evidência.",
+    desc: "Após a aprovação interna da mesma versão, a proposta segue pelo canal habitual. O atendimento registra a resposta do cliente e a evidência.",
     owner: "Atendimento ↔ Cliente",
     icon: Check,
     branch:
@@ -183,7 +183,9 @@ export function Flow() {
               <p>
                 Recebimentos e pagamentos ocorrem ao longo do projeto. Depois do
                 evento: conciliação, previsto × realizado e fechamento, com
-                financeiro próprio e eventual migração do Conta Azul a validar.
+                visão global e por evento. Contas a pagar passam por revisão com
+                avisos aos responsáveis. A Adviser pode manter o Conta Azul
+                integrado; substituição e migração continuam a validar.
               </p>
               <p className="ai-feature-note">
                 <AIBadge /> Leitura de cobranças antes da comparação com os

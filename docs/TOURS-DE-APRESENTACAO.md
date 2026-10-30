@@ -2,7 +2,7 @@
 
 Abra **Tours** no cabeçalho e escolha **Da primeira mensagem ao aceite** para apresentar o atendimento completo. O guia destaca uma área por vez, explica o que experimentar e oferece uma fala opcional em **O que destacar aos sócios**. O botão Tours também está disponível na visão do fornecedor.
 
-Os oito roteiros somam **63 paradas**. Você controla o ritmo; nenhuma etapa avança sozinha.
+Os oito roteiros somam **64 paradas**. Você controla o ritmo; nenhuma etapa avança sozinha.
 
 ## Como conduzir a apresentação
 
@@ -46,7 +46,7 @@ Na parada **Receba e confira uma cobrança**, do tour **Financeiro por evento**,
 
 As mensagens simuladas incluem um adicional fictício de **R$ 450,00** em relação ao lançamento usado no exemplo. A comparação usa regras aritméticas e não cria lançamento, autoriza pagamento ou efetua baixa. Com a IA indisponível, a extração fica desativada e o caminho manual continua funcionando. O original anexado é temporário: consulte ou baixe enquanto a tela estiver aberta; ele não permanece ao sair ou recarregar.
 
-Use a etiqueta **IA prevista** para apontar onde há apoio de IA planejado no atendimento, nas nove oportunidades e no fluxo da plataforma. Ela é separada das etiquetas **MVP**, **etapa 2**, **etapa 3** e **evolução opcional**. Os oito roteiros e suas 63 paradas permanecem os mesmos; as instruções de cobrança agora acompanham recebimento, revisão e comparação.
+Use a etiqueta **IA prevista** para apontar onde há apoio de IA planejado no atendimento, nas nove oportunidades e no fluxo da plataforma. Ela é separada das etiquetas **MVP**, **etapa 2**, **etapa 3** e **evolução opcional**. Os oito roteiros e suas 64 paradas permanecem os mesmos; as instruções de cobrança agora acompanham recebimento, revisão e comparação.
 
 ## Navegação e preservação dos registros
 
@@ -73,3 +73,5 @@ IA, Gmail, WhatsApp, envios e aceite são simulados. Não há contas conectadas,
 Operações e Financeiro demonstram possibilidades das **etapas 2 e 3**. O alcance financeiro e a possível integração ou substituição do Conta Azul ainda dependem do levantamento com a Adviser. As prioridades de IA servem à conversa sobre evolução e não fixam prazo ou contratação.
 
 Para exploração sem guia, consulte o [roteiro manual no README](../README.md#roteiro-manual-de-demonstração). Detalhes complementares: [IA na operação](IA-NA-OPERACAO.md) e [Operações e escopo](OPERACOES-E-ESCOPO.md).
+
+A revisão de 30/10 acrescenta a parada **Avise quem precisa aprovar** antes do envio. A cena de envio tem aprovação interna fictícia preservada; a cena anterior permite solicitar e acompanhar a revisão na central.

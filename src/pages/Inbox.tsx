@@ -1,3 +1,5 @@
+import { messageKinds } from "../message-classification";
+import { MessageClassification } from "../components/MessageClassification";
 import { nucleusLabel, suggestedOwner, UNASSIGNED } from "../organization";
 import { useRef, useState } from "react";
 import {
@@ -72,7 +74,12 @@ export function Inbox({ emailId }: { emailId?: string }) {
         m.status === filter &&
         (channelFilter === "all" || messageChannel(m) === channelFilter),
     )
-    .sort((a, b) => b.receivedAt.localeCompare(a.receivedAt));
+    .sort(
+      (a, b) =>
+        Number(!!b.classification?.reviewed && !!b.classification?.urgent) -
+          Number(!!a.classification?.reviewed && !!a.classification?.urgent) ||
+        b.receivedAt.localeCompare(a.receivedAt),
+    );
   const selected = rows.find((m) => m.id === selectedId) || rows[0];
   const choose = (id: string) => {
     setSelectedId(id);
@@ -277,6 +284,12 @@ export function Inbox({ emailId }: { emailId?: string }) {
                   >
                     {channelName(m)}
                   </Badge>
+                  {m.classification?.reviewed && (
+                    <Badge tone={m.classification.urgent ? "amber" : "gray"}>
+                      {m.classification.urgent ? "Prioridade · " : ""}
+                      {messageKinds[m.classification.kind]}
+                    </Badge>
+                  )}
                 </span>
                 <strong>{m.subject}</strong>
                 <span className="inbox-list-preview">
@@ -517,13 +530,37 @@ function MailReview({
             </>
           ) : (
             <>
+              {!correcting && !creating && (
+                <div className="intake-choice">
+                  <h3>Este pedido é de um novo evento?</h3>
+                  <p>
+                    Crie o evento mesmo sem cadastro anterior. A mensagem e os
+                    anexos seguem para o briefing.
+                  </p>
+                  <Button
+                    variant="primary"
+                    icon={Plus}
+                    onClick={() => setCreating(true)}
+                  >
+                    Criar novo evento desta solicitação
+                  </Button>
+                  <p className="muted">
+                    Já existe um evento? Escolha o vínculo abaixo.
+                  </p>
+                </div>
+              )}
+              {!correcting && !creating && (
+                <MessageClassification key={email.id} email={email} />
+              )}
               <div className="section-heading">
                 <h3>
                   {correcting
                     ? "Corrigir atendimento"
-                    : "Atendimentos sugeridos"}
+                    : creating
+                      ? "Novo pedido"
+                      : "Atendimentos sugeridos"}
                 </h3>
-                {!correcting && <AIBadge />}
+                {!correcting && !creating && <AIBadge />}
               </div>
               {correcting && (
                 <Note>
@@ -685,7 +722,7 @@ function MailReview({
                         icon={Plus}
                         onClick={() => setCreating(true)}
                       >
-                        Criar nova demanda
+                        Criar novo evento
                       </Button>
                     )}
                   </div>
@@ -709,6 +746,7 @@ function MailReview({
                     const newClientId = clientId === "new" ? uid() : clientId;
                     const d = createDemand(newClientId, title);
                     d.source = channelName(email);
+                    d.message = email.text;
                     d.owner = newOwner;
                     setState((s) => {
                       const current = s.inbox?.find((m) => m.id === email.id);
@@ -741,14 +779,14 @@ function MailReview({
                       });
                       return linkMail(next, email.id, d.id, "new");
                     });
-                    onResolved("linked");
+                    go(`/demandas/${d.id}/briefing`);
                     notify(
                       "Demanda criada com a mensagem no histórico. Revise o briefing para organizar as informações.",
                     );
                   }}
                 >
-                  <h3>Registrar o novo pedido</h3>
-                  <Label label="Nome da nova demanda">
+                  <h3>Criar novo evento desta solicitação</h3>
+                  <Label label="Nome do novo evento">
                     <input
                       name="title"
                       required
@@ -811,7 +849,7 @@ function MailReview({
                   </Label>
                   <div className="actions">
                     <Button type="submit" variant="primary">
-                      Criar e associar
+                      Criar evento e abrir briefing
                     </Button>
                     <Button onClick={() => setCreating(false)}>Cancelar</Button>
                   </div>

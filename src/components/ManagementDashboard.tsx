@@ -1,3 +1,4 @@
+import { CrossAreaSummary } from "./CrossAreaSummary";
 import { useState, type ReactNode } from "react";
 import { ArrowRight, Bell, SlidersHorizontal, Clock3 } from "lucide-react";
 import { useStore, go } from "../store";
@@ -199,6 +200,7 @@ export function ManagementDashboard() {
           </>
         }
       />
+      <CrossAreaSummary />
       <IntelligenceEntry ids={["management"]} />
       <div className="management-filters insight-filters">
         <Label label="Período dos resultados">

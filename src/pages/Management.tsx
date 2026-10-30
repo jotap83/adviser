@@ -1,3 +1,4 @@
+import { ApprovalNotices } from "./Approvals";
 import { demandNucleusId, nucleusLabel, UNASSIGNED } from "../organization";
 import { useState } from "react";
 import {
@@ -175,6 +176,7 @@ export function Alerts() {
           </>
         }
       />
+      <ApprovalNotices />
       {settings && (
         <section className="panel">
           <h2>Quando sinalizar atenção</h2>

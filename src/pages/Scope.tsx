@@ -34,7 +34,7 @@ const deliveries = [
       ],
       [
         "Proposta e aceite",
-        "Orçamento por grupo, condições, versões, PDF/Excel, registro da decisão e pacote para Operações.",
+        "Orçamento por grupo, condições, versões, PDF/Excel, revisão interna com responsáveis e avisos, envio ao cliente, registro do aceite e pacote para Operações.",
       ],
       [
         "Gestão e alertas",
@@ -73,7 +73,7 @@ const deliveries = [
       ],
       [
         "Acompanhamento",
-        "Pendências por evento, atrasos, bloqueios e coordenação dos fornecedores. Migração do Trello a avaliar.",
+        "Carteira global de eventos, fila transversal de tarefas, pendências por evento, atrasos, bloqueios e coordenação dos fornecedores. Migração do Trello a avaliar.",
       ],
     ],
   },
@@ -92,7 +92,7 @@ const deliveries = [
       ],
       [
         "Contas a pagar e receber",
-        "Parcelas, vencimentos, pagamentos diretos, comprovantes e aprovações a definir.",
+        "Visão global e por evento, lançamentos, vencimentos, aprovação com avisos e baixa integral demonstrados. Parcelas, pagamentos parciais, pagamentos diretos, comprovantes e regras de alçada a detalhar.",
       ],
       [
         "Caixa e resultado",

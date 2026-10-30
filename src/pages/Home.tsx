@@ -246,16 +246,21 @@ export function Home({
           <div>
             <h2>Carteira de atendimento</h2>
             <p>
-              Escolha a visão de trabalho. Todos os clientes continuam
-              acessíveis.
+              Ao trocar a pessoa, a fila mostra seus atendimentos. Use Todos
+              para consultar a carteira completa.
             </p>
           </div>
           <Label label="Visualizar como · demonstração">
             <select
               value={currentPerson?.id || ""}
-              onChange={(e) =>
-                setState((s) => ({ ...s, demoUserId: e.target.value }))
-              }
+              onChange={(e) => {
+                setState((s) => ({ ...s, demoUserId: e.target.value }));
+                setScope("mine");
+                setNucleusFilter("all");
+                setOwnerFilter("all");
+                setFilter("all");
+                setSearch("");
+              }}
             >
               {!currentPerson && <option value="">Sem pessoa ativa</option>}
               {state.users

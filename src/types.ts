@@ -202,6 +202,8 @@ export type AppState = {
   aiMode: "available" | "offline";
   provider: string;
   readAlerts?: string[];
+  approvals?: ApprovalRequest[];
+  readApprovalNotifications?: string[];
   managementDemo?: boolean;
   managementInsightsDemo?: boolean;
   managementTargets?: { cycleDays: number; marginPercent: number };
@@ -307,7 +309,32 @@ export type ClientMessage = {
   template?: string;
   attachedFiles?: string[];
 };
+export type MessageKind =
+  "new" | "update" | "quote" | "approval" | "billing" | "other";
+export type MessageClassification = {
+  kind: MessageKind;
+  urgent: boolean;
+  reason: string;
+  reviewed: boolean;
+};
+export type ApprovalRequest = {
+  id: string;
+  kind: "proposal" | "payment";
+  targetId: string;
+  versionId?: string;
+  fingerprint: string;
+  title: string;
+  requestedBy: string;
+  createdAt: string;
+  reviewers: {
+    userId: string;
+    decision: "pending" | "approved" | "changes";
+    comment: string;
+    at?: string;
+  }[];
+};
 export type InboxEmail = {
+  classification?: MessageClassification;
   id: string;
   account: string;
   threadId: string;

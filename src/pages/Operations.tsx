@@ -1,3 +1,4 @@
+import { OperationsPortfolio } from "./OperationsPortfolio";
 import { useEffect, useRef, useState } from "react";
 import {
   ArrowLeft,
@@ -33,9 +34,16 @@ const timeLabel = (value: string) =>
   });
 
 export function Operations({ projectId }: { projectId?: string }) {
+  return projectId ? (
+    <OperationsProject key={projectId} projectId={projectId} />
+  ) : (
+    <OperationsPortfolio />
+  );
+}
+function OperationsProject({ projectId }: { projectId: string }) {
   const { state, setState, notify } = useStore();
   const projects = state.productionProjects || [];
-  const project = projects.find((p) => p.id === projectId) || projects[0];
+  const project = projects.find((p) => p.id === projectId);
   const [selected, setSelected] = useState("");
   const [adding, setAdding] = useState(false);
   const [receiving, setReceiving] = useState(false);
@@ -64,6 +72,7 @@ export function Operations({ projectId }: { projectId?: string }) {
       />
     );
   function updateProject(change: (p: ProductionProject) => ProductionProject) {
+    if (!project) return;
     setState((s) => ({
       ...s,
       productionProjects: (s.productionProjects || []).map((p) =>
@@ -89,6 +98,7 @@ export function Operations({ projectId }: { projectId?: string }) {
     }));
   }
   function move(id: string, status: TaskStatus) {
+    if (!project) return;
     const task = project.tasks.find((t) => t.id === id);
     if (!task || task.status === status) return;
     const error = taskTransitionError(task, status);
@@ -158,6 +168,21 @@ export function Operations({ projectId }: { projectId?: string }) {
       !sourceDemand.handoff);
   return (
     <>
+      <div className="cross-area-links">
+        <Button icon={ArrowLeft} onClick={() => go("/operacoes")}>
+          Todos os eventos em operações
+        </Button>
+        <Button onClick={() => go(`/financeiro/${project.id}`)}>
+          Financeiro deste evento
+        </Button>
+        {project.source && (
+          <Button
+            onClick={() => go(`/demandas/${project.source!.demandId}/handoff`)}
+          >
+            Atendimento de origem
+          </Button>
+        )}
+      </div>
       <Title
         title="Operações"
         sub="Do repasse à entrega do evento. Organize o trabalho da equipe em um quadro compartilhado na versão futura."

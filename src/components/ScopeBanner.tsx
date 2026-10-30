@@ -6,6 +6,17 @@ export function ScopeBanner({ path }: { path: string }) {
   const phase = section === "operacoes" ? 2 : section === "financeiro" ? 3 : 1;
   const messages = ["emails", "mensagens"].includes(section);
   if (intelligence) return null;
+  if (section === "aprovacoes")
+    return (
+      <div className="scope-banner">
+        <Badge tone="blue">Aprovações por etapa</Badge>
+        <span>
+          Propostas no Atendimento · pagamentos na etapa 3. Revisores e avisos
+          simulados.
+        </span>
+        <a href="#/escopo">Ver escopo</a>
+      </div>
+    );
   return (
     <div className="scope-banner">
       <Badge tone={planning ? "gray" : phase > 1 ? "amber" : "blue"}>

@@ -1,3 +1,5 @@
+import { ApprovalRequestPanel } from "../components/ApprovalRequest";
+import { isApproved } from "../approval-model";
 import {
   lossReasons,
   revisionReasons,
@@ -493,10 +495,21 @@ export function Proposal({ d }: { d: Demand }) {
     </>
   );
 }
-export function Approval({ d }: { d: Demand }) {
+export function Approval({
+  d,
+  initialVersionId,
+}: {
+  d: Demand;
+  initialVersionId?: string;
+}) {
   const { state, updateDemand, notify } = useStore();
   const [chosen, setChosen] = useState(
-    d.sentVersion || d.versions.at(-1)?.id || "",
+    (d.versions.some((v) => v.id === initialVersionId)
+      ? initialVersionId
+      : undefined) ||
+      d.sentVersion ||
+      d.versions.at(-1)?.id ||
+      "",
   );
   const client = state.clients.find((c) => c.id === d.clientId);
   const sent = d.versions.find((v) => v.id === d.sentVersion);
@@ -602,6 +615,16 @@ export function Approval({ d }: { d: Demand }) {
                 ))}
               </select>
             </Label>
+            {version && (
+              <ApprovalRequestPanel
+                key={version.id}
+                target={{
+                  kind: "proposal",
+                  targetId: d.id,
+                  versionId: version.id,
+                }}
+              />
+            )}
             <Label label="Destinatário">
               <input value={client?.email || ""} readOnly />
             </Label>
@@ -642,8 +665,24 @@ export function Approval({ d }: { d: Demand }) {
               <Button
                 variant="primary"
                 icon={Send}
-                disabled={d.decision === "accepted" || !version}
+                disabled={
+                  d.decision === "accepted" ||
+                  !version ||
+                  !isApproved(state, {
+                    kind: "proposal",
+                    targetId: d.id,
+                    versionId: chosen,
+                  })
+                }
                 onClick={() => {
+                  if (
+                    !isApproved(state, {
+                      kind: "proposal",
+                      targetId: d.id,
+                      versionId: chosen,
+                    })
+                  )
+                    return;
                   updateDemand(
                     d.id,
                     {
@@ -672,6 +711,17 @@ export function Approval({ d }: { d: Demand }) {
               >
                 Simular registro de envio
               </Button>
+              {version &&
+                !isApproved(state, {
+                  kind: "proposal",
+                  targetId: d.id,
+                  versionId: chosen,
+                }) && (
+                  <p className="field-hint">
+                    Conclua a aprovação interna desta versão para liberar o
+                    envio ao cliente.
+                  </p>
+                )}
             </div>
             <p className="field-hint">
               Exporte a versão escolhida na tela Proposta. Neste protótipo não
